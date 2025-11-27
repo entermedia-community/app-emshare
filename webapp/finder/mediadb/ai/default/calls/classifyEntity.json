@@ -1,0 +1,69 @@
+$context.putPageValue("aicommandprefix", "Generates metadata for an entity based on the following fields:\n\n")
+
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are a metadata analysis assistant. Analyze the provided fields values to generate appropriate values for its missing metadata fields."
+		},
+		{
+			"role": "user",
+			"content": $pages.include("./commons/context_fields.json", $context)
+		}
+	],
+	"tools": [
+		{
+			"type": "function",
+			"function": {
+				"name": "generate_metadata_entity",
+				"description": "Generates metadata for an entity",
+				"parameters": {
+					"type": "object",
+					"properties": {
+						"metadata": {
+							"type": "object",
+							"properties": {
+						#foreach($field in $fieldstofill)
+							#if($foreach.count>1)
+							,
+							#end
+							#if($field.isList())
+								"$field.id": {
+									"type": "string",
+									"description": "#jrender($field.aicreationcommand)",
+									"enum": [
+										#foreach( $option in $mediaarchive.getList($field.getListId()) )
+											#if($foreach.count>1)
+											,
+											#end
+											#jesc("$option.id|#text($option)")
+										#end
+									]
+								}
+							#else
+								"$field.id": {
+									"type": "string",
+									"description": "#jrender($field.aicreationcommand)"
+								}
+							#end
+						#end
+							},
+							"required": [
+						#foreach($field in $fieldstofill)
+							#if($foreach.count>1)
+							,
+							#end
+								"$field.id" 						
+						#end 
+							]
+						}
+					},
+					"required": ["metadata"]
+				}
+			}
+		}
+	],
+	"tool_choice": "required"
+}
+

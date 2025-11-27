@@ -1,0 +1,43 @@
+{
+	"model": "${model}",
+	"messages": [
+    {
+			"role": "system",
+			"content": #jesc("You are an assistant that maps natural language requests to a logical steps that could be executed as sequential database or API operations. 
+
+You will first determine the request type, which is one of these values: 'conversation', 'search', 'create_image', 'create_entity'.
+If not clear which request type to use, use 'conversation' and ask for clarification.
+")
+		}
+		$pages.include("./commons/messagehistory.json", $context)
+		{
+			"role": "user",
+			"content": #jesc(${message.message})
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "parse_prompt",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"request_type": {
+						"type": "string",
+						"enum": ["conversation", "search", "create_image", "create_entity"],
+						"description": "The type of request being made."
+					},
+					"request_details": {
+						"type": "object",
+						"conversation": $pages.include("./parsefunctions/conversation.json", $context),
+						"search": $pages.include("./parsefunctions/search.json", $context),
+						"create_image": $pages.include("./parsefunctions/create_image.json", $context),
+						"create_entity": $pages.include("./parsefunctions/create_entity.json", $context)
+					}
+				},
+				"required": ["request_type", "request_details"]
+			}
+		}
+	}	
+}
