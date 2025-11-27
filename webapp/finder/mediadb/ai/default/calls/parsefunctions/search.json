@@ -1,57 +1,61 @@
 {
   "type": "object",
-  "description": "Separate any table in the request and include the keywords and parameters that apply to that table.",
-  "tables": {
-    "type": "array",
-    "description": "A list tables to be searched with their parameters.",
-    "items": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Name of the table if mentioned in the request, use 'Not specified' otherwise.",
-          "enum": [
-          #foreach($module in $schema.modules)
-            #if($foreach.count > 1),#end
-            #jesc($module.getName())
-          #end
-            ,
-            "Not specified"
-          ]
-        },
-        "parameters": {
-          "type": "object",
-          "description": "The parameters to search for in this table.",
-          "properties": {
-            "keyword": {
-              "type": "string",
-              "description": "The keyword to search for in this table, excluding the table name itself."
-            }
+  "description": "Separate any table in the request and include the keywords and parameters that apply to that table. Only required if request_type is 'search'",
+  "properties": {
+    "tables": {
+      "type": "array",
+      "description": "A list tables to be searched with their parameters.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the table if mentioned in the request, use 'Not specified' otherwise.",
+            "enum": [
+            #foreach($module in $schema.modules)
+              #if($foreach.count > 1),#end
+              #jesc($module.getName())
+            #end
+              ,
+              "Not specified"
+            ]
           },
-          "additionalProperties": true
-        },
-        "foreign_table": {
-          "type": "string",
-          "description": "Name of the foreign table to join with, if applicable."
-          "enum": [
-          #foreach($module in $schema.modules)
-            #if($foreach.count > 1),#end
-            #jesc($module.getName())
-          #end
-          ]
-        },
-        "foreign_table_parameters": {
-          "type": "object",
-          "description": "The parameters to search for in the foreign table.",
-          "properties": {
-            "keyword": {
-              "type": "string",
-              "description": "The keyword to search for in this foreign table, excluding the table name itself."
-            }
+          "parameters": {
+            "type": "object",
+            "description": "The parameters to search for in this table.",
+            "properties": {
+              "keyword": {
+                "type": "string",
+                "description": "The keyword to search for in this table, excluding the table name itself."
+              }
+            },
+            "additionalProperties": true
           },
-          "additionalProperties": true
-        }
+          "foreign_table": {
+            "type": "string",
+            "description": "Name of the foreign table to join with, if applicable.",
+            "enum": [
+            #foreach($module in $schema.modules)
+              #if($foreach.count > 1),#end
+              #jesc($module.getName())
+            #end
+            ]
+          },
+          "foreign_table_parameters": {
+            "type": "object",
+            "description": "The parameters to search for in the foreign table.",
+            "properties": {
+              "keyword": {
+                "type": "string",
+                "description": "The keyword to search for in this foreign table, excluding the table name itself."
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "required": ["name", "parameters"]
       }
     }
-  }
+  },
+  "required": ["tables"]
 }

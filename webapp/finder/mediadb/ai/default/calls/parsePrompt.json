@@ -7,9 +7,19 @@
 
 You will first determine the request type, which is one of these values: 'conversation', 'search', 'create_image', 'create_entity'.
 If not clear which request type to use, use 'conversation' and ask for clarification.
+
+Based on the request_type, fill respective field in request_details:
+if request_type is conversation, request_details must have conversation object
+if request_type is search, request_details must have search object
+if request_type is create_image, request_details must have create_image object
+if request_type is create_entity, request_details must have create_entity object.
 ")
 		}
-		$pages.include("./commons/messagehistory.json", $context)
+		#if($channelchathistory.size() <= 1)
+		, 
+		#else 
+		$pages.include("./commons/messagehistory.json", $context) 
+		#end
 		{
 			"role": "user",
 			"content": #jesc(${message.message})
@@ -30,10 +40,13 @@ If not clear which request type to use, use 'conversation' and ask for clarifica
 					},
 					"request_details": {
 						"type": "object",
-						"conversation": $pages.include("./parsefunctions/conversation.json", $context),
-						"search": $pages.include("./parsefunctions/search.json", $context),
-						"create_image": $pages.include("./parsefunctions/create_image.json", $context),
-						"create_entity": $pages.include("./parsefunctions/create_entity.json", $context)
+						"description": "Details about the request, specific to the request_type.",
+						"properties": {
+							"create_image": $pages.include("./parsefunctions/create_image.json", $context),
+							"create_entity": $pages.include("./parsefunctions/create_entity.json", $context),
+							"search": $pages.include("./parsefunctions/search.json", $context),
+							"conversation": $pages.include("./parsefunctions/conversation.json", $context)
+						}
 					}
 				},
 				"required": ["request_type", "request_details"]

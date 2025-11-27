@@ -7,7 +7,7 @@
   <a href="#" class="stackedplayer d-block" data-assetid="${asset.getId()}" title="${asset.name}">
     #set($searchhome = "$apphome/views/modules/asset/results/default")
 	  $!context.putPageValue("searchhome", $searchhome)
-    
+
     #if( ($asset.previewstatus != "2" && $asset.previewstatus != "mime" && $asset.previewstatus != "1" && $asset.previewstatus != "generated"))
       #ifnull($refreshing)
       <messageplain>Created image successfully!</messageplain>
@@ -16,11 +16,13 @@
       #end
       $pages.include("${searchhome}/convertqueue/previewstatus.html?assetid=$!{asset.id}", $context)
 	    
-      $agentcontext.setNextFunctionName("createImageCreated")
+      $agentcontext.setNextFunctionName("renderImage")
 	    $agentcontext.setValue("assetid", $asset.id)
 	    $agentcontext.setValue("wait", 1000)
 	  
     #else
+    
+      $agentcontext.setNextFunctionName(null)
       <messageplain>Image loaded successfully!</messageplain>
       $pages.include("${searchhome}/thumbnails/image.html", $context)
     #end
