@@ -1,6 +1,6 @@
 {
 	"model": "${model}",
-	"input": [
+	"messages": [
 		{
 			"role": "system",
 			#set($content = $fieldparams.aicreationdescription)
@@ -11,13 +11,14 @@
 		},
 		{
 			"role": "user",
-			"content": #jesc($fieldparams.aicreationcommand)
+			$context.putPageValue("aicommandprefix", "${fieldparams.aicreationcommand}\n")
+			"content": $pages.include("./commons/context_fields.json", $context)
 		}
 	],
-	"text": {
-		"format": {
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
 			"strict": true,
-			"type": "json_schema",
 			"name": "semantic_topics",
 			"schema": {
 				"type": "object",
