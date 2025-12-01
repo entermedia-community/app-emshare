@@ -28,7 +28,15 @@
 	#end
 #end	
 
-#if($primarymedia)
+#ifnotnull($primarymedia)
+	#set( $type = $mediaarchive.getMediaRenderType($primarymedia.fileformat))
+	#if($type == "audio")
+		#set($primarymedia = $null)
+		
+	#end
+#end
+
+#ifnotnull($primarymedia)
 	#set($assetwidth = $mediaarchive.getRealImageWidth($primarymedia)) 
 	#set($assetheight = $mediaarchive.getRealImageHeight($primarymedia)) 
 #end
@@ -73,6 +81,7 @@
 
 				$pages.include($previewurl, $context)
 			#else
+			
 				<i class="bi bi-$!{moduleicon} module-icon"></i>			
 			#end 
 			<div class="emthumb-mask">
