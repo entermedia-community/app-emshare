@@ -76,17 +76,23 @@ protected String[] sortbyspeed(Collection<String[]> servers)
 		{
 			address = address + ":" + serverport;
 		}
+		address = address + "/health";
+		
 		HttpSharedConnection connection = new HttpSharedConnection();
 		long start = System.currentTimeMillis();
 		try
 		{
-			String got = connection.getResponseString(address);
+			JSONObject got = connection.getJson(address);
 			if( got != null )
 			{
-				long end =  System.currentTimeMillis();
-				long diff = end - start;
-				speeds.put(diff, server);
-				log.info(address + " ran in " + diff + " milliseconds");
+				String ok = got.get("status");
+				if( "ok".equals(ok))
+				{
+					long end =  System.currentTimeMillis();
+					long diff = end - start;
+					speeds.put(diff, server);
+					log.info(address + " ok run in " + diff + " milliseconds");
+				}
 			}
 		}
 		catch( Exception ex)
