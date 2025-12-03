@@ -6,15 +6,21 @@ import org.openedit.hittracker.SearchQuery
 
 public void init()
 {
-		MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
+		MediaArchive archive = context.getPageValue("mediaarchive");
 		Searcher tasksearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
-		
-		log.info("clear errors");
 		
 		SearchQuery query = tasksearcher.createSearchQuery();
 		query.addMatches("status", "error");
 		
 		HitTracker tasks = tasksearcher.search(query);
+		
+		if (tasks.isEmpty())
+		{
+			return;
+		}
+		
+		log.info("Clearing " + tasks.size()+ " conversion errors.");
+		
 		tasks.enableBulkOperations();
 		List all = new ArrayList(tasks);
 		for (Data hit in all)
