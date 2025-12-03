@@ -10,7 +10,7 @@ public void init()
 		Searcher tasksearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
 		
 		SearchQuery query = tasksearcher.createSearchQuery();
-		query.addMatches("status", "error");
+		//query.addMatches("status", "error");
 		
 		HitTracker tasks = tasksearcher.search(query);
 		
