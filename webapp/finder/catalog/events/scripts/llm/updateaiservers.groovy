@@ -34,11 +34,10 @@ public void init() {
 			//8080/tcp Tools
 			//8000/tcp Vision
 			JSONArray port_vision = ports.get("8000/tcp");
-			String[] found = new String[2]
 			if (port_vision != null)
 			{
 				String port_external = port_vision.get(0).get("HostPort");
-				
+				String[] found = new String[2];
 				found[0] = ippaddr;
 				found[1] = port_external;
 				
@@ -48,6 +47,7 @@ public void init() {
 			if (port_tools != null)
 				{
 					String port_external = port_tools.get(0).get("HostPort");
+					String[] found = new String[2];
 					found[0] = ippaddr;
 					found[1] = port_external;
 					toolsservers.add(found);
@@ -95,10 +95,18 @@ protected String[] sortbyspeed(Collection<String[]> servers)
 			//Ignore
 		}
 	}
-	List<Long> speeds = new ArrayList(speeds.keySet());
-	speeds.sort(Comparator.naturalOrder());
+	List<Long> sortedspeeds = new ArrayList(speeds.keySet());
+	sortedspeeds.sort(new Comparator<Long>()
+		{
+			@Override
+			public int compare(Long inO1,Long inO2)
+			{
+				return inO1.compareTo(inO2);
+			}
+		}
+	);
 	
-	long lowest = speeds.get(0);
+	long lowest = sortedspeeds.get(0);
 	String[] fast = speeds.get(lowest);
 	return fast;
 	
@@ -107,32 +115,29 @@ protected String[] sortbyspeed(Collection<String[]> servers)
 public void updateServer(String[] fastest, String bean)
 {
 	MediaArchive archive = context.getPageValue("mediaarchive");
-	if (!servers.isEmpty())
-	{
-		String serverip = fastest[0];
-		String serverport = fastest[1];
-		//llamaVisionConnection
-		ArrayList tosave = new ArrayList();
-		Collection<Data> currentservers = archive.query("aiserver").exact("connectionbean", bean).search();
-		for (Data server in currentservers) {
-			String address = serverip;
-			if(serverport != null)
-			{
-				address = address + ":" + serverport;
-			}
-			if (!address.equals(server.get("serverroot")))
-			{
-				server.setValue("serverroot", address);
-				tosave.add(server);
-				log.info("Server updated: " + server.getName() + " Address:" + address);
-			}
-		}
-		
-		if(!tosave.isEmpty())
+	String serverip = fastest[0];
+	String serverport = fastest[1];
+	//llamaVisionConnection
+	ArrayList tosave = new ArrayList();
+	Collection<Data> currentservers = archive.query("aiserver").exact("connectionbean", bean).search();
+	for (Data server in currentservers) {
+		String address = serverip;
+		if(serverport != null)
 		{
-			archive.getSearcher("aiserver").saveAllData(tosave, null);
-			archive.getCacheManager().clear("llmconnection");
+			address = address + ":" + serverport;
 		}
+		if (!address.equals(server.get("serverroot")))
+		{
+			server.setValue("serverroot", address);
+			tosave.add(server);
+			log.info("Server updated: " + server.getName() + " Address:" + address);
+		}
+	}
+	
+	if(!tosave.isEmpty())
+	{
+		archive.getSearcher("aiserver").saveAllData(tosave, null);
+		archive.getCacheManager().clear("llmconnection");
 	}
 }
 
