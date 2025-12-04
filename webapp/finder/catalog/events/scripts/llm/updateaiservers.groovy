@@ -16,7 +16,7 @@ public void init() {
 
 	Collection<Data> currentservers = archive.query("aiserver").exact("monitorspeed", true).search();
 	
-	Map speeds = new HashMap();
+	Map<String,Long> speeds = new HashMap();
 	ArrayList tosave = new ArrayList();
 	
 	for(Data server in currentservers)
@@ -24,37 +24,47 @@ public void init() {
 		String serverroot = server.get("serverroot");
 		String address = serverroot + "/health";
 		
-		HttpSharedConnection connection = new HttpSharedConnection();
-		String key = server.get("serverapikey");
-		if( key != null)
+		Long speed = speeds.get(serverroot);
+		if( speed == null || speed == 0)
 		{
-			connection.addSharedHeader("Authorization", "Bearer " +  server);
-		}
-		long start = System.currentTimeMillis();
-		try
-		{
-			JSONObject got = connection.getJson(address);
-			if( got != null )
+			HttpSharedConnection connection = new HttpSharedConnection();
+			String key = server.get("serverapikey");
+			if( key != null)
 			{
-				String ok = got.get("status");
-				if( "ok".equals(ok))
+				connection.addSharedHeader("Authorization", "Bearer " +  server);
+			}
+			long start = System.currentTimeMillis();
+			try
+			{
+				JSONObject got = connection.getJson(address);
+				if( got != null )
 				{
-					long end =  System.currentTimeMillis();
-					long diff = end - start;
-					log.info(address + " ok run in " + diff + " milliseconds");
-					server.setValue("ordering", diff);
-					tosave.add(server);
+					String ok = got.get("status");
+					if( "ok".equals(ok))
+					{
+						long end =  System.currentTimeMillis();
+						long diff = end - start;
+						log.info(address + " ok run in " + diff + " milliseconds");
+						speeds.put(serverroot,diff);
+					}
 				}
 			}
-		}
-		catch( Exception ex)
-		{
-			log.info(address + " had error " + ex);
-			//Ignore
+			catch( Exception ex)
+			{
+				log.info(address + " had error " + ex);
+				//Ignore
+			}
 		}
 	}
-	if(!tosave.isEmpty())
+	if(!speeds.isEmpty())
 	{
+		for(Data server in currentservers)
+		{
+			String serverroot = server.get("serverroot");
+			Long speed = speeds.get(serverroot);
+			server.setValue("ordering", speed);
+			tosave.add(server);
+		}
 		archive.getSearcher("aiserver").saveAllData(tosave, null);
 		archive.getCacheManager().clear("llmconnection");
 	}
