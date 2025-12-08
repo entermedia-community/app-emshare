@@ -52,6 +52,7 @@ public void init() {
 			catch( Exception ex)
 			{
 				log.info(address + " had error " + ex);
+				speeds.put(serverroot,Integer.MAX_VALUE); //Push back
 				//Ignore
 			}
 		}
