@@ -1,8 +1,27 @@
-<div>
-#foreach($row in $value)
-  #foreach($key in $row.keySet())
-    #set($val = $row.get($key))
-    $key : $val <br/>
+<ul class="d-flex flex-column list-unstyled">
+  #foreach($row in $value)
+    #set($pagelink = $row.get("page"))
+    <li>
+      <div class="d-flex flex-column">
+        <div class="d-flex align-items-center">
+          <a href="$pagelink" target="_blank" class="small d-flex align-items-center text-accent flex-grow-1">
+            $pagelink
+          </a>
+          <a type="button" class="bg-contrast text-contrast ml-1 px-1" data-toggle="collapse" href="#drupalMedia-${foreach.count}">
+            <i class="bi bi-chevron-expand ns"></i>
+          </a>
+        </div>
+        <div class="collapse bg-contrast py-1 px-2 mt-1 rounded" id="drupalMedia-${foreach.count}">
+          #foreach($key in $row.keySet())
+            #if($key != "page")
+              #set($val = $row.get($key))
+              <p class="mb-1 small">
+                $key<span class="mx-1">:</span><span class="fw-bold" style="word-break: break-all;">$val</span>
+              </p>
+            #end
+          #end
+        </div>
+      </div>
+    </li>
   #end
-#end
-</div>
+</ul>
