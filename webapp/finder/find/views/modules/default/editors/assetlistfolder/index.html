@@ -20,13 +20,19 @@
 		#foreach ($categoryWithEntity in $categoriesWithEntities)
 			#set( $category = $categoryWithEntity.getCategory())
 			#set( $entity = $categoryWithEntity.getEntity())
+			#set($entitymodule = $categoryWithEntity.getEntityModule())
+ 
+			#set( $isentity = false )
+			#ifnotnull( $entity )
+				#set( $isentity = true )
+			#end
 
-			<div  class="list-row">
-				<div  class="category #ifnull($entity) folder #end #ifnotnull($entity) entity #end">	
-					<i class="bi bi-folder-fill"></i>					
+			<div  class="list-row py-1">
+				<div  class="category #if($isentity) entity #else folder #end">	
+					<i class="bi bi-folder-fill"></i>
 					#foreach( $parent in $category.getParentCategoriesFrom(1))
 						#if( ${foreach.count} > 1) \ #end
-						<a style="padding:0px 4px 4px 4px;" 
+						<a style="padding:4px;"
 							href="$siteroot$apphome/views/modules/asset/editors/viewfilescategory/${parent.id}/#dash($parent).html"
 							class="ajax"
 							data-targetdiv="applicationcontent"
@@ -36,6 +42,24 @@
 							data-includeeditcontext="false">
 							$parent
 						</a>	
+					#end
+					
+					#if($isentity)
+					<a class="emdialog entity-dialog text-success ml-3" 
+						id="clickid${entity.id}"
+						data-id="clickid${entity.id}"
+						title="[[View]]: #text($entity) details" 
+						href="$siteroot$apphome/views/modules/${entitymodule.id}/editors/default/tabs/index.html?entityid=$entity.getId()"
+						data-updateurl="true"
+						data-urlbar="$siteroot$apphome/views/modules/${entitymodule.id}/index.html?entityid=$entity.getId()"
+						data-moduleid="${entitymodule.id}"
+						data-categoryid="${category.id}"
+						data-entitymoduleviewid="${entitymodule.id}general"
+						data-dialogid="entitydialog"
+						data-hideheader="true"data-includeeditcontext="false" 
+						data-hidefooter="true">
+						<i class="bi bi-card-list"></i>
+					</a>
 					#end
 				</div>
 			
