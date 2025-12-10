@@ -10,28 +10,34 @@
 	#end
 	
 	$context.putPageValue("existingcategories", $existingcategories)
+
+	#set($categoriesWithEntities = $mediaarchive.getEntityManager().loadCategoriesWithEntities($context, $asset) )
 	
 	
 	<div class="asset-data-detail assetpanel-editor-box">
 		<h4>[[Folders]]</h4>
 		<div  id="cat-list" class="emlist">
-		#foreach ($category in $asset.categories)
-			###set( $iscollection = $categoryCollectionCache.isPartOfCollection($category))
+		#foreach ($categoryWithEntity in $categoriesWithEntities)
+			#set( $category = $categoryWithEntity.getCategory())
+			#set( $entity = $categoryWithEntity.getEntity())
+
 			<div  class="list-row">
-			<div  class="category #if($iscollection) cat-collection #else cat-category #end">						
-			#foreach( $parent in $category.getParentCategoriesFrom(1))
-				#if( ${foreach.count} > 1) \ #end
-				<a style="padding:0px 4px 4px 4px;" 
-					href="$siteroot$apphome/views/modules/asset/editors/viewfilescategory/${parent.id}/#dash($parent).html"
-					class="ajax"
-					data-targetdiv="applicationcontent"
-					data-oemaxlevel="5"
-					data-closealldialogs="true"
-					data-updateurl="true"
-					data-includeeditcontext="false">$parent</a>
-					
-			#end
-			</div>
+				<div  class="category #ifnull($entity) folder #end #ifnotnull($entity) entity #end">	
+					<i class="bi bi-folder-fill"></i>					
+					#foreach( $parent in $category.getParentCategoriesFrom(1))
+						#if( ${foreach.count} > 1) \ #end
+						<a style="padding:0px 4px 4px 4px;" 
+							href="$siteroot$apphome/views/modules/asset/editors/viewfilescategory/${parent.id}/#dash($parent).html"
+							class="ajax"
+							data-targetdiv="applicationcontent"
+							data-oemaxlevel="5"
+							data-closealldialogs="true"
+							data-updateurl="true"
+							data-includeeditcontext="false">
+							$parent
+						</a>	
+					#end
+				</div>
 			
 			#if( $caneditassetcategories )
 			 	<a class="ajax list-delete"  
