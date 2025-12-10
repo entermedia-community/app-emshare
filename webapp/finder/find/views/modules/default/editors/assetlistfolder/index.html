@@ -13,9 +13,7 @@
 	
 	
 	<div class="asset-data-detail assetpanel-editor-box">
-		<h4>[[Folders]]
-	
-		</h4>
+		<h4>[[Folders]]</h4>
 		<div  id="cat-list" class="emlist">
 		#foreach ($category in $asset.categories)
 			###set( $iscollection = $categoryCollectionCache.isPartOfCollection($category))
@@ -53,23 +51,57 @@
 	</div>
 	
 	
-	
-	#if( $caneditassetcategories )
+	#if($caneditasset)
 		<div class="asset-data-detail assetpanel-editor-box" style="padding:12px; margin-bottom: 20px;">
-			<div class="folder-list-actions">
-			<a href="$!siteroot$apphome/views/modules/asset/editors/assetlistfolderpicker/index.html" 
-			   class="detail-edit-icon btn btn-dark emdialog mr-2"
-			   data-dialogwidth="1100"
-			   data-cancelsubmit="true" 
-			   data-parameterdata="categoryvalues"
-			   data-noesc="true"
-			   data-assetid="${asset.id}"
-			   data-existingcategories="$!{existingcategories}"
-			   data-targetdiv="assetcategoryresultsmediaviewer"
-			   title="[[Pick Folder]]"><i class="fas fa-plus"></i> [[Add to Folder]]</a>
-		   </div>
+		<div class="folder-list-actions">
+		#if( $caneditassetcategories )
+			
+				<a href="$!siteroot$apphome/views/modules/asset/editors/assetlistfolderpicker/index.html" 
+				   class="detail-edit-icon btn btn-dark emdialog mr-2"
+				   data-dialogwidth="1100"
+				   data-cancelsubmit="true" 
+				   data-parameterdata="categoryvalues"
+				   data-noesc="true"
+				   data-assetid="${asset.id}"
+				   data-existingcategories="$!{existingcategories}"
+				   data-targetdiv="assetcategoryresultsmediaviewer"
+				   title="[[Pick Folder]]"><i class="fas fa-plus"></i> [[Add to Folder]]</a>
+			   
+		#end
+		
+		<div class="dropdown">
+				<a class="btn btn-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<i class="fas fa-plus"></i> [[Add to Entity]]
+				</a>
+				<div class="dropdown-menu dropdown-menu-top" aria-labelledby="dropdownMenuLink">
+					#foreach ( $amodule in $userprofile.getEntities() )
+						#set($amoduleid = $amodule.getId())
+						#if($amodule.getBoolean("enableuploading"))
+							#if($permissions.canModule($amodule, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+								#set($entityrendertype = "entity")
+								#if ($amodule.modulerendertype)
+									#set($entityrendertype = $amodule.modulerendertype)
+								#end
+								
+								#set($addurl = "${apphome}/views/modules/${amodule.id}/editors/assetpickentity/index.html")
+	
+								<a class="dropdown-item emdialog"
+									href="$addurl"
+									data-dialogid="addtoentity"
+									data-maxwidth="1400"
+					    			data-hidefooter="true"
+									data-assetid="$!{asset.id}"
+									>#text($amodule)</a>
+						#end
+					#end
+				#end
+				</div>
+			</div>
 		</div>
+	</div>
 	#end
+	
+	
 	<div class="clearfix"></div>
 
 </div>
