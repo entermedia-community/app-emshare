@@ -1,10 +1,8 @@
-import org.entermediadb.ai.llm.LlmConnection
-import org.entermediadb.ai.llm.LlmResponse
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.net.HttpSharedConnection
-import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.openedit.Data
+import org.openedit.MultiValued
 
 public void init() {
 	
@@ -14,7 +12,7 @@ public void init() {
 //	LlmResponse response = connection.callJson("/api/v0/instances", null);
 //	Collection instances = response.getRawResponse().get("instances");
 
-	Collection<Data> currentservers = archive.query("aiserver").exact("monitorspeed", true).search();
+	Collection<Data> currentservers = archive.query("aiserver").exact("autoordering", true).exact("autoenable", true).or().search();
 	
 	Map<String,Long> speeds = new HashMap();
 	ArrayList tosave = new ArrayList();
@@ -59,11 +57,27 @@ public void init() {
 	}
 	if(!speeds.isEmpty())
 	{
-		for(Data server in currentservers)
+		for(MultiValued server in currentservers)
 		{
 			String serverroot = server.get("serverroot");
 			Long speed = speeds.get(serverroot);
-			server.setValue("ordering", speed);
+			
+			if( server.getBoolean("autoordering") )
+			{
+				server.setValue("ordering", speed);
+			}
+			if( server.getBoolean("autoenable") )
+			{
+				if( speed > 10000) //Probably an error
+				{
+					server.setValue("enabled", false);
+				}
+				else
+				{
+					server.setValue("enabled", true);
+				}
+			}
+	
 			tosave.add(server);
 		}
 		archive.getSearcher("aiserver").saveAllData(tosave, null);
