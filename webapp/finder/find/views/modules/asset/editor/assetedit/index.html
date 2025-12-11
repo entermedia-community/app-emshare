@@ -16,7 +16,7 @@
 				#set($ok = false)
 
 				#if($screen.id == "timeline")
-					#if($rendertype == "video")
+					#if($rendertype == "video" && $canviewtimeline)
 						#set($ok = true)
 						#if (!$currentab)
 							#set( $currentab = "timeline" )
@@ -26,18 +26,22 @@
 
 				#if($screen.id == "closedcaptions")
 					#if($rendertype == "video" || $rendertype == "audio")
-						#set($ok = true)
-						#if (!$currentab)
-							#set( $currentab = "closedcaptions" )
+						#if($canviewclosedcaptions)
+							#set($ok = true)
+							#if (!$currentab)
+								#set( $currentab = "closedcaptions" )
+							#end
 						#end
 					#end
 				#end
 				
 				#if ( $screen.id == "adjustments")
 					#if ($rendertype == "image")
-						#set($ok = true)
-						#if (!$currentab)
-							#set( $currentab = "adjustments" )
+						#if($canviewmediaedit)
+							#set($ok = true)
+							#if (!$currentab)
+								#set( $currentab = "adjustments" )
+							#end
 						#end
 					#end
 				#end
