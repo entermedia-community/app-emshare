@@ -1,0 +1,47 @@
+#set($activetab = $context.getRequestParameter("activetab") )
+#ifnull( $activetab )
+  #set( $activetab = "share")
+#end
+
+<div id="asset-editor-container" class="h=100 d-flex flex-column">
+  <div class="d-flex align-items-center share-tabs auto-active-container">
+
+		#if( $canviewcroppingtool)
+			<a class='ajax auto-active-link #if($activetab == "share")current #end' data-activetab="share" data-oemaxlevel="1" data-targetdivinner="shareContainer" href="$siteroot$apphome/views/modules/asset/editor/share/share.html?assetid=$asset.id&collectionid=$!collectionid">[[Share]]</a>
+		#else
+			#set( $activetab = "emblinks" )
+		#end
+
+    #if( $canembedasset)
+      <a class='ajax auto-active-link #if($activetab == "emblinks")current #end' data-activetab="emblinks" data-oemaxlevel="1" data-targetdivinner="shareContainer" href="$siteroot$componenthome/share/embed-links.html?assetid=$asset.id&collectionid=$!collectionid">[[Embeds]]</a>
+    #else
+      #set( $activetab = "email" )
+    #end
+    #if( $canemaillink )
+      <a class='ajax auto-active-link #if($activetab == "email")current #end' data-activetab="email" data-oemaxlevel="1" data-targetdivinner="shareContainer" href="$siteroot$apphome/views/modules/asset/activity/emailassets.html?assetid=$asset.id">[[Email]]</a>
+    #else
+      #set( $activetab = "export" )
+    #end
+    #if ($canpublish)
+      <a class='ajax auto-active-link #if($activetab == "export")current #end' data-activetab="export" data-oemaxlevel="1" data-targetdivinner="shareContainer" href="$siteroot$apphome/views/modules/asset/activity/publishassets.html?assetid=$asset.id">[[Export]]</a>
+    #else 
+      #set( $activetab = "addtoproject" )
+    #end
+    #if ( $canaddtoproject )
+      <a class='ajax auto-active-link #if($activetab == "addtoproject")current #end' data-activetab="addtoproject" data-oemaxlevel="1" data-targetdivinner="shareContainer" href="#">[[Add to Project]]</a>
+    #end
+  </div>
+  <div id="shareContainer" class="flex-grow-1 h-100 overflow-auto px-2 pb-2">
+		#if( $canviewcroppingtool)
+			$pages.include("/$applicationid/views/modules/asset/editor/share/share.html", $context)
+    #elseif( $canembedasset)
+      $pages.include("/$applicationid/components/share/links.html", $context)
+    #elseif( $canemaillink )
+      $pages.include("/$applicationid/views/modules/asset/activity/emailassets.html", $context)
+    #elseif($canpublish)
+      $pages.include("/$applicationid/views/modules/asset/activity/publishassets.html", $context)
+    #elseif( $canaddtoproject )
+      $pages.include("/$applicationid/components/share/addtoproject.html", $context)
+    #end
+  </div>
+</div>

@@ -1,0 +1,119 @@
+#ifnull($asset)
+  #set($assetid = $context.getRequestParameter("assetid"))
+  #set($asset = $mediaarchive.getAsset($assetid))
+  $context.putPageValue("asset", $asset)
+#end
+
+#set($rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
+
+#if($rendertype != "image")
+  $pages.include("./nonimage.html", $context)
+#else
+
+$context.putPageValue("asset", $asset)
+<div id="asset-editor-container" 
+	class="h-100 asset-crop-container"
+	data-assetid="$asset.id"
+	data-url="$page.getPath()">
+	
+  <div id="cropeditor" class="d-flex w-100 h-100">    
+    #set( $presets = $conversionUtil.getCroppablePresetList($mediaarchive, $asset) )
+      
+    #if($presets.size() == 0)
+      <div class="alert alert-warning">
+        [[No Presets Available]]
+      </div>
+    #else
+      <div class="d-flex flex-column  flex-grow-1">
+        <div class="d-flex align-items-center border-bottom-subtle w-100 px-3 pb-2 mb-4">
+          <h4 class="m-0 p-0" >[[Presets]]</h4> <span class="btn btn-sm mx-1">&middot;</span><span class="text-muted">[[Click one to edit]]</span>
+        </div>
+        <div class="crop-presets overflow-y px-4 pt-1 pb-3">
+          #foreach($presetdata in $presets)
+            #set($dimension = $conversionUtil.getConvertPresetDimension($mediaarchive.getCatalogId(),$presetdata.id))
+            #set($height = $mathtool.toInteger($dimension.getHeight()))
+            #set($width = $mathtool.toInteger($dimension.getWidth()))
+            
+            #set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
+    
+            #set($name = $presetdata.getName())
+
+						#set($cropexists = $conversionUtil.doesConvertedFileExist($mediaarchive, $asset, $presetdata))
+
+            <div class="crop-preview">
+              #if($width && $height && $cropexists)
+                <a href="${apphome}/views/modules/asset/editor/crops/cropeditor.html"
+                  class="ajax d-flex flex-column h-100"
+                  data-targetdiv="cropeditor"
+                  data-oemaxlevel="1"
+                  data-presetid="$presetdata.getId()"
+                  title="[[Crop]] #text($presetdata)">
+              #end
+
+                <span>$name</span> 
+                #set($generated = $presetdata.get("generatedoutputfile") )
+                #set ($previewlink = $mediaarchive.asLinkToPreview($asset, null, $generated) )
+
+                <div class="d-flex align-items-center justify-content-center flex-column flex-grow-1 py-1 my-auto">
+                  #if($cropexists)
+                    <img src="$previewlink" 
+                      style=" #if($width && $height) max-width: ${width}px; max-height: 300px; #else max-width: 300px; max-height: 200px; #end" 
+                      class="hasFallback" 
+                      data-error="[[Create Manually]]" />
+                  #else
+                    <span class="text-muted">[[Not created]]</span>
+                    <a href='$mediaarchive.asLinkToShare("", $asset, $presetdata)' 
+                      data-targetdiv="notexist" 
+                      class="ajax btn btn-secondary mt-4" 
+                      data-ajaxreloadtargets="asset-crop-container">
+                      [[Create Manually]]
+                    </a> 
+                  #end
+                </div>
+
+                #if($width && $height)
+                  <strong>$width &times; $height</strong>
+                #else
+                  [[Preset with no Width/Height set]]
+                #end
+              
+              #if($width && $height && $cropexists)
+                </a>
+              #end
+
+              #if($cropexists)
+                <div class="dl-action mt-2">
+                  <a class="btn btn-sm icon-btn-sm btn-cta" href="$mediaarchive.asLinkToShare($context.getSiteRoot(),$asset,$presetdata)?download=true&ondemand=true" title="[[Download]] #text($presetdata)">
+                    <i class="bi bi-download"></i>
+                  </a>
+
+                  <a class="btn btn-sm icon-btn-sm btn-accent emdialog"
+                    data-hidefooter="true"
+                    data-dialogwidth="1000"
+                    data-dialogid="shareasset" 
+                    data-minwidth="500"
+                    data-maxwidth="500"
+                    href="$siteroot$componenthome/share/one.html?assetid=$asset.id&collectionid=$!collectionid&presetid=${presetdata.id}"
+                    title="[[Share]] #text($presetdata)">
+                    <i class="bi bi-share ns"></i>
+                  </a>
+                
+                  <a href="${apphome}/views/modules/asset/editor/crops/cropeditor.html"
+                    class="ajax btn btn-sm icon-btn-sm btn-secondary ml-auto"
+                    data-targetdiv="cropeditor"
+                    data-oemaxlevel="1"
+                    data-presetid="$presetdata.getId()"
+                    title="[[Crop]] #text($presetdata)">
+                    <i class="bi bi-crop"></i>
+                  </a>
+                </div>
+              #end
+			  	  </div>
+
+          #end
+        </div>
+      </div>
+    #end
+  </div>
+</div>
+#end
