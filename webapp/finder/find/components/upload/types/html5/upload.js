@@ -1,5 +1,4 @@
 var currentupload = 0;
-var haderror = false;
 
 var allfiles = new Array();
 
@@ -444,12 +443,6 @@ $.fn.initUpload = function () {
 		onProgress: function (event, progress, name, number, total) {
 			// console.log(progress, number);
 		},
-		//         genName: function(file, number, total) {
-		//             return file;
-		//         },
-		//         setName: function(text) {
-		//             $("#progress_report_name" + currentupload).text(text);
-		//         },
 		setStatus: function (text) {
 			if (text == "Progress") {
 				text = "Uploading";
@@ -471,95 +464,54 @@ $.fn.initUpload = function () {
 				autohideDelay: 5000,
 				positive: false,
 			});
-			haderror = true;
+			console.log(error);
 		},
 		onFinish: function (event, total) {
-			if (!haderror) {
-				customToast(
-					`Uploaded ${total} file${total > 1 ? "s" : ""} successfully!`
-				);
-				//do a search
-				var startb = uploadformarea.find(".startbutton");
-				var complete = startb.data("complete");
+			customToast(
+				`Uploaded ${total} file${total > 1 ? "s" : ""} successfully!`
+			);
+			//do a search
+			var startb = uploadformarea.find(".startbutton");
+			var complete = startb.data("complete");
 
-				$(startb).text(complete);
-				$(startb).prop("disabled", "disabled");
-				allfiles = new Array();
+			$(startb).text(complete);
+			$(startb).prop("disabled", "disabled");
+			allfiles = new Array();
 
-				var completed = uploadformarea.find(".up-files-list-completed li span");
-				$.each(completed, function () {
-					$(this).removeAttr("id");
+			var completed = uploadformarea.find(".up-files-list-completed li span");
+			$.each(completed, function () {
+				$(this).removeAttr("id");
+			});
+
+			uploadformarea.find(".filePicker").text("Pick More Files...");
+			uploadformarea.find(".upload_field").removeAttr("disabled");
+
+			var viewassets = uploadformarea.find(".viewassetsbtn");
+			viewassets.removeAttr("disabled");
+
+			if (viewassets.hasClass("autoclick")) {
+				viewassets.trigger("click");
+			}
+
+			var form = $(startb.closest("form"));
+
+			if (form.hasClass("autofinishaction")) {
+				var finishaction = form.data("finishaction");
+				form.attr("action", finishaction);
+				//TODO remove the last file?
+				//form.submit();
+
+				var targetdiv = form.data("finishtargetdiv");
+				form.ajaxSubmit({
+					type: "get",
+					target: "#" + $.escapeSelector(targetdiv),
 				});
+			}
 
-				uploadformarea.find(".filePicker").text("Pick More Files...");
-				uploadformarea.find(".upload_field").removeAttr("disabled");
-
-				var viewassets = uploadformarea.find(".viewassetsbtn");
-				viewassets.removeAttr("disabled");
-
-				if (viewassets.hasClass("autoclick")) {
-					viewassets.trigger("click");
-				}
-
-				var form = $(startb.closest("form"));
-
-				if (form.hasClass("autofinishaction")) {
-					var finishaction = form.data("finishaction");
-					form.attr("action", finishaction);
-					//TODO remove the last file?
-					//form.submit();
-
-					var targetdiv = form.data("finishtargetdiv");
-					form.ajaxSubmit({
-						type: "get",
-						target: "#" + $.escapeSelector(targetdiv),
-					});
-				}
-
-				$(window).trigger("checkautoreload", [form]);
-				var formmodal = form.closest(".modal");
-				if (formmodal.length > 0 && form.hasClass("autocloseform")) {
-					closeemdialog(formmodal);
-				}
-				/*
-		    				   //new ajaxautoreload
-								var classes = uploadformarea.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
-								if(classes) 
-								{
-									var splitnames = classes.split(",");
-									$.each(splitnames,function(index,classname)
-									{
-										$("." + classname).each(function(index,div)
-										{
-											if(!$(div).is(':hidden')) {
-									  	 		autoreload($(div));
-									  	 	}
-										});
-									});
-								}*/
-
-				/*
-		    				   if(uploadformarea.data("onupload")=="reloadentity") {
-		    					   var entityid=uploadformarea.data("entityid");
-		    					   if(entityid) {
-		    						   //Todo create a generic method
-		    						   setTimeout(()=> {
-		    							   $('a[data-entityid="'+entityid+'"].entity-tab-label').trigger("click");
-		    						      }
-		    						      ,2000);
-		    						   
-		    					   }
-		    				   }
-		    				   else if(uploadformarea.data("onupload")=="reloadcontainer") {
-								   var container_ = uploadformarea.data("container");
-								   var container = uploadformarea.closest("."+container_);
-								   if(container.length >0) { 
-		    					   var entityid=uploadformarea.data("entityid");
-			    					   
-		    					   }
-		    				   }*/
-				//$("#uploadsfinishedtrigger").trigger("submit");
-				//$(".media_results_tab").data("tabloaded",false);
+			$(window).trigger("checkautoreload", [form]);
+			var formmodal = form.closest(".modal");
+			if (formmodal.length > 0 && form.hasClass("autocloseform")) {
+				closeemdialog(formmodal);
 			}
 		},
 	});
