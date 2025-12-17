@@ -34,7 +34,7 @@ $context.putPageValue("asset", $asset)
     
             #set($name = $presetdata.getName())
 
-						#set($cropexists = $conversionUtil.doesConvertedFileExist($mediaarchive, $asset, $presetdata))
+			#set($cropexists = $conversionUtil.doesConvertedFileExist($mediaarchive, $asset, $presetdata))
 
             <div class="crop-preview">
               #if($width && $height && $cropexists)
@@ -49,6 +49,10 @@ $context.putPageValue("asset", $asset)
                 <span>$name</span> 
                 #set($generated = $presetdata.get("generatedoutputfile") )
                 #set ($previewlink = $mediaarchive.asLinkToPreview($asset, null, $generated) )
+				
+				#ifnotnull($saved)
+				#set ($previewlink = "${previewlink}?_=$mathutil.getRandomValue(9999)" )
+				#end
 
                 <div class="d-flex align-items-center justify-content-center flex-column flex-grow-1 py-1 my-auto">
                   #if($cropexists)
