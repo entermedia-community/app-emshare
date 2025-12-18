@@ -10,30 +10,58 @@
 	#end
 	
 	$context.putPageValue("existingcategories", $existingcategories)
+
+	#set($categoriesWithEntities = $mediaarchive.getEntityManager().loadCategoriesWithEntities($context, $asset) )
 	
 	
 	<div class="asset-data-detail assetpanel-editor-box">
-		<h4>[[Folders]]
-	
-		</h4>
+		<h4>[[Folders]]</h4>
 		<div  id="cat-list" class="emlist">
-		#foreach ($category in $asset.categories)
-			###set( $iscollection = $categoryCollectionCache.isPartOfCollection($category))
-			<div  class="list-row">
-			<div  class="category #if($iscollection) cat-collection #else cat-category #end">						
-			#foreach( $parent in $category.getParentCategoriesFrom(1))
-				#if( ${foreach.count} > 1) \ #end
-				<a style="padding:0px 4px 4px 4px;" 
-					href="$siteroot$apphome/views/modules/asset/editors/viewfilescategory/${parent.id}/#dash($parent).html"
-					class="ajax"
-					data-targetdiv="applicationcontent"
-					data-oemaxlevel="5"
-					data-closealldialogs="true"
-					data-updateurl="true"
-					data-includeeditcontext="false">$parent</a>
-					
+		#foreach ($categoryWithEntity in $categoriesWithEntities)
+			#set( $category = $categoryWithEntity.getCategory())
+			#set( $entity = $categoryWithEntity.getEntity())
+			#set($entitymodule = $categoryWithEntity.getEntityModule())
+ 
+			#set( $isentity = false )
+			#ifnotnull( $entity )
+				#set( $isentity = true )
 			#end
-			</div>
+
+			<div  class="list-row py-1">
+				<div  class="category #if($isentity) entity #else folder #end">	
+					<i class="bi bi-folder-fill"></i>
+					#foreach( $parent in $category.getParentCategoriesFrom(1))
+						#if( ${foreach.count} > 1) \ #end
+						<a style="padding:4px;"
+							href="$siteroot$apphome/views/modules/asset/editors/viewfilescategory/${parent.id}/#dash($parent).html"
+							class="ajax"
+							data-targetdiv="applicationcontent"
+							data-oemaxlevel="5"
+							data-closealldialogs="true"
+							data-updateurl="true"
+							data-includeeditcontext="false">
+							$parent
+						</a>	
+					#end
+					
+					#if($isentity)
+					<a class="emdialog entity-dialog text-success ml-3" 
+						id="clickid${entity.id}"
+						data-id="clickid${entity.id}"
+						title="[[View]]: #text($entity) details" 
+						href="$siteroot$apphome/views/modules/${entitymodule.id}/editors/default/tabs/index.html?entityid=$entity.getId()"
+						data-updateurl="true"
+						data-urlbar="$siteroot$apphome/views/modules/${entitymodule.id}/index.html?entityid=$entity.getId()"
+						data-moduleid="${entitymodule.id}"
+						data-categoryid="${category.id}"
+						data-entitymoduleviewid="${entitymodule.id}general"
+						data-dialogid="entitydialog"
+						data-hideheader="true"data-includeeditcontext="false" 
+						data-hidefooter="true">
+						<i class="bi bi-card-list"></i>
+					</a>
+					#end
+				</div>
 			
 			#if( $caneditassetcategories )
 			 	<a class="ajax list-delete"  
@@ -53,23 +81,57 @@
 	</div>
 	
 	
-	
-	#if( $caneditassetcategories )
+	#if($caneditasset)
 		<div class="asset-data-detail assetpanel-editor-box" style="padding:12px; margin-bottom: 20px;">
-			<div class="folder-list-actions">
-			<a href="$!siteroot$apphome/views/modules/asset/editors/assetlistfolderpicker/index.html" 
-			   class="detail-edit-icon btn btn-dark emdialog mr-2"
-			   data-dialogwidth="1100"
-			   data-cancelsubmit="true" 
-			   data-parameterdata="categoryvalues"
-			   data-noesc="true"
-			   data-assetid="${asset.id}"
-			   data-existingcategories="$!{existingcategories}"
-			   data-targetdiv="assetcategoryresultsmediaviewer"
-			   title="[[Pick Folder]]"><i class="fas fa-plus"></i> [[Add to Folder]]</a>
-		   </div>
+		<div class="folder-list-actions">
+		#if( $caneditassetcategories )
+			
+				<a href="$!siteroot$apphome/views/modules/asset/editors/assetlistfolderpicker/index.html" 
+				   class="detail-edit-icon btn btn-dark emdialog mr-2"
+				   data-dialogwidth="1100"
+				   data-cancelsubmit="true" 
+				   data-parameterdata="categoryvalues"
+				   data-noesc="true"
+				   data-assetid="${asset.id}"
+				   data-existingcategories="$!{existingcategories}"
+				   data-targetdiv="assetcategoryresultsmediaviewer"
+				   title="[[Pick Folder]]"><i class="fas fa-plus"></i> [[Add to Folder]]</a>
+			   
+		#end
+		
+		<div class="dropdown">
+				<a class="btn btn-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<i class="fas fa-plus"></i> [[Add to Entity]]
+				</a>
+				<div class="dropdown-menu dropdown-menu-top" aria-labelledby="dropdownMenuLink">
+					#foreach ( $amodule in $userprofile.getEntities() )
+						#set($amoduleid = $amodule.getId())
+						#if($amodule.getBoolean("enableuploading"))
+							#if($permissions.canModule($amodule, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+								#set($entityrendertype = "entity")
+								#if ($amodule.modulerendertype)
+									#set($entityrendertype = $amodule.modulerendertype)
+								#end
+								
+								#set($addurl = "${apphome}/views/modules/${amodule.id}/editors/assetpickentity/index.html")
+	
+								<a class="dropdown-item emdialog"
+									href="$addurl"
+									data-dialogid="addtoentity"
+									data-maxwidth="1400"
+					    			data-hidefooter="true"
+									data-assetid="$!{asset.id}"
+									>#text($amodule)</a>
+						#end
+					#end
+				#end
+				</div>
+			</div>
 		</div>
+	</div>
 	#end
+	
+	
 	<div class="clearfix"></div>
 
 </div>

@@ -1,0 +1,60 @@
+{
+	"model" : "$aimodel",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are a metadata generator. You are given an instruction in Open AI tool format, parse it and give a response in JSON with all the required fields."
+		},
+		{
+			"role": "user",
+	  	  	$context.putPageValue("aicommandprefix", "Generates metadata for an entity based on the following fields:\n\n")
+			$context.putPageValue("aicommandpostfix", "\n\nRespond only the required fields within the required format in the function.\n\n")
+	 	 	"content": $pages.include("../context_fields.json", $context)
+		}
+	],
+	"functions": [
+		{
+			"name": "generate_metadata_entity",
+			"parameters": {
+				"type": "object",
+				"properties": {
+		  #foreach($field in $fieldstofill)
+			  #if($foreach.count>1)
+			  ,
+			  #end
+				#if($field.isList())
+					"$field.id": {
+						"type": "string",
+						"description": "#jrender($field.aicreationcommand)",
+						"enum": [
+							#foreach( $option in $mediaarchive.getList($field.getListId()) )
+								#if($foreach.count>1)
+								,
+								#end
+								#jesc("$option.id|#text($option)")
+							#end
+						]
+					}
+				#else
+					"$field.id": {
+						"type": "string",
+						"description": "#jrender($field.aicreationcommand)"
+					}
+				#end
+		  #end
+				},
+				"required": [
+			#foreach($field in $fieldstofill)
+				#if($foreach.count>1)
+				,
+				#end
+			  	"$field.id" 						
+			#end
+				]
+			}
+		}
+	],
+	"function_call": {
+		"name": "generate_metadata_entity"
+	}
+}

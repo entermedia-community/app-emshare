@@ -1,12 +1,13 @@
 package asset
 
 import org.entermediadb.ai.classify.SemanticClassifier
+import org.entermediadb.ai.informatics.SemanticTableManager
 import org.entermediadb.asset.*
 import org.openedit.locks.Lock
 
 public void init()
 {
-	MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
+	MediaArchive archive = context.getPageValue("mediaarchive");
 
 	Lock lock = archive.getLockManager().lockIfPossible("semanticscanning", "admin");
 	
@@ -19,9 +20,9 @@ public void init()
 	try
 	{
 		SemanticClassifier manager = archive.getBean("semanticClassifier");
-		manager.reBalance(log);
-		
-	}
+		SemanticTableManager table = manager.loadSemanticTableManager("semantictopics");
+		table.reBalance(log);
+}
 	finally
 	{
 		archive.getLockManager().release(lock);

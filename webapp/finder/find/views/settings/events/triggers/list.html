@@ -24,7 +24,7 @@
 	 <a class="btn btn-sm btn-primary float-right ajax" style="margin-left: 5px;" 
 	 	href="$siteroot$apphome/views/settings/events/triggers/edit/edit.html?new=true"
 	 	data-targetdivinner="applicationmaincontent" data-oemaxlevel="3">[[New Event]]</a>
-	  <a class="btn btn-sm btn-secondary float-right ajax" style="margin-left: 5px;" 
+	  <a class="btn btn-sm btn-danger float-right ajax" style="margin-left: 5px;" 
 	  	href="$siteroot$apphome/views/settings/events/triggers/reload.html"
 	  	data-targetdivinner="applicationmaincontent" data-oemaxlevel="3">[[Stop Events]]</a>
 	 
@@ -37,28 +37,57 @@
 			<tr class="tableheader">
 				<th>[[Name]]</th>
 				<th>[[URL]]</th>
-				<th colspan="3">[[Last Ran]]</th>
+				<th>[[Activity]]</th>
+				<th>[[Status / Type]]</th>
 			</tr>
 		</thead>
 		#foreach( $event in $pathevents )
 		#if( $seltype == $event.getPage().getDirectoryName() )
 		<tr rowid="$event.getPage().getPath()">
-			<td><b>$context.getText($event.getName())</b></td>
-			<td> $event
-			<div class="emselectabledetails">
-				$!event.getPage().getProperty("eventdescription")
-			</div></td>
-			<td> #if( $event.isRunning() )[[event is running]]#end
-			<br>
-			$!event.getFormattedLastRun() </td>
-			<td> #if( $event.getPeriod() > 0 )
-			<br>
-			[[repeating]]
-			#end </td>
-			<td> #if(!$event.isEnabled())
-			<br>
-			[[Disabled]]
-			#end </td>
+			<td>
+				<p class="d-flex align-items-center m-0 fw-bold">
+					#if( $event.isRunning() )
+						<svg height="10" width="10" class="blinking">
+							<circle cx="5" cy="5" r="5" fill="green" /> 
+						</svg>&nbsp;
+					#end
+					$context.getText($event.getName())
+				</p>
+			</td>
+
+			<td> 
+				$event
+				<div class="emselectabledetails">
+					$!event.getPage().getProperty("eventdescription")
+				</div>
+			</td>
+
+			<td>
+				<p class="m-0 text-secondary">
+					#if($event.getTotalRunCount() == 0)
+						[[Never Ran]]
+					#else
+						<b>[[Last ran]]:</b> $!event.getFormattedLastRun()
+						<br/>
+						<b>[[Total Runs]]:</b> $event.getTotalRunCount()
+					#end
+				</p>
+			</td>
+
+			<td>
+				<div class="d-flex flex-column small">
+					#if(!$event.isEnabled())
+						<span class="text-danger">
+							<i class="bi bi-ban ns mr-2"></i>[[Disabled]]
+						</span>
+					#end 
+					#if( $event.getPeriod() > 0 )
+						<span class="text-primary mt-1">
+							<i class="bi bi-arrow-repeat mr-2"></i>[[Repeating]]
+						</span>
+					#end
+				</div>
+			</td>
 		</tr>
 		#end
 		#end

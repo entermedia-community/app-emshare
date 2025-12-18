@@ -1,0 +1,64 @@
+#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+<div id="embed-wrapper" class="d-flex flex-column overflow-y">
+
+	#set( $mediadbappid = $mediaarchive.getMediaDbId() )
+
+	#if( $mediadbappid )
+		#set( $sharelink = "$siteroot/${mediadbappid}/services/module/asset/players/play/${asset.getId()}.html")
+	#else
+		#set( $sharelink = "$siteroot$apphome/views/modules/asset/embed/index.html?type=$type&sourcepath=$asset.sourcepath&embed=true")
+	#end
+
+
+	<div class="mb-4">
+		#set( $mediaviewerlink = "$siteroot$apphome/views/modules/asset/index.html?assetid=${asset.getId()}")
+		<h5 class="mb-2">[[Media Dialog Link]] <small class="ml-1 text-muted">(current page)</small> </h5> 
+		<a href="$mediaviewerlink"
+			target="_blank"
+			class="btn btn-cta mx-2">
+			<i class="bi bi-box-arrow-up-right ns mr-1"></i> [[Open]]
+		</a>
+		<a href="#"
+			class="copytoclipboard btn btn-accent"
+			data-text="$mediaviewerlink" title="[[Copy to Clipboard]]">
+			<i class="bi bi-copy ns mr-1"></i> [[Copy]]
+		</a>
+	</div>
+
+	#set( $collectionid = $context.getRequestParameter("collectionid"))
+	#if( $collectionid )
+		<div class="mb-4">	
+			#set( $collectionlink = "$siteroot/${mediadbappid}/services/module/librarycollection/downloads/originals/${collectionid}/$asset.getSourcePath()/$asset.getMediaName()")
+			<h5>[[Album Share Link]]</h5>
+			<a href="$collectionlink"
+				target="_blank"
+				class="btn btn-cta mx-2">
+				<i class="bi bi-box-arrow-up-right ns mr-1"></i> [[Open]]
+			</a>
+			<a href="#"
+				class="copytoclipboard btn btn-accent"
+				data-text="$collectionlink" title="[[Copy to Clipboard]]">
+				<i class="bi bi-copy ns mr-1"></i> [[Copy]]
+			</a>
+		</div>
+	#end
+
+	<div class="mb-1">
+		<h5 class="mb-2">[[Preview Page Link]]</h5> 
+		<a href="$sharelink"
+			target="_blank"
+			class="btn btn-cta mx-2">
+			<i class="bi bi-box-arrow-up-right ns mr-1"></i> [[Open]]
+		</a>
+		<a href="#"
+			class="copytoclipboard btn btn-accent"
+			data-text="$sharelink" title="[[Copy to Clipboard]]">
+			<i class="bi bi-copy ns mr-1"></i> [[Copy]]
+		</a>
+	</div>
+
+	<hr>
+
+	$pages.include("./thumbs.html")
+	
+</div>

@@ -1,0 +1,36 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			#set($content = $fieldparams.aicreationdescription)
+			"content": #jesc($content)
+		},
+		{
+			"role": "user",
+			$context.putPageValue("aicommandprefix", "${fieldparams.aicreationcommand}\n")
+			"content": $pages.include("./commons/context_fields.json", $context)
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"strict": true,
+			"name": "semantic_topics",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"$fieldparams.getId()": {
+						"type": "array",
+						"items": {
+							"type": "string",
+							"additionalProperties": false
+						}
+					}
+				},
+				"required": ["$fieldparams.getId()"],
+				"additionalProperties": false
+			}
+		}
+	}
+}

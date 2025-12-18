@@ -14,7 +14,7 @@ public void init() {
 		//QueryBuilder query = archive.query(module.getId()).exact("taggedbyllm", "true");
 		
 		//Re-run Document Ebedded only
-		QueryBuilder query = archive.query(module.getId()).exact("taggedbyllm", "true").exact("documentembedded", "true");
+		QueryBuilder query = archive.query(module.getId()).exists("documentembedded");
 
 		//QueryBuilder query = archive.query(module.getId()).exact("taggedbyllm", "true").exists("semantictopics");
 		

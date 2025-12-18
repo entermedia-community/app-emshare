@@ -1,0 +1,45 @@
+#ifnotnull($aicommandprefix)
+#set($description = $aicommandprefix)
+#end
+#ifnull($aicommandprefix)
+	#set($description = "")
+#end
+#foreach($field in $contextfields)
+	#if($foreach.count>1)
+	#set($description = "$description,")
+#end
+	#if($field.isList())
+		#set($description = "$description \n ${field.name}:")
+		#foreach( $option in $mediaarchive.getValueList($field, $data) )
+			#if($foreach.count>1)
+				#set($description = "$description,")
+			#end
+			#set($description = "$description #text($option)")
+		#end
+	#elseif($field.isBoolean())
+		#set($description = "$description \n ${field.name}:")
+		#if($data.getBoolean($field.id)) 
+			#set($description = "$description \n ${field.name}: Yes")
+		#else
+			#set($description = "$description \n ${field.name}: No")
+		#end
+	#elseif($field.isDate())
+		## SKIP
+	#else
+    #set($value = $data.get($field.id))
+	#ifnull($value)
+		#ifnotnull($primaryasset)
+			#set($value = $primaryasset.get($field.id))
+		#end
+	#end
+	#ifnotnull($value)
+      #set($description = "$description \n ${field.name}: ${value}")
+    #end
+	
+	
+	#end
+#end
+#ifnotnull($aicommandpostfix)
+#set($description = "$description $aicommandpostfix")
+#end
+#jesc($description)

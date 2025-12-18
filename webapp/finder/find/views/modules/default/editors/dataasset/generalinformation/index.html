@@ -40,16 +40,39 @@ $context.putPageValue("showalllanguagevalues",true)
 				#set($view = "assetreadmetadata")
 				#set($hitssessionid = $context.findValue("hitssessionid"))
 				<div class="asset-data-readwritemetadata">
-						
+					
 						<a class="ajax"
 							href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/read.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
-							data-targetdiv="assetrwmetadata" ><i class="fas fa-upload"></i> [[Read Metadata]]</a>
+							data-targetdiv="tabsummarypanel"
+							data-toastmessage="[[Reading Metadata]]"
+							data-toastsuccess="[[Metadata read successfully]]"
+							data-toasterror="[[Failed to read Metadata]]"
+							data-confirm="[[Are you sure to read Original Metadata?]]" ><i class="fas fa-upload"></i> [[Read Metadata]]</a>
+							
 						<a class="ajax"
-							href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/write.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
-							data-targetdiv="assetrwmetadata" ><i class="fas fa-download"></i> [[Rewrite Metadata]]</a>
+								href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/write.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
+								data-targetdiv="assetrwmetadata"
+								data-toastmessage="[[Rewrite Metadata]]"
+								data-toastsuccess="[[Metadata rewrite successfully]]"
+								data-toasterror="[[Failed to rewrite Metadata]]"
+								data-confirm="[[Are you sure to Rewrite Metadata to the Original file?]]" ><i class="fas fa-download"></i> [[Rewrite Metadata]]</a>
+						
+						#if($canrunaiinformatics)
+						<a class="ajax"	href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/rerunai.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
+							data-targetdiv="tabsummarypanel" 
+							data-toastmessage="[[Runing AI Informatics]]"
+							data-toastsuccess="[[AI Informatics Updated]]"
+							data-toasterror="[[Failed to run AI Informatics]]"
+							data-confirm="[[Are you sure to Re-run AI Informatics?]]"
+							><i class="fas fa-magic"></i> [[Re-run AI Informatics]]</a>
+						#end
 						
 						#if( !$ismulti )
-						<form name="lockform" class="autosubmit ajaxform noautofocus" style="display: inline-block;" action="$siteroot${apphome}/views/modules/asset/mediaviewer/player/summary-mini.html?oemaxlevel=1" data-targetdiv="summary-mini">
+						<form name="lockform" 
+						class="autosubmit ajaxform noautofocus" 
+						style="display: inline-block;" 
+						action="$siteroot${apphome}/views/modules/asset/mediaviewer/player/summary.html?oemaxlevel=1" 
+						data-targetdiv="summary-mini">
 							<input type="hidden" name="assetid" value="${asset.id}"/>
 							<div class="assetlocked">
 								<input id="assetlocked" class="togglelock form-check-input" data-uncheckedlabel="[[Lock Asset]]" data-checkedlabel="[[Asset locked by]]" data-user="$user" type="checkbox" #if($asset.isLocked()) checked #end /> 

@@ -334,7 +334,7 @@ button[type="submit"] {
 	min-height: calc(var(--vertical-height) - 32px);
 }
 .popupdetails {
-	max-height: 200px;
+	max-height: 130px;
 	overflow: hidden;
 }
 .nav-btn-row {
@@ -408,6 +408,7 @@ p.info {
 .btn-cta-sib {
 	font-size: 0.9rem !important;
 }
+.icon-btn-sm,
 .icon-btn {
 	display: flex;
 	align-items: center;
@@ -420,6 +421,11 @@ p.info {
 }
 .icon-btn i:hover {
 	color: #000;
+}
+.icon-btn-sm {
+	width: 30px !important;
+	height: 30px !important;
+	font-size: inherit;
 }
 .dropdown-menu {
 	border-radius: 0.25rem;
@@ -529,6 +535,14 @@ p.info {
 }
 .alert-error button:hover {
 	color: #d52e2e;
+}
+#drupalMediaAccordion .bi-chevron-contract,
+#drupalMediaAccordion .collapsed .bi-chevron-expand {
+	display: inline;
+}
+#drupalMediaAccordion .bi-chevron-expand,
+#drupalMediaAccordion .collapsed .bi-chevron-contract {
+	display: none;
 }
 .emheader .navlinks,
 .emheader .dropdown-menu {
@@ -1106,6 +1120,25 @@ a.edit-table-header:hover {
 	color: var(--themed-btn-sec-text);
 	background: var(--themed-btn-sec-hover);
 	border-color: var(--themed-btn-sec-hover);
+}
+.text-contrast {
+	color: #fff;
+}
+a.text-contrast:hover {
+	color: #ddd;
+	text-decoration: none;
+}
+.lighttheme .text-contrast {
+	color: #444;
+}
+.lighttheme a.text-contrast:hover {
+	color: #222;
+}
+.bg-contrast {
+	background: #333;
+}
+.lighttheme .bg-contrast {
+	background: #f5f5f5;
 }
 .text-warning {
 	color: #e6ac00;
@@ -2265,12 +2298,19 @@ select + .select2-container {
 	border-radius: 8px;
 	padding: 12px 8px;
 	text-align: center;
+	position: relative;
+}
+.crop-preview .dl-action {
+	padding: 4px 8px;
+	display: flex;
+	gap: 8px;
 }
 .crop-preview img {
 	width: 300px;
 	object-fit: contain;
 	margin: 8px 0;
 	flex: 1;
+	width: 100%;
 }
 .img-error {
 	color: #a30000;
@@ -2748,6 +2788,9 @@ button.sidebar-toggler {
 .embedmediacol .summary-container {
 	border-color: #ddd;
 }
+.d-hide-empty:empty {
+	display: none;
+}
 .border-bottom-brand {
 	border-bottom: 1px solid var(--dark-border);
 }
@@ -2765,6 +2808,9 @@ button.sidebar-toggler {
 .lighttheme .border-right,
 .lighttheme .border-left {
 	border-color: var(--light-border) !important;
+}
+.border-subtle {
+	border: var(--1px-light);
 }
 .border-right-subtle {
 	border-right: var(--1px-light);
@@ -3992,9 +4038,6 @@ li.filtersselected .selected-filters a strong {
 	opacity: 1;
 	pointer-events: all;
 }
-.addlocale-ajax {
-	max-width: 160px;
-}
 .languagesfield {
 	flex: 1;
 	padding: 10px 10px 8px;
@@ -4004,7 +4047,7 @@ li.filtersselected .selected-filters a strong {
 	position: relative;
 }
 .defaulttheme .assetpanel-container .languagesfield {
-	background-color: rgba(89, 93, 96, 0.3);
+	background-color: rgba(62, 68, 73, 0.3);
 	border: 1px solid rgba(89, 93, 96, 0.5);
 }
 .insearchform .languagesfield {
@@ -4027,8 +4070,8 @@ li.filtersselected .selected-filters a strong {
 }
 .remove-language {
 	position: absolute;
-	top: 4px;
-	right: 4px;
+	top: 0;
+	right: 0;
 	color: red;
 	line-height: 20px;
 	width: 20px;
@@ -7242,6 +7285,7 @@ a.collectionbox.favorite {
 }
 .emfield-time {
 	position: relative;
+	min-height: 36px;
 }
 .emfield-time .form-control {
 	position: absolute;
@@ -8367,6 +8411,7 @@ a.bg-brand-dark:hover {
 	background: #f5f5f5;
 	border-radius: 8px;
 	text-align: center;
+	transition: none;
 }
 .btn-wide:hover {
 	background: #efefef;
@@ -8518,6 +8563,18 @@ a.bg-brand-dark:hover {
 	}
 	100% {
 		transform: rotate(360deg);
+	}
+}
+.blinking {
+	animation: 1s blink ease infinite;
+}
+@keyframes blink {
+	from,
+	to {
+		opacity: 0;
+	}
+	50% {
+		opacity: 1;
 	}
 }
 .sidebarorder {
@@ -10909,7 +10966,7 @@ code.xml,
 	left: 50%;
 	transform: translateX(-50%);
 	height: 196px;
-	padding: 8px;
+	padding: 8px 8px 32px;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
@@ -11083,6 +11140,21 @@ a.action-link:hover {
 	transform: scale(1.2);
 	margin: 0 4px;
 }
+.share-tabs {
+	display: flex;
+	border-top: var(--1px-light);
+	border-bottom: var(--1px-light);
+	margin-bottom: 8px;
+}
+.share-tabs a {
+	font-size: 1rem;
+	padding: 8px 16px;
+	border-right: var(--1px-light);
+}
+.share-tabs a.current {
+	background: var(--themed-btn-cta);
+	color: var(--themed-nav-btn-active-text);
+}
 .share-sidebar {
 	min-width: 400px;
 	display: flex;
@@ -11094,7 +11166,7 @@ a.action-link:hover {
 	border-radius: 8px;
 	background: #f7f7f7;
 	width: 100%;
-	max-height: 800px;
+	max-height: 500px;
 }
 .share-sidebar h4 {
 	font-size: 1.01rem;
@@ -11133,7 +11205,7 @@ a.action-link:hover {
 .preset-links {
 	margin-top: 8px;
 	padding-top: 8px;
-	/* border-top: var(--1px-light); */
+	gap: 8px;
 	width: 100%;
 }
 .preset-links a.btn {

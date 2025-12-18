@@ -14,14 +14,14 @@ function handleDroppableOver(_, ui) {
 		$(".lightboxdropasset.ui-droppable-hover").length > 0 ||
 		$(".categorydroparea.ui-droppable-hover").length > 0
 	) {
-		ui.helper.css("transform", "scale(0.25)");
+		ui.helper.css("transform", "scale(0.45)");
 	}
 }
 
 function handleDroppableOut(_, ui) {
 	$(this).removeClass("dragoverselected");
 	if ($(this).parent().attr("id") == currentlyOver) {
-		var scale = ui.helper.data("scale") || 1;
+		var scale = ui.helper.data("scale") || 0.55;
 		ui.helper.css("transform", "scale(" + scale + ")");
 	}
 }
@@ -411,7 +411,7 @@ onloadselectors = function () {
 	function scaleDown(el, maxD = 150) {
 		var scale = maxD / Math.max(el.width(), el.height());
 		if (scale === Infinity) {
-			scale = 1;
+			scale = 0.65;
 		}
 		el.css("transform", "scale(" + scale + ")");
 		el.data("scale", scale);
@@ -425,7 +425,7 @@ onloadselectors = function () {
 				scope = "modal";
 			}
 			$(this).draggable({
-				distance: 10,
+				distance: 20,
 				scope: scope,
 				helper: function () {
 					var toclone = $(this);
@@ -451,7 +451,7 @@ onloadselectors = function () {
 				},
 				start: function () {
 					$(this).draggable("instance").offset.click = {
-						left: Math.floor($(this).width() / 2),
+						left: Math.floor($(this).width() / 2.5),
 						top: Math.floor($(this).height() / 2),
 					};
 				},
@@ -571,11 +571,12 @@ onloadselectors = function () {
 						}
 						var hitssessionid = resultsdiv.data("assethitssessionid");
 
-						// this is a category
+						// Remove other categories if this class - Disabled Function
 						var moveit = false;
-						if (node.closest(".assetdropcategorymove").length > 0) {
+						/*if (node.closest(".assetdropcategorymove").length > 0) {
 							moveit = true;
-						}
+						}*/
+						
 						var rootcategory = node.closest(".emtree").data("rootnodeid");
 
 						jQuery.get(

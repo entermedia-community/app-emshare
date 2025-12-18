@@ -51,11 +51,12 @@
 
         #set($parentmoduleid = $context.getRequestParameter("parentmoduleid")) 
         #set($parententityid = $context.getRequestParameter("parententityid"))
-		#ifnotnull($parententityid)
-			<input type="hidden" name="field" value="$parentmoduleid" />
-			<input type="hidden" name="${parentmoduleid}.value" value="$parententityid" />
-			$data.setValue($parentmoduleid, $parententityid)
-		#end
+
+        #ifnotnull($parententityid)
+          <input type="hidden" name="field" value="$parentmoduleid" />
+          <input type="hidden" name="${parentmoduleid}.value" value="$parententityid" />
+          $data.setValue($parentmoduleid, $parententityid)
+        #end
 		
 		$context.putPageValue("data",$data)
 		$context.putPageValue("newdata${module.id}",$data)

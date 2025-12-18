@@ -68,7 +68,7 @@
 		#end
 
 		#if( !$ismulti)
-			#if ($canviewconversions)
+			#if ($canviewcroppingtool || $canviewmediaedit || (($rendertype =="video" || $rendertype  == "audio") && ($canviewclosedcaptions || $canviewtimeline)))
 				#if ($rendertype =="video" || $rendertype  == "image" || $rendertype  == "audio" ) 
 				<li class="assettabnav #if($opentab == 'assetedit')tabselected #end">
 					<a class="expandmenu assettab ajax rememberassettab" 
@@ -79,7 +79,7 @@
 						data-propertyfield="assetopentab"
 						data-propertyvalue="assetedit"
 						data-assettabname="[[Edit]]">
-						<i class="bi bi-pen ns mr-1"></i> <span>[[Edit]]</span>
+						<i class="bi bi-image ns mr-1"></i> <span>[[Media Edit & Share]]</span>
 					</a>
 				</li>
 				#end
@@ -100,38 +100,6 @@
 						<i class="bi bi-clock-history ns mr-1"></i> <span>[[History]]</span>
 					</a>
 				</li>
-			#end
-		#end
-
-		#if ( $canshareasset && !$ismulti )
-			#if ($canpublish || $canemaillink || $canembedasset || $canaddtoproject)
-			<li class="assettabnav hidemulti dropdown">
-				<a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" title="[[Share]]">
-					<i class="bi bi-share ns mr-1"></i> <span class="mbl-hidden">[[Share]]</span>
-				</a>
-				<ul class="dropdown-menu">
-					#if( $canembedasset)
-					<li>
-						<a class="dropdown-item emdialog" data-hidefooter="true" data-noesc="true" data-dialogwidth="1000" data-dialogid="shareasset" title="[[Share Links]]"" href="$siteroot$componenthome/share/embed.html?assetid=$asset.id&collectionid=$!collectionid">[[Links]]</a>
-					</li>
-					#end
-					#if( $canemaillink )
-					<li>
-						<a class="dropdown-item emdialog" data-hidefooter="true" data-noesc="true" data-dialogid="shareasset" href="$siteroot$apphome/views/modules/asset/activity/emailassets.html?assetid=$asset.id">[[Email]]</a>
-					</li>
-					#end
-					#if ($canpublish)
-					<li>
-						<a class="dropdown-item emdialog" data-hidefooter="true" data-noesc="true" data-dialogid="shareasset" href="$siteroot$apphome/views/modules/asset/activity/publishassets.html?assetid=$asset.id">[[Export]]</a>
-					</li>
-					#end
-					#if ( $canaddtoproject )
-					<li id="add-to-collection">
-						<a class="dropdown-item ajax" data-targetdivinner="shareOptionsContainer" data-dialogid="shareasset" href="#">[[Add to Project]]</a>
-					</li>
-					#end
-				</ul>
-			</li>
 			#end
 		#end
 

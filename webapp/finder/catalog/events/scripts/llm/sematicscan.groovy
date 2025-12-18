@@ -1,6 +1,7 @@
 package asset
 
 import org.entermediadb.ai.classify.SemanticClassifier
+import org.entermediadb.ai.informatics.SemanticTableManager
 import org.entermediadb.asset.*
 public void init()
 {
@@ -8,7 +9,8 @@ public void init()
 
 	SemanticClassifier manager = archive.getBean("semanticClassifier");
 	
-	manager.indexAll(log);
+	SemanticTableManager table = manager.loadSemanticTableManager("semantictopics");
+	table.indexAll(log);
 		
 }
 

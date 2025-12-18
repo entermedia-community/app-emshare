@@ -1,13 +1,24 @@
-<div  id="eventstatus" class="ajaxstatus" #if( $content == $page)data-ajaxrunning="true"#end ajaxpath="$siteroot$apphome/views/settings/events/triggers/edit/log.html?eventpath=$pathevent.getPage().getPath()">
-
-[[Last ran]]: $!pathevent.getFormattedLastRun() [[runs]]: $pathevent.getTotalRunCount() <br>	
-
-#if( $pathevent.isRunning() )
-<b>[[event is running]]</b>
-#end
-
-<hr>
-
-$!pathevent.getLastOutputHtml() 
+<div id="eventstatus"
+  class="ajaxstatus"
+  #if($content == $page)data-ajaxrunning="true"#end
+  ajaxpath="$siteroot$apphome/views/settings/events/triggers/edit/log.html?eventpath=$pathevent.getPage().getPath()"
+>
+  <div class="position-sticky bg-light py-1 p-2" style="top:0">
+    <div class="d-flex justify-content-between">
+      #if( $pathevent.isRunning() )
+      <p class="d-flex align-items-center m-0" style="font-weight: bold;">
+        <svg height="10" width="10" class="blinking">
+          <circle cx="5" cy="5" r="5" fill="green" /> 
+        </svg>
+        &nbsp;[[Event is running]]
+      </p>
+      #end
+      <p class="m-0">
+        <b>[[Last ran]]:</b> $!pathevent.getFormattedLastRun()
+        <br/>
+        <b>[[Total Runs]]:</b> $pathevent.getTotalRunCount()
+      </p>
+    </div>
+  </div>
+  <div class="p-2 d-hide-empty border-top-subtle">$!pathevent.getLastOutputHtml()</div>
 </div>
-

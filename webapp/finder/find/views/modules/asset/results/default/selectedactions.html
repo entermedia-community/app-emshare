@@ -33,8 +33,14 @@
 			</li>
 		#end
 
+		#ifnull($entity)
+			#set($entityid = $context.getRequestParameter("entityid"))
+			#set($entitymoduleid = $context.getRequestParameter("entitymoduleid"))
+			#if($entityid && $entitymoduleid)
+				#set($entity = $mediaarchive.getCachedData($entitymoduleid, $entityid))
+			#end
+		#end
 		
-
 		#if($entity.id)
 			#set($removefrom = "${edithome}/actions/removeassetsfromentity.html")
 			<li><a class="dropdown-item ajax"
@@ -44,7 +50,8 @@
 					data-entityid="${entity.id}"
 					data-removinghitssessionid="$hits.getSessionId()"
 					data-ajaxreloadtargets="dataeditedreload"
-					href="$removefrom" >[[Remove Selected Assets From]] #text($entity)</a>
+					title="[[Remove selected assets from]]: #text($entity)"
+					href="$removefrom" >[[Remove selected assets from]]: #text($entity)</a>
 			</li>
 		#end
 		
