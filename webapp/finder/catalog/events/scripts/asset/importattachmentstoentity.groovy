@@ -30,35 +30,69 @@ public init()
 			continue;
 		}
 		
-		//Create entity
-		Data newentity = entitysearcher.createNewData();
-		newentity.setName(name);
-		String date = element.assetcreationdate;
-	    newentity.setValue("entity_date", date);
-		mediaarchive.saveData(entitymoduleid, newentity);
+		Asset originalasset = mediaarchive.getAsset(element.assetid);
+		if (originalasset == null) {
+			log.info("Original Asset Missing: " + element.assetid)
+			continue;
+		}
 		
-		String selectedassetsourcepath = mediaarchive.getEntityManager().loadUploadSourcepath(entitymodule, newentity, null);
-				
-		//Create asset (selected file)
 		String attachmentsourcepath = "/WEB-INF/data/" + mediaarchive.getCatalogId()+ "/originals/"+ element.sourcepath+ "/"+name;
 		log.info("Attachmet sourcepath: " + attachmentsourcepath);
 		ContentItem originalcontent = mediaarchive.getContent(attachmentsourcepath);
-		String finalsourcepath = "/WEB-INF/data/" + mediaarchive.getCatalogId()+ "/originals/"+selectedassetsourcepath + "/" + name;
-		ContentItem newcontent = mediaarchive.getContent(finalsourcepath);
-		mediaarchive.getPageManager().getRepository().copy(originalcontent, newcontent);
+		if (!originalcontent.exists()) {
+			log.info("Missing Original Attachment: " + attachmentsourcepath);
+			continue;
+		}
 		
-		Asset selectedasset = mediaarchive.getAssetImporter().getAssetUtilities().createAssetIfNeeded(newcontent, mediaarchive, null);
-		tosave.add(selectedasset);
+		String date = element.assetmodificationdate;
 		
-		//Assign entity to primary asset
+		//Create entity
+		Data newentity = entitysearcher.query().exact("name", name).searchOne();
+		if (newentity != null)
+		{
+			String selectedassetsourcepath = mediaarchive.getEntityManager().loadUploadSourcepath(entitymodule, newentity, null);
+			String finalsourcepath = "/WEB-INF/data/" + mediaarchive.getCatalogId()+ "/originals/"+selectedassetsourcepath + "/" + name;
+			ContentItem currentcontent = mediaarchive.getContent(finalsourcepath);
+			if (originalcontent.getLength() != currentcontent.getLength() )
+			{
+				name = name + " " + currentcontent.getLength();
+				newentity = entitysearcher.createNewData();
+				newentity.setName(name);
+			}
+			else
+			{
+				//exists and is same size, just assign it to Original Asset
+				
+			}
+		}
+		if (newentity == null) 
+		{
+			newentity = entitysearcher.createNewData();
+			newentity.setName(name);
+			
+			newentity.setValue("entity_date", date);
+			mediaarchive.saveData(entitymoduleid, newentity);
+			
+			String selectedassetsourcepath = mediaarchive.getEntityManager().loadUploadSourcepath(entitymodule, newentity, null);
+			
+			//Create asset (selected file)
+			String finalsourcepath = "/WEB-INF/data/" + mediaarchive.getCatalogId()+ "/originals/"+selectedassetsourcepath + "/" + name;
+			ContentItem newcontent = mediaarchive.getContent(finalsourcepath);
+			mediaarchive.getPageManager().getRepository().copy(originalcontent, newcontent);
+			
+			Asset selectedasset = mediaarchive.getAssetImporter().getAssetUtilities().createAssetIfNeeded(newcontent, mediaarchive, null);
+			selectedasset.setValue("assetaddeddate", date);
+			tosave.add(selectedasset);
+		}
 		
-		Asset originalasset = mediaarchive.getAsset(element.assetid);
+		//Assign entity to Original asset
 		originalasset.addValue("copyrightreleases", newentity.getId());
 		tosave.add(originalasset);
 	}
 	if (!tosave.isEmpty()) 
 	{
 		mediaarchive.saveAssets(tosave);
+		log.info("Saved: " + tosave.size());
 	}
 	
 	mediaarchive.fireSharedMediaEvent("importing/assetscreated");
