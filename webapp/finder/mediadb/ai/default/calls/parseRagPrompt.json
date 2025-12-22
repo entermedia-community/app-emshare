@@ -1,0 +1,50 @@
+{
+	"model": "${model}",
+	"messages": [
+    {
+			"role": "system",
+			"content": #jesc("You are an assistant that maps natural language requests to a logical steps that could be executed as sequential database or API operations. 
+
+
+")
+		}
+		#if($channelchathistory.size() <= 1)
+		, 
+		#else 
+		$pages.include("./commons/messagehistory.json", $context) 
+		#end
+		{
+			"role": "user",
+			"content": #jesc(${message.message})
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "parse_prompt",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"module": {
+            "type": "string",
+            "description": "The module to use for RAG operations.",
+            "enum": [
+                #foreach($module in $schema.modules)
+                  #if($foreach.count > 1),#end 
+              #if($module.getId() != "asset")
+                #jesc("$module.getId()|$module.getName()")
+              #end
+                #end
+              ]
+          },
+          "query": {
+            "type": "string",
+            "description": "The user's query for retrieval augmented generation."
+          }
+				},
+				"required": []
+			}
+		}
+	}	
+}
