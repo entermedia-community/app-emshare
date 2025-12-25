@@ -2,6 +2,8 @@ import org.entermediadb.asset.Asset
 import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.projects.ProjectManager
+import org.entermediadb.asset.fetch.YoutubeImporter
+import org.entermediadb.asset.fetch.YoutubeMetadataSnippet
 import org.openedit.util.DateStorageUtil
 import org.openedit.util.PathUtilities
 import org.openedit.util.URLUtilities
@@ -41,31 +43,26 @@ public void init()
 	String fetchthumb = null;
 	String fileformat = null;
 	
-	if( externalmediainput.startsWith("https://youtu.be/") )
+	if( externalmediainput.contains("youtu.be/") || externalmediainput.contains("youtube.com/") )
 	{
-		//set the thumbnail
-		//https://youtu.be/n7GxnhQjBaw
-		String videoid = externalmediainput.substring(17);
-		fetchthumb = "http://img.youtube.com/vi/" + videoid + "/hqdefault.jpg";
-		assetname = videoid;
-		asset.setProperty("embeddedid",videoid);
-		asset.setProperty("embeddedtype", "youtube");
+		YoutubeImporter importer = mediaarchive.getModuleManager().getBean(mediaarchive.getCatalogId(), "youtubeImporter");
+		
+		YoutubeMetadataSnippet ytmetadata = importer.importVideoMetadata(mediaarchive, externalmediainput);
+		
+		log.info("YouTube Metadata: " + ytmetadata);
+
+		fetchthumb = ytmetadata.getThumbnail();
+		assetname = ytmetadata.getTitle();
+		asset.setValue("longcaption", ytmetadata.getDescription());
+		asset.setValue("assettitle", ytmetadata.getTitle());
+		asset.setKeywords(ytmetadata.getTags());
+		asset.setValue("assetcreateddate", ytmetadata.getPublishedAt());
+		asset.setValue("creator", ytmetadata.getChannelTitle());
+		asset.setValue("embeddedid", ytmetadata.getId());
+		asset.setValue("embeddedtype", "youtube");
 		fileformat = "ytube";
 		
-		log.info("Create asset from youtube.be: " + externalmediainput);
-		
-	}
-	else if (externalmediainput.contains("youtube.com/") )
-	{
-		//https://www.youtube.com/watch?v=n7GxnhQjBaw
-		String videoid = externalmediainput.substring(externalmediainput.indexOf("watch?v=") + 8);
-		fetchthumb = "http://img.youtube.com/vi/" + videoid + "/hqdefault.jpg";
-		assetname = videoid;
-		asset.setProperty("embeddedid",videoid);
-		asset.setProperty("embeddedtype", "youtube");
-		fileformat = "ytube";
-		
-		log.info("Create asset from youtube.com: " + externalmediainput);
+		log.info("Create asset from YouTube: " + externalmediainput);
 		
 	}
 	else if (externalmediainput.contains("vimeo") )
@@ -118,7 +115,7 @@ public void init()
 		asset.setProperty("fetchurl", externalmediainput);
 	}
 	else
-	{	
+	{
 		//this is still set because we dont currently have a way to make thumbnails for embdedded file formats
 		asset.setProperty("fetchurl",fetchthumb);
 		asset.setProperty("fetchthumbnailurl",fetchthumb);
