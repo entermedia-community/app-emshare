@@ -2,7 +2,11 @@
 	#set( $parentmoduleid = $context.getRequestParameter("parentmoduleid") )
 	#set( $parententityid = $context.getRequestParameter("parententityid") )
 
-	<form  method="post" class="ajaxform" data-targetdivinner="importyoutube" action="$applink/views/modules/$!{module.id}/editors/youtubeimporter/finish.html">
+	<form method="post" 
+    class="ajaxform"
+    action="$applink/views/modules/$!{module.id}/editors/youtubeimporter/finish.html"
+    data-targetdivinner="importyoutube"
+    data-ajaxreloadtargets="entitydialog">
 		
 		<input type="hidden" name="parentmoduleid" value="$parentmoduleid"/>
 		<input type="hidden" name="parententityid" value="$parententityid"/>
@@ -10,20 +14,37 @@
 		
     <div class="mb-3">
       <span class="d-block mb-1">
-        [[YouTube Video/Playlist URL(s)]]:
+        [[YouTube Video/Playlist URL]]:
       </span>
       <div class="emdatafieldvalue">
         <div class="emfield-textarea">
-          <textarea name="youtubeurl" class="w-100 form-control required" type="text" value="" rows="1" placeholder="Enter YouTube video/playlist links"></textarea>
+          <textarea name="youtubeurl" class="w-100 form-control required" rows="1" placeholder="Enter YouTube video/playlist links" #ifnotnull($youtubeurl) readonly #end>$!youtubeurl</textarea>
         </div>
-        <span class="detail-note text-muted">[[YouTube playlist or video URL(s), you can paste multiple links separated by comma or newline]]<span></span></span>
+        <span class="detail-note text-muted">[[YouTube playlist or video URL, you can paste multiple links separated by comma or newline]]<span></span></span>
       </div>
     </div>
 
-    <button class="btn btn-cta" type="submit">
-      <i class="bi bi-box-arrow-in-down rr mr-1" ></i>
-      [[Import URL]]
-    </button>
+    #if($confirmimport)
+      <div class="mb-3 alert alert-warning">
+        [[This will import]] <strong>$videocount videos</strong> [[from the URL. Do you want to proceed?]]
+      </div>
+      <input type="hidden" name="overwriteurl" value="$overwriteurl">
+      <input type="hidden" name="confirmed" value="true">
+    #end
+
+    <div class="d-flex justify-content-between mt-3">
+      <button class="btn btn-cta" type="submit">
+        #if($confirmimport)
+          [[Import]] $videocount [[Videos]]    
+        #else
+          <i class="bi bi-box-arrow-in-down rr mr-1" ></i>
+          [[Import URL]]
+        #end
+      </button>
+      <button class="btn btn-secondary mr-2" type="button" data-dismiss="modal">
+        [[Cancel]]
+      </button>
+    </div>
 
 	</form>
 </div>
