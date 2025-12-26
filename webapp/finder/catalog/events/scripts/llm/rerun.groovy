@@ -14,7 +14,7 @@ public void init() {
 		//QueryBuilder query = archive.query(module.getId()).exact("taggedbyllm", "true");
 		
 		//Re-run Document Ebedded only
-		QueryBuilder query = archive.query(module.getId()).exists("documentembedded");
+		QueryBuilder query = archive.query(module.getId()).exists("entityembedded");
 
 		//QueryBuilder query = archive.query(module.getId()).exact("taggedbyllm", "true").exists("semantictopics");
 		
@@ -31,7 +31,7 @@ public void init() {
 			Data row = searcher.loadData(data);
 			
 			row.setValue("taggedbyllm", false);
-			row.setValue("documentembedded", false);
+			row.setValue("entityembedded", false);
 			row.setValue("pagescreatedfor", null);
 			
 	//		row.setValue("llmerror", false);
