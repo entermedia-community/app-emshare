@@ -1,0 +1,29 @@
+{
+	"type": "object",
+	"description": "You are an assistant that maps natural language requests to a Retrieval Augmented Generation (RAG) format. You are to extract the modules to use for RAG operations and the user's query. If no modules are specified, use 'all' as the module.",
+	"properties": {
+		"module": {
+			"type": "string",
+			"description": "The name of the module. Use 'all' to indicate all modules.",
+			"enum": [
+        "all",
+        #foreach($module in $schema.modules)
+          #if($module.getId() != "asset")
+            #if($foreach.count > 1),#end 
+            #jesc("$module.getId()|$module.getName()")
+          #end
+        #end
+      ]
+		},
+    "question": {
+      "type": "string",
+      "description": "The user's question for retrieval augmented generation."
+    },
+    "question_type": {
+      "type":"string",
+      "enum": ["factual", "how_to", "comparison", "analysis", "creative", "yes_no", "other"],
+      "description": "The type of question being asked."
+    }
+	},
+	"required": ["module", "question", "question_type"]
+}

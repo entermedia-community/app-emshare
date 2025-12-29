@@ -3,16 +3,14 @@
 	"messages": [
     {
 			"role": "system",
-			"content": #jesc("You are an assistant that maps natural language requests to a logical steps that could be executed as sequential database or API operations. 
+			"content": #jesc("You are an assistant that maps natural language requests to a request type and request details object. 
 
-You will first determine the request type, which is one of these values: 'conversation', 'search', 'create_image', 'create_entity'.
+You will first determine the request type, which is one of these values: 'conversation', 'question'.
 If not clear which request type to use, use 'conversation' and ask for clarification.
 
 Based on the request_type, fill respective field in request_details:
 if request_type is conversation, request_details must have conversation object
-if request_type is search, request_details must have search object
-if request_type is create_image, request_details must have create_image object
-if request_type is create_entity, request_details must have create_entity object.
+if request_type is question, request_details must have question object.
 ")
 		}
 		#if($channelchathistory.size() <= 1)
@@ -28,21 +26,21 @@ if request_type is create_entity, request_details must have create_entity object
 	"response_format": {
 		"type": "json_schema",
 		"json_schema": {
-			"name": "parse_prompt",
+			"name": "parse_question",
 			"strict": true,
 			"schema": {
 				"type": "object",
 				"properties": {
 					"request_type": {
 						"type": "string",
-						"enum": ["conversation", "question", "search_and_summarize"],
+						"enum": ["conversation", "question"],
 						"description": "The type of request being made."
 					},
 					"request_details": {
 						"type": "object",
 						"description": "Details about the request, specific to the request_type.",
 						"properties": {
-							"create_image": $pages.include("./parsefunctions/create_image.json", $context),
+							"question": $pages.include("./parsefunctions/question.json", $context),
 							"conversation": $pages.include("./parsefunctions/conversation.json", $context)
 						}
 					}
