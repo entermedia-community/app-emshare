@@ -35,7 +35,7 @@ if request_type is create_entity, request_details must have create_entity object
 				"properties": {
 					"request_type": {
 						"type": "string",
-						"enum": ["conversation", "search", "create_image", "create_entity"],
+						"enum": ["conversation", "question", "search_and_summarize"],
 						"description": "The type of request being made."
 					},
 					"request_details": {
@@ -43,8 +43,6 @@ if request_type is create_entity, request_details must have create_entity object
 						"description": "Details about the request, specific to the request_type.",
 						"properties": {
 							"create_image": $pages.include("./parsefunctions/create_image.json", $context),
-							"create_entity": $pages.include("./parsefunctions/create_entity.json", $context),
-							"search": $pages.include("./parsefunctions/search.json", $context),
 							"conversation": $pages.include("./parsefunctions/conversation.json", $context)
 						}
 					}

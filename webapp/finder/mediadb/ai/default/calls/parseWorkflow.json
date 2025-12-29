@@ -1,0 +1,54 @@
+{
+	"model": "${model}",
+	"messages": [
+    {
+			"role": "system",
+			"content": #jesc("You are an assistant that maps natural language requests to a logical steps that could be executed as sequential database or API operations. 
+
+You will first determine the request type, which is one of these values: 'conversation', 'search', 'create_image', 'create_entity'.
+If not clear which request type to use, use 'conversation' and ask for clarification.
+
+Based on the request_type, fill respective field in request_details:
+if request_type is conversation, request_details must have conversation object
+if request_type is search, request_details must have search object
+if request_type is create_image, request_details must have create_image object
+if request_type is create_entity, request_details must have create_entity object.
+")
+		}
+		#if($channelchathistory.size() <= 1)
+		, 
+		#else 
+		$pages.include("./commons/messagehistory.json", $context) 
+		#end
+		{
+			"role": "user",
+			"content": #jesc(${message.message})
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "parse_prompt",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"request_type": {
+						"type": "string",
+						"enum": ["conversation", "run_worflow"],
+						"description": "The type of request being made."
+					},
+					"request_details": {
+						"type": "object",
+						"description": "Details about the request, specific to the request_type.",
+						"properties": {
+							"run_workflow": $pages.include("./parsefunctions/search.json", $context),
+							"conversation": $pages.include("./parsefunctions/conversation.json", $context)
+						}
+					}
+				},
+				"required": ["request_type", "request_details"]
+			}
+		}
+	}	
+}
