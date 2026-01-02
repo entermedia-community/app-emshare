@@ -1,0 +1,70 @@
+<div id="chatterbox-write" class="chatterbox-write">
+	#set( $replytoid = $context.getRequestParameter("replytoid"))
+	#ifnotnull($replytoid)
+		#set( $otherchat = $mediaarchive.getCachedData("chatterbox",$replytoid))
+		#set( $otherchatuser = $mediaarchive.getUser($otherchat.user) ) 
+		<div class="chatterboxreplyto">
+			<div class="d-flex align-items-center justify-content-between">
+				<p class="m-0">
+					<span><i class="fas fa-quote-left"></i> [[Replying to]]</span> 
+					<a href="#esc($userlink)" title="$context.getDateTime($otherchat.date)">
+						<strong>$otherchatuser.getAnonNickName()</strong>
+					</a>
+				</p>
+				<button class="btn" title="[[Cancel Reply]]" id="chatterboxreplycancel">
+					<i class="fas fa-times text-muted"></i>
+				</button>
+			</div>
+			<div class="msg-body">
+				$url_util.escapeMessage($otherchat.message)
+			</div>
+		</div>
+	#end
+	<div class="position-relative w-100 chatterbox-editorarea">
+		<textarea class="chatterbox-text chatter-text flex-1 grabfocus" id="chatter-msg" data-replytoid="$!replytoid" placeholder="[[Message]]" autofocus></textarea>
+		
+		<div class="chatterbox-editactions">
+			<div class="d-flex align-items-center">
+				#if($currentchannel.intention != "Workflow")
+					#if(!$page.chatattachmentsdisabled && $permissions.canModule($module, "chat_add_attachments"))
+						<div class="position-relative">
+							<div id="attachfileonchat" class="attachfileonchat"></div>
+							<a class="btn chatter-attachfile"
+								href="${chatterboxhome}/attach.html"
+								data-targetdivinner="attachfileonchat"
+								data-channel="$!currentchannel.getId()"  
+								#if($librarycol.getId())data-entityid="$librarycol.getId()"#end
+								data-messageid="X"
+								data-allowclose="true"
+								title="[[Attachments]]">
+								<i class="fas fa-paperclip"></i>
+							</a>
+						</div>
+					#end
+				#else
+					<div class="dropdown workflow-picker dropup">
+						<a class="dropdown-toggle btn icon-btn" href="#" data-toggle="dropdown">
+							<i class="bi bi-plus-circle text-primary"></i>
+						</a>
+						<div class="dropdown-menu">
+							<li class='dropdown-item'>
+								<i class="bi bi-image mr-1"></i>
+								[[Create Image]]
+							</li>
+							<li class="dropdown-item">
+								<i class="bi bi-folder mr-1"></i>
+								[[Create Entity]]
+							</li>
+						</div>
+					</div>
+					<div class="d-flex align-items-center picked-workflow mx-2">
+
+					</div>
+				#end
+			</div>
+			<button class="btn chatter-btn chatter-send" data-command="messagereceived" type="button">
+				[[Send]] <i class="fas fa-paper-plane"></i>
+			</button>
+		</div>
+	</div>
+</div>
