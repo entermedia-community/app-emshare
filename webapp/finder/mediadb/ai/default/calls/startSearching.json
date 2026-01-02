@@ -5,12 +5,12 @@
 			"role": "system",
 			"content": #jesc("You are an assistant that maps natural language requests to a logical steps that could be executed as sequential database or API operations. 
 
-You will first determine the request type, which is one of these values: 'conversation' and 'search'.
-If not clear which request type to use, use 'conversation' and ask for clarification.
+You will first determine the next step, which is one of these values: 'conversation' and 'parseSearchParts'.
+If not clear which step to select, use 'conversation' and ask for clarification.
 
-Based on the request_type, fill respective field in request_details:
-if request_type is conversation, request_details must have conversation object
-if request_type is search, request_details must have search object.
+Based on the selected next_step, fill respective field in step_details:
+if next_step is conversation, step_details must have conversation object
+if next_step is parseSearchParts, step_details must have parseSearchParts object.
 ")
 		}
 		#if($channelchathistory.size() <= 1)
@@ -26,26 +26,26 @@ if request_type is search, request_details must have search object.
 	"response_format": {
 		"type": "json_schema",
 		"json_schema": {
-			"name": "parse_search",
+			"name": "start_search_parsing",
 			"strict": true,
 			"schema": {
 				"type": "object",
 				"properties": {
-					"request_type": {
+					"next_step": {
 						"type": "string",
-						"enum": ["conversation", "search"],
+						"enum": ["conversation", "parseSearchParts"],
 						"description": "The type of request being made."
 					},
-					"request_details": {
+					"step_details": {
 						"type": "object",
-						"description": "Details about the request, specific to the request_type.",
+						"description": "Details about the selected step.",
 						"properties": {
-							"search": $pages.include("./parsefunctions/search.json", $context),
-							"conversation": $pages.include("./parsefunctions/conversation.json", $context)
+							"conversation": $pages.include("./parsefunctions/conversation.json", $context),
+							"parseSearchParts": $pages.include("./parsefunctions/parseSearchParts.json", $context)
 						}
 					}
 				},
-				"required": ["request_type", "request_details"]
+				"required": ["next_step", "step_details"]
 			}
 		}
 	}	

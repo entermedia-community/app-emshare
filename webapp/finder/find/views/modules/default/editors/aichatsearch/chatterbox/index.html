@@ -22,7 +22,7 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 	#end
 #end
 
-#set($intention = $currentchannel.get("intention"))
+#set($functiongroup = $currentchannel.get("aifunctiongroup"))
 
 <div class='chatterbox #if($cansendchat == "false") chatterbox-readonly#end'
 	#ifnotnull($entity)data-entityid="$!entity.id"#end
@@ -36,11 +36,11 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 	data-catalogid="$!{catalogid}"
 	data-broadcastall="false">
 
-	#ifnull($intention)
-		$pages.include("${edithome}/intentionpicker.html", $context)
+	#ifnull($functiongroup)
+		$pages.include("${edithome}/functiongrouppicker.html", $context)
 	#end
 
-	#ifnotnull($intention)
+	#ifnotnull($functiongroup)
 
 		$pages.include("${chatterboxhome}/messages.html", $context)
 

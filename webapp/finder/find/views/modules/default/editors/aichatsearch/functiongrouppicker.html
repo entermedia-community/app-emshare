@@ -1,4 +1,4 @@
-#set($intentions = $mediaarchive.query("intention").sort("name").search())
+#set($functiongroups = $mediaarchive.query("aifunctiongroup").sort("ordering").search())
 
 <div class="msg-bubble ai-suggestions">
   <div class="chatterbox-chat" role="alert">
@@ -20,14 +20,14 @@
             <strong>What would you like to chat about today?</strong>
           </p>
           <div class="ai-intentions mb-1">
-            #foreach( $intention in $intentions )
+            #foreach( $functiongroup in $functiongroups )
               <a class="ajax btn btn-cta mr-2"
-                href="$edithome/intentionsave.html"
+                href="$edithome/functiongroupsave.html"
                 data-targetdiv="aichatsearch"
                 data-channel="$!{currentchannel.getId()}"
-                data-intention="$intention.getId()"
+                data-functiongroup="$functiongroup.getId()"
                 data-oemaxlevel="1">
-                <i class="bi bi-${intention.icon} mr-1"></i> $intention.get("name")
+                <i class="bi bi-${functiongroup.icon} mr-1"></i> $functiongroup.get("name")
               </a>
             #end 
           </div>
