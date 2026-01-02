@@ -1,0 +1,39 @@
+#set($intentions = $mediaarchive.query("intention").sort("name").search())
+
+<div class="msg-bubble ai-suggestions">
+  <div class="chatterbox-chat" role="alert">
+    <div class="chat-icon">
+		
+      <a href="#" title="AI Agent" class="msg-avt">
+        <img src="${edithome}/chatterbox/images/aiagent.svg" class="img-fluid">
+      </a>
+    </div>
+    
+    <div class="chat-msg">
+      <div class="chat-author">
+        <strong>AI Agent</strong>
+      </div>
+      
+      <div class="msg-body">
+        <div class="msg-body-content">
+          <p>
+            <strong>What would you like to chat about today?</strong>
+          </p>
+          <div class="ai-intentions mb-1">
+            #foreach( $intention in $intentions )
+              <a class="ajax btn btn-cta mr-2"
+                href="$edithome/intentionsave.html"
+                data-targetdiv="aichatsearch"
+                data-channel="$!{currentchannel.getId()}"
+                data-intention="$intention.getId()"
+                data-oemaxlevel="1">
+                <i class="bi bi-${intention.icon} mr-1"></i> $intention.get("name")
+              </a>
+            #end 
+          </div>
+        </div>
+      </div>
+    </div> 
+
+  </div>
+</div>

@@ -1,0 +1,57 @@
+#set($chatterboxhome = $page.chatterboxhome)
+$context.putPageValue("chatterboxhome", $chatterboxhome)
+#set($moduleid = $module.getId())
+#ifnull($moduleid)
+	#set($moduleid = $page.module) 
+#end
+#ifnull($collectionid)
+	#set($collectionid = $librarycol.getId()) 
+#end
+
+#ifnull($cansendchat)
+	#set($cansendchat = false)
+#end
+
+#if ($currentchannel.teamproject == "true")
+	#if($caneditcollection)
+		#set($cansendchat = true)
+	#end
+#else
+	#if($page.openchat || ($user && $permissions && $permissions.canModule($module, "chat_send_messages")))
+		#set($cansendchat = true)
+	#end
+#end
+
+#set($intention = $currentchannel.get("intention"))
+
+<div class='chatterbox #if($cansendchat == "false") chatterbox-readonly#end'
+	#ifnotnull($entity)data-entityid="$!entity.id"#end
+	#ifnotnull($collectionid)data-collectionid="$!collectionid"#end  
+	data-moduleid="$!moduleid"
+	data-renderurl="${chatterboxhome}/index.html" 
+	data-rendermessageurl="${chatterboxhome}/message.html"
+	data-channel="$!{currentchannel.getId()}" 
+	data-channeltype="$!{channeltype}" 
+	data-user="$!{user.id}" 
+	data-catalogid="$!{catalogid}"
+	data-broadcastall="false">
+
+	#ifnull($intention)
+		$pages.include("${edithome}/intentionpicker.html", $context)
+	#end
+
+	#ifnotnull($intention)
+
+		$pages.include("${chatterboxhome}/messages.html", $context)
+
+		#if($channeltype == "agententitychat")
+			$pages.include("${chatterboxhome}/guidebar.html", $context)				
+		#end
+
+		#if($cansendchat)
+			$pages.include("${chatterboxhome}/editarea.html", $context)				
+		#end
+
+	#end
+
+</div>

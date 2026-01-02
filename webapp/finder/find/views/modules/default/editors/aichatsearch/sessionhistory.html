@@ -22,17 +22,23 @@
         data-oemaxlevel="1"
 	      href="$edithome/sessionrestore.html" 
         title="[[Retrieve this session]]">
-        #ifnotnull($hit.name)
-          <span>#esc($!hit.name)</span>
-        #end
-        #ifnull($hit.name)
-          #if($foreach.count == 1)
-            <span class="text-muted">[[Current Session]]</span>
-          #else
-            <span class="text-muted">[[Session]] #$foreach.count</span>
+        #set($intentionid = $hit.get("intention"))
+        <span class="session-name">
+          #ifnotnull($intentionid)
+            #set($intention = $mediaarchive.query("intention").id($intentionid).searchOne())
+            <i class="bi ns bi-${intention.icon} mr-1"></i> 
           #end
-        #end
-        <small class="text-muted">#datetime($hit.refreshdate)</small>
+          #ifnotnull($hit.name)
+            #esc($!hit.name)
+          #end
+          #ifnull($hit.name)
+            #set($id = $hits.size() - $foreach.count + 1)
+            [[Session]] #$id
+          #end
+        </span>
+        <small class="text-muted">
+          #datetime($hit.refreshdate)
+        </small>
       </a>
 
       <a class="ajax del" data-targetdiv="aichatsearch" data-oemaxlevel="1" data-id="$hit.id" data-confirm="[[Sure you want to delete session?]]" href="$edithome/sessiondelete.html" title="[[Delete this session]]"> 
