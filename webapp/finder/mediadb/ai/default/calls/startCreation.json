@@ -3,14 +3,14 @@
 	"messages": [
     {
 			"role": "system",
-			"content": #jesc("You are an assistant that maps natural language requests to a logical steps that could be executed as sequential operations. 
+			"content": #jesc("You are an assistant that maps natural language requests to a request type and request details object. 
 
-You will first determine the next step, which is one of these values: 'conversation', 'search', 'create_image', 'create_entity'.
+You will first determine the next step, which is one of these values: 'conversation', 'parseCreationParts'.
 If not clear which step to select, use 'conversation' and ask for clarification.
 
 Based on the next_step, fill respective field in step_details:
 if next_step is conversation, step_details must have conversation object
-if next_step is run_workflow, step_details must have run_workflow object.
+if next_step is parseCreationParts, step_details must have parseCreationParts object.
 ")
 		}
 		#if($channelchathistory.size() <= 1)
@@ -26,14 +26,14 @@ if next_step is run_workflow, step_details must have run_workflow object.
 	"response_format": {
 		"type": "json_schema",
 		"json_schema": {
-			"name": "start_action_parsing",
+			"name": "start_creation_parsing",
 			"strict": true,
 			"schema": {
 				"type": "object",
 				"properties": {
 					"next_step": {
 						"type": "string",
-						"enum": ["conversation", "run_worflow"],
+						"enum": ["conversation", "parseCreationParts"],
 						"description": "The type of request being made."
 					},
 					"step_details": {
@@ -41,7 +41,7 @@ if next_step is run_workflow, step_details must have run_workflow object.
 						"description": "Details about the request, specific to the next_step.",
 						"properties": {
 							"conversation": $pages.include("./parsefunctions/conversation.json", $context),
-							"parseWorkflowParts": $pages.include("./parsefunctions/parseWorkflowParts.json", $context)
+							"parseCreationParts": $pages.include("./parsefunctions/parseCreationParts.json", $context)
 						}
 					}
 				},
