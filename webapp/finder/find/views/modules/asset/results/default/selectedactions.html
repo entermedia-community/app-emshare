@@ -10,7 +10,7 @@
 				data-assetid="multiedit:$!hits.getSessionId()"
 				class="dropdown-item" 
 				href="#" 
-				title="[[Edit selected Assets]]">$text</a></li>
+				title="[[Edit selected assets]]">$text</a></li>
 					
 					
 		#if( $canviewapprovereject && ($caneditcollection || $caneditallassets ))
@@ -50,8 +50,9 @@
 					data-entityid="${entity.id}"
 					data-removinghitssessionid="$hits.getSessionId()"
 					data-ajaxreloadtargets="dataeditedreload"
-					title="[[Remove selected assets from]]: #text($entity)"
-					href="$removefrom" >[[Remove]] $!hits.getSelectionSize() [[selected assets from]]: #text($entity)</a>
+					data-confirm="[[Are you sure to remove]] $hits.getSelectionSize() [[selected assets from]]: #text($entity)?"
+					title="[[Remove]] $hits.getSelectionSize() [[selected assets from]]: #text($entity)"
+					href="$removefrom" >[[Remove]] $hits.getSelectionSize() [[selected assets from]]: #text($entity)</a>
 			</li>
 		#end
 		
@@ -63,7 +64,7 @@
 	 		<li><a class="dropdown-item emdialog"
 	 			data-dialogid="deleteasset"
 	 			data-maxwidth="600" 
-	 			href="$deleteurl">[[Delete]] $!hits.getSelectionSize() [[selected assets]]</a></li>
+	 			href="$deleteurl">[[Delete]] $hits.getSelectionSize() [[selected assets]]</a></li>
 	   	#end 
 	   	
 	   	#if($canprintpreview)
