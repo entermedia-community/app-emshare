@@ -5,15 +5,7 @@
 		"module": {
 			"type": "string",
 			"description": "The name of the module. Use 'all' to indicate all modules.",
-			"enum": [
-        "all",
-        #foreach($module in $schema.modules)
-          #if($foreach.count > 1),#end 
-          #if($module.getId() != "asset")
-            #jesc("$module.getId()|$module.getName()")
-          #end
-        #end
-      ]
+			"enum": ["all"#ifnotnull($modulesenum.names), $modulesenum.names #end]
 		},
     "question": {
       "type": "string",
