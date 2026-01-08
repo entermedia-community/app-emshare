@@ -1,19 +1,10 @@
 <div class="d-flex flex-column">
   <strong class="ai-suggestions-title mb-1">[[Search examples]]:</strong>
   <ul class="ai-suggestions">
-    #set( $count = 0 )
-    #foreach( $module in $userprofile.getEntities() )
-      #if($module.getBoolean("showonsearch") && $module.id != "asset" && $count < 5)
-        #set( $entity = $mediaarchive.query($module.id).searchOne() )
-        #set( $entityname = "#text($entity)" )
-        #if( $entityname )
-          #set( $str = $foreach.count % 3 )
-          <li class="ai-suggestion autoprefixchatmsg" data-prefix="#if( $str == 0 ) Search for #else Find #end $entityname in #text($module)">
-            #if( $str == 0 ) Search for #else Find #end <u>$entityname</u> in <u>#text($module)</u>
-          </li>
-          #set( $count = $count + 1 )
-        #end
-      #end
+    #foreach( $suggestion in $suggestions )
+      <li class="ai-suggestion autoprefixchatmsg" data-prefix="$suggestion">
+        $suggestion
+      </li>
     #end 
   </ul>
 </div>
