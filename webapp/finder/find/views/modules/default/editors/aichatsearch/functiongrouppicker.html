@@ -1,18 +1,22 @@
 #set($functiongroups = $mediaarchive.query("functiongroup").sort("ordering").search())
 
+
 #set($selectedgroup = $currentchannel.get("functiongroup"))
 
 <div class="ai-functions mx-2">
-  <strong class="text-secondary mr-2">Chat Mode:</strong>
-  #foreach( $functiongroup in $functiongroups )
-    <a class="ajax ai-func #if($selectedgroup == $functiongroup.getId())active#end mr-2"
-      href="$edithome/functiongroupsave.html"
-      data-targetdiv="aichatsearch"
-      data-channel="$!{currentchannel.getId()}"
-      data-functiongroup="$functiongroup.getId()"
-      data-oemaxlevel="1">
-      <i class="bi bi-${functiongroup.icon}"></i>
-      <span>$functiongroup.get("name")</span>
-    </a>
-  #end 
+  <div class="d-flex align-items-center">
+    <strong class="text-secondary mr-2">Chat Mode:</strong>
+    #foreach( $functiongroup in $functiongroups )
+      <a class="ajax ai-func #if($selectedgroup == $functiongroup.getId())active#end mr-2"
+        href="$edithome/functiongroupsave.html"
+        data-targetdiv="aichatsearch"
+        data-channel="$!{currentchannel.getId()}"
+        data-functiongroup="$functiongroup.getId()"
+        data-oemaxlevel="1">
+        <i class="bi bi-${functiongroup.icon}"></i>
+        <span>$functiongroup.get("name")</span>
+      </a>
+    #end 
+  </div>
+  $pages.include("${edithome}/options/index.html", $context)
 </div>
