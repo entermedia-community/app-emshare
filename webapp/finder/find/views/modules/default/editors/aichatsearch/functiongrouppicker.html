@@ -1,39 +1,18 @@
 #set($functiongroups = $mediaarchive.query("functiongroup").sort("ordering").search())
 
-<div class="msg-bubble ai-suggestions">
-  <div class="chatterbox-chat" role="alert">
-    <div class="chat-icon">
-		
-      <a href="#" title="AI Agent" class="msg-avt">
-        <img src="${edithome}/chatterbox/images/aiagent.svg" class="img-fluid">
-      </a>
-    </div>
-    
-    <div class="chat-msg">
-      <div class="chat-author">
-        <strong>AI Agent</strong>
-      </div>
-      
-      <div class="msg-body">
-        <div class="msg-body-content">
-          <p>
-            <strong>What would you like to chat about today?</strong>
-          </p>
-          <div class="ai-intentions mb-1">
-            #foreach( $functiongroup in $functiongroups )
-              <a class="ajax btn btn-cta mr-2"
-                href="$edithome/functiongroupsave.html"
-                data-targetdiv="aichatsearch"
-                data-channel="$!{currentchannel.getId()}"
-                data-functiongroup="$functiongroup.getId()"
-                data-oemaxlevel="1">
-                <i class="bi bi-${functiongroup.icon} mr-1"></i> $functiongroup.get("name")
-              </a>
-            #end 
-          </div>
-        </div>
-      </div>
-    </div> 
+#set($selectedgroup = $currentchannel.get("functiongroup"))
 
-  </div>
+<div class="ai-functions mx-2">
+  <strong class="text-secondary mr-2">Chat Mode:</strong>
+  #foreach( $functiongroup in $functiongroups )
+    <a class="ajax ai-func #if($selectedgroup == $functiongroup.getId())active#end mr-2"
+      href="$edithome/functiongroupsave.html"
+      data-targetdiv="aichatsearch"
+      data-channel="$!{currentchannel.getId()}"
+      data-functiongroup="$functiongroup.getId()"
+      data-oemaxlevel="1">
+      <i class="bi bi-${functiongroup.icon}"></i>
+      <span>$functiongroup.get("name")</span>
+    </a>
+  #end 
 </div>
