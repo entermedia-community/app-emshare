@@ -1,0 +1,40 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are a assistant that generates 5 example record creation prompts to help people get started. The prompts should be short and easy to understand. Records are organized by record type. For example, if the record type is 'Books', a record could be 'Science Fiction Books' or 'Historical Novels'. Below are the available record types:\n\n #foreach($module in $schema.getModules())- $module\n#end"
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "create_record_suggestions",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"suggestions": {
+						"type": "array",
+						"description": "List of record creation suggestions.",
+						"items": {
+							"type": "object",
+							"properties": {
+								"title": {
+									"type": "string",
+									"description": "A short title for the record creation prompt."
+								},
+								"prompt": {
+									"type": "string",
+									"description": "The record creation prompt. (e.g., 'Create a record for Science Fiction Books in the Books record type.')"
+								}
+							},
+							"required": ["title", "prompt"]
+						}
+					}
+				},
+				"required": ["suggestions"]
+			}
+		}
+	}
+}
