@@ -68,21 +68,29 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 							#end
 							</td>
 						<td>
+							
 							#if($activity.moduleid == "asset")
 								#if($operation == "assetsremoved")
-									<a href="#" class="btn btn-xs btn-dark">[[Restore]]</a>
+									##<a href="#" class="btn btn-xs btn-dark">[[Restore]]</a>
 								#elseif($operation == "assetsadded")
-									<a href="#" class="btn btn-xs btn-dark">[[Remove]]</a>
+									##<a href="#" class="btn btn-xs btn-dark">[[Remove]]</a>
 								#end
 							#else
-								<a href="${edithome}/restoresnapshot.html" 
+								#if($operation == "entitysaved")
+								<a href="${edithome}/activityhistory/restoresnapshot.html" 
 									class="btn btn-xs btn-dark ajax"
 									data-oemaxlevel="1"
 									data-historyid="$activity.getId()"
 									data-entityid="$entity.getId()"
 									data-toastmessage="[[Restore]]..." 
 									data-toastsuccess="[[Restore Complete]]"
-									data-targetdiv="$edithomeid">[[Restore]]</a>
+									data-targetdiv="$edithomeid"
+									data-confirm="[[Are you sure to restore the Entity Metadata?]]">[[Restore]]</a>
+								#elseif($operation == "assetsremoved")
+									## Not implemented
+								#elseif($operation == "entitysaved")
+									## Not implemented
+								#end
 							#end
 						</td>
 					</tr>
