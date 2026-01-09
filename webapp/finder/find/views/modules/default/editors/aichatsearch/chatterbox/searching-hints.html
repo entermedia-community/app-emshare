@@ -1,4 +1,3 @@
-#if(!$topmenu.isEmpty())
 <div class="msg-bubble ai-suggestions">
   <div class="chatterbox-chat" role="alert">
     <div class="chat-icon">
@@ -23,27 +22,10 @@
             &mdash; Find assets similar to a given example.<br>
             &mdash; Assist with finding specific types of assets.<br>
             &mdash; Help you navigate through different categories.<br><br>
-
-            Below are some example queries that you can try:
           </p>
-          <ul class="ai-search-suggestions">
-            #set( $count = 0 )
-            #foreach( $module in $userprofile.getEntities() )
-              #if($module.getBoolean("showonsearch") && $module.id != "asset" && $count < 5)
-                #set( $entity = $mediaarchive.query($module.id).searchOne() )
-                #set( $entityname = "#text($entity)" )
-                #if( $entityname )
-                  #set( $str = $foreach.count % 3 )
-                  <li class="ai-suggest" role="button">#if( $str == 0 ) Search for #else Find #end <u>$entityname</u> in <u>#text($module)</u></li>
-                  #set( $count = $count + 1 )
-                #end
-              #end
-            #end 
-          </ul>
         </div>
       </div>
     </div> 
 
   </div>
 </div>
-#end

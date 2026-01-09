@@ -1,0 +1,21 @@
+#set($showsuggestions = $messages.size() == 0)
+#if(!$showsuggestions)
+  #set($showsuggestions = $context.getRequestParameter("showsuggestions"))
+#end
+
+<div class="ai-suggestions-container #if($showsuggestions)expanded#end">
+  #if($currentchannel.get("functiongroup") == "Searching")
+    $pages.include("${edithome}/suggestions/searching.html", $context)
+  #elseif($currentchannel.get("functiongroup") == "Questions")
+    $pages.include("${edithome}/suggestions/questions.html", $context)
+  #elseif($currentchannel.get("functiongroup") == "Creation")
+    $pages.include("${edithome}/suggestions/creation.html", $context)
+  #elseif($currentchannel.get("functiongroup") == "Tutorials")
+    $pages.include("${edithome}/suggestions/tutorials.html", $context)
+  #end
+</div>
+#if($showsuggestions)
+<a class="ai-func-toggle">[[Hide Suggestions]]</a>
+#else
+<a class="ai-func-toggle">[[Show Suggestions]]</a>
+#end
