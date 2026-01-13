@@ -1,0 +1,91 @@
+[
+	{
+		"type": "draw2d.shape.composite.Group",
+		"id": "${groupid}",
+		"x": ${x},
+		"y": ${y},
+		"width": ${width},
+		"height": ${height},
+		"bgColor": "aqua",
+		"color": "royalblue",
+		"stroke": 1,
+		"cssClass": "labelGroup",
+		"radius": 4,
+		"ports": [
+			{
+				"id": "${groupid}-port-in",
+				"name": "labelPortLeft",
+				"type": "draw2d.HybridPort",
+				"bgColor": "#60729e",
+				"color": "#4d5d80",
+				"port": "draw2d.HybridPort",
+				"locator": "draw2d.layout.locator.XYRelPortLocator",
+				"width": 16,
+				"height": 16,
+				"locatorAttr": {
+					"x": 0,
+					"y": 50
+				}
+			},
+			{
+				"id": "${groupid}-port-out",
+				"name": "labelPortRight",
+				"type": "draw2d.HybridPort",
+				"bgColor": "#60729e",
+				"color": "#4d5d80",
+				"port": "draw2d.HybridPort",
+				"locator": "draw2d.layout.locator.XYRelPortLocator",
+				"width": 16,
+				"height": 16,
+				"locatorAttr": {
+					"x": 100,
+					"y": 50
+				}
+			}
+		]
+	},
+	{
+		"type": "draw2d.shape.basic.Label",
+		"id": "${groupid}-title",
+		"x": ${labelx},
+		"y": ${labely},
+		"text": "${label}",
+		"textAnchor": "middle",
+		"stroke": 0,
+		"fontSize": 16,
+		"fontColor": "#4d5d80",
+		"bgColor": "none",
+		"selectable": false,
+		"draggable": false,
+		"cssClass": "titleLabel",
+		"composite": "${groupid}"
+	}
+	#ifnotnull($parent)
+	,
+	{
+		"type": "draw2d.Connection",
+		"id": "${groupid}-connection",
+		"alpha": 1,
+		"selectable": true,
+		"draggable": true,
+		"angle": 0,
+		"userData": {},
+		"cssClass": "connection",
+		"stroke": 2,
+		"color": "rgba(77,93,128,1)",
+		"outlineStroke": 0,
+		"outlineColor": "rgba(0,0,0,0)",
+		"policy": "draw2d.policy.line.OrthogonalSelectionFeedbackPolicy",
+		"router": "draw2d.layout.connection.InteractiveManhattanConnectionRouter",
+		"radius": 20,
+		"source": {
+			"node": "${parent}",
+			"port": "rightPort"
+		},
+		"target": {
+			"node": "${groupid}",
+			"port": "leftPort"
+		}
+	}
+	#end
+]
