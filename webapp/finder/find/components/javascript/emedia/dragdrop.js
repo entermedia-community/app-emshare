@@ -109,15 +109,21 @@ pageload = function (hash) {
 onloadselectors = function () {
 	// autoheight("#emcontent");
 
-	lQuery("a.toggleajax").livequery("click", toggleajax);
-
-	lQuery("a.updatebasket").livequery("click", updatebasket);
-	lQuery("a.updatebasketmediaviewer").livequery(
-		"click",
-		updatebasketmediaviewer
-	);
-
-	// $("a.updatebasketonasset").livequery('click', updatebasketonasset);
+	if (typeof toggleajax === "function")
+	{
+		lQuery("a.toggleajax").livequery("click", toggleajax);
+	}
+	
+	if (typeof updatebasket === "function")
+		{
+		lQuery("a.updatebasket").livequery("click", updatebasket);
+		lQuery("a.updatebasketmediaviewer").livequery(
+			"click",
+			updatebasketmediaviewer
+		);
+		// $("a.updatebasketonasset").livequery('click', updatebasketonasset);
+	}
+	
 
 	lQuery(".em-delete").livequery("click", function (e) {
 		var data = jQuery(this).data();
