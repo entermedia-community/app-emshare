@@ -1,0 +1,34 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are an assistant that creates a tutorial outline from a tutorial title provided by the user."
+		},
+		{
+			"role": "user",
+			"content": #jesc("Create a tutorial outline for the following tutorial title: ${tutorialtitle}")
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "create_tutorial_outline",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"function_name": {
+						"type": "string",
+						"description": "A short function name to be called when user selects this tutorial. (e.g. 'learningPythonTutorial', 'photoEditingBasics')"
+					},
+					"outline": {
+						"type": "string",
+						"description": "A detailed outline of the tutorial including main topics and subtopics to be covered. Use bullet points or numbered lists for clarity."
+					}
+				},
+				"required": ["function_name", "outline"]
+			}
+		}
+	}
+}

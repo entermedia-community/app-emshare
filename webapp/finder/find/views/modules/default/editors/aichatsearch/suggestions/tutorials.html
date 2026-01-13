@@ -1,18 +1,15 @@
-<div class="d-flex flex-column">
+<div class="d-flex flex-column" id="tutorials-suggestions">
   <strong class="ai-suggestions-title mb-1">[[Tutorials]]:</strong>
-  <ul class="ai-suggestions">
-    <li class="ai-suggestion">
-      [[Learn Python]]
-    </li>
-    <li class="ai-suggestion">
-      [[Project Management Basics]]
-    </li>
-    <li class="ai-suggestion">
-      [[Digital Marketing Strategies]]
-    </li>
-    <li class="ai-suggestion">
-      [[Graphic Design Fundamentals]]
-    </li>
-  </ul> 
+  #if($tutorials.isEmpty())
+    <p class="text-muted mx-2 my-0">[[No featured tutorials found.]]</p>
+  #else
+    <ul class="ai-suggestions">
+      #foreach($tutorial in $tutorials)
+      <li class="ai-suggestion autoprefixchatmsg" data-prefix="Start Tutorial: ${tutorial.name}">
+        ${tutorial.name}
+      </li>
+      #end
+    </ul> 
+  #end
   $pages.include("${edithome}/suggestions/tutorials-btn.html", $context)
 </div>
