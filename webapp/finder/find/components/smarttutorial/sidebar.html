@@ -1,0 +1,62 @@
+#set( $logourl = "$!{siteroot}$themeprefix/lighttheme/logo.png")
+
+#set( $themeid = $context.getRequestParameter("themeid"))
+#if(!$themeid)
+	#set( $themeid = $content.get("themeid") )
+#end
+#set($data = $mediaarchive.getData("theme", "lighttheme"))
+#set($bgcolor = $data["navbar-primary"])
+#set($strokeColor = $data["navbar-secondary"])
+#ifnull($bgcolor)
+  #set($bgcolor = "#333e55")
+#end
+#ifnull($strokeColor)
+  #set($strokeColor = "#202835")
+#end
+
+<div class="org-left-sidebar">
+  <input
+    id="logoPicker"
+    type="hidden"
+    value="$logourl"
+    data-bg="$bgcolor"
+    data-stroke="$strokeColor"
+    style="display: none"
+  />
+  <div class="d-flex flex-column align-items-center my-2">
+    <div id="addLabelBtn" class="round-btn">
+      <img src="$siteroot$apphome/theme/images/signpost.svg" alt="[[Add Labels]]" title="[[Add Label]]" style="width: 50px" />
+    </div>
+    <label class="text-brand mt-1 mb-0 fw-bold" for="addLabelBtn">
+      New Outline
+    </label>
+  </div>
+
+  <div class="viewport-nav">
+    <button id="vToTop" title="[[Move Up (Ctrl + Scroll Up)]]">
+      <i class="bi bi-chevron-up"></i>
+    </button>
+    <div class="w-100 d-flex justify-content-between">
+      <button id="vToLeft" title="[[Move Left (Ctrl + Shift + Scroll Up)]]">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      <button id="vToRight" title="[[Move Right (Ctrl + Shift + Scroll Down)]]">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+    <button id="vToBottom" title="[[Move Down (Ctrl + Scroll Down)]]">
+      <i class="bi bi-chevron-down"></i>
+    </button>
+  </div>
+  <div class="canvas-zoom">
+    <button id="zoomInBtn">
+      <i class="bi bi-zoom-in"></i>
+    </button>
+    <button id="zoomResetBtn">
+      <i class="bi bi-crosshair"></i>
+    </button>
+    <button id="zoomOutBtn">
+      <i class="bi bi-zoom-out"></i>
+    </button>
+  </div>
+</div>
