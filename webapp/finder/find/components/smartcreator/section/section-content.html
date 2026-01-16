@@ -1,0 +1,64 @@
+#ifnull($type)
+  #set($type = $context.getRequestParameter("type"))
+#end
+#ifnull($type)
+  #set($type = "paragraph")
+#end
+<div class="creator-section-content">
+  <div class="editable-content">
+    #if($type == "header")
+    <h1>
+      Sample Header Title
+    </h1>
+    #elseif($type == "paragraph")
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </p>
+    #elseif($type == "image")
+    <img src="http://emedia.localhost.com:8080/site/mediadb/services/module/asset/generated/Projects/Chatters/deer.jpg/image3000x3000.webp" alt="Sample Image" style="max-width: 100%;" />
+    <p class="mt-2 text-secondary">
+      Figure 1: Sample Image Caption
+    </p>
+    #elseif($type == "video")
+    <video width="640" controls  >
+      <source src="https://9e3a6e8b-5373-4503-af0a-82be1a4bdc21.mdnplay.dev/shared-assets/videos/flower.webm" type="video/mp4"> 
+      Your browser does not support HTML video.
+    </video>
+    #end
+  </div>
+
+  <div class="ai-content-helper">
+    <div class="dropdown light-dropdown dropleft">
+      <a class="dropdown-toggle no-icon" type="button" data-toggle="dropdown">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="royalblue" viewBox="0 0 24 24" width="20" height="20">
+          <path d="m19 9 1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25z"></path>
+        </svg>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right">
+        <a class="dropdown-item" data-type="generate">
+          <i class="bi bi-card-text"></i>
+          <span class="ml-2">
+            Generate Text from Prompt
+          </span>
+        </a>
+        <a class="dropdown-item" data-type="grammar">
+          <i class="bi bi-type"></i>
+          <span class="ml-2">
+            Fix Grammar & Spelling
+          </span>
+        </a>
+        <a class="dropdown-item" data-type="extend">
+          <i class="bi bi-menu-up"></i>
+          <span class="ml-2">
+            Improve and Extend Text
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="action-btn-group light-dropdown">
+    $context.putPageValue("actiontype","content")
+    $pages.include("./section-action.html", $context)
+  </div>
+</div>
