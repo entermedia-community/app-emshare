@@ -31,7 +31,6 @@ $(document).ready(function () {
 			var editor = $(this)
 				.closest(".creator-section-content")
 				.find(".editable-content");
-			editor.addClass("active-editor");
 			editor.data("imagepickerhidden", "true");
 			$(window).trigger("inlinehtmlstart", [editor]);
 		} else if (action === "move-up" || action === "move-down") {
@@ -53,8 +52,7 @@ $(document).ready(function () {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		var editor = $(this).find(".editable-content");
-		if (!editor.hasClass("active-editor")) {
-			editor.addClass("active-editor");
+		if (!editor.hasClass("ck")) {
 			editor.data("imagepickerhidden", "true");
 			$(window).trigger("inlinehtmlstart", [editor]);
 		}
