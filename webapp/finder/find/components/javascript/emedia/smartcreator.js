@@ -47,11 +47,11 @@ $(document).ready(function () {
 			// TODO: Update the section order in the backend
 		}
 	});
-	var $a = $(
-		'<a href="/site/find/components/smartcreator/index.html" class="emdialog" data-oemaxlevel="1" data-tutorialid="AZu-haHOtKTCl_ZN-pzS"></a>'
-	);
-	$(document.body).append($a);
-	$a.trigger("click");
+	// var $a = $(
+	// 	'<a href="/site/find/components/smartcreator/index.html" class="emdialog" data-oemaxlevel="1" data-tutorialid="AZu-haHOtKTCl_ZN-pzS"></a>'
+	// );
+	// $(document.body).append($a);
+	// $a.trigger("click");
 
 	$("#closecreator").on("click", function () {
 		console.log("object");
