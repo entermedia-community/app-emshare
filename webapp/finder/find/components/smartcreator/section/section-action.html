@@ -20,38 +20,38 @@
       </span>
     </a>
     <div class="dropdown-menu">
-      <a class="dropdown-item" data-type="header">
-        <i class="bi bi-type-h1"></i>
-        <span class="ml-2">Header</span>
+      #set($componenttypes = $mediaarchive.getList("componenttype"))
+      #foreach($componenttype in $componenttypes)
+      <a class="dropdown-item ajax"
+        data-type="${componenttype.id}"
+        data-targetdiv="creatorcontent-${section.id}"
+        href="$applink/components/smartcreator/section/section-content.html"
+        data-oemaxlevel="1"
+        data-targetappendtype="append">
+        <i class="bi bi-${componenttype.icon}"></i>
+        <span class="ml-2">${componenttype.name}</span>
       </a>
-      <a class="dropdown-item" data-type="paragraph">
-        <i class="bi bi-paragraph"></i>
-        <span class="ml-2">Paragraph</span>
-      </a>
-      <a class="dropdown-item" data-type="image">
-        <i class="bi bi-image"></i>
-        <span class="ml-2">Image</span>
-      </a>
-      <a class="dropdown-item" data-type="video">
-        <i class="bi bi-camera-video"></i>
-        <span class="ml-2">Video</span>
-      </a>
+      #end
     </div>
   </div>
+  <a class="action-btn" data-action="edit">
+    <i class="fas fa-edit"></i>
+    <span class="ml-2">
+      Edit
+    </span>
+  </a>
 #end
-<a class="action-btn" data-action="edit">
-  <i class="fas fa-edit"></i>
-  <span class="ml-2">
-    Edit
-  </span>
-</a>
 <a class="action-btn" data-action="copy">
   <i class="fas fa-copy"></i>
   <span class="ml-2">
     Duplicate
   </span>
 </a>
-<a class="action-btn" data-action="delete">
+<a
+  class="action-btn"
+  data-action="delete"
+  href="$applink/components/smartcreator/section/delete.html"
+  data-sectionid="${section.id}">
   <i class="fas fa-trash-alt"></i>
   <span class="ml-2">
     Delete

@@ -31,6 +31,7 @@ $(document).ready(function () {
 			var editor = $(this)
 				.closest(".creator-section-content")
 				.find(".editable-content");
+			editor.addClass("active-editor");
 			editor.data("imagepickerhidden", "true");
 			$(window).trigger("inlinehtmlstart", [editor]);
 		} else if (action === "move-up" || action === "move-down") {
@@ -47,14 +48,36 @@ $(document).ready(function () {
 			// TODO: Update the section order in the backend
 		}
 	});
+
+	lQuery(".creator-section-content").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		var editor = $(this).find(".editable-content");
+		if (!editor.hasClass("active-editor")) {
+			editor.addClass("active-editor");
+			editor.data("imagepickerhidden", "true");
+			$(window).trigger("inlinehtmlstart", [editor]);
+		}
+	});
+
+	lQuery(".section-edit").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		$(this).closest(".creator-section-title").addClass("edit-mode");
+	});
+	lQuery(".section-cancel").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		$(this).closest(".creator-section-title").removeClass("edit-mode");
+	});
+
 	// var $a = $(
-	// 	'<a href="/site/find/components/smartcreator/index.html" class="emdialog" data-oemaxlevel="1" data-tutorialid="AZu-haHOtKTCl_ZN-pzS"></a>'
+	// 	'<a href="/site/find/components/smartcreator/index.html" class="emdialog" data-oemaxlevel="1" data-tutorialid="AZvHpBlhg8ry2CWCtU8N"></a>'
 	// );
 	// $(document.body).append($a);
 	// $a.trigger("click");
 
-	$("#closecreator").on("click", function () {
-		console.log("object");
+	lQuery("#closecreator").livequery("click", function () {
 		closeemdialog($(this).closest(".modal"));
 	});
 });
