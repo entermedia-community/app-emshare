@@ -41,6 +41,12 @@ $(document).ready(function () {
 				.find(".editable-content");
 			$(window).trigger("inlinehtmlstart", [editor]);
 		} else if (action === "delete") {
+			var msg = $(this).data("confirm");
+			if (msg) {
+				if (!confirm(msg)) {
+					return;
+				}
+			}
 			var dataid = $(this).data("id");
 			var url = applink + "/components/smartcreator/section/delete.html";
 			$.ajax({
