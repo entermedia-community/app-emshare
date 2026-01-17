@@ -25,23 +25,79 @@ $(document).ready(function () {
 	lQuery(".action-btn").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
+
+		var section = $(this).closest(".creator-section-content");
+		var dataType = "componentcontent";
+		if (!section.length > 0) {
+			section = $(this).closest(".creator-section");
+			dataType = "componentsection";
+		}
+
 		var action = $(this).data("action");
-		console.log(action);
+
 		if (action === "edit") {
 			var editor = $(this)
 				.closest(".creator-section-content")
 				.find(".editable-content");
-			editor.data("imagepickerhidden", "true");
 			$(window).trigger("inlinehtmlstart", [editor]);
+		} else if (action === "delete") {
+			var dataid = $(this).data("id");
+			var url = applink + "/components/smartcreator/section/delete.html";
+			$.ajax({
+				url: url,
+				data: {
+					searchtype: dataType,
+					id: dataid,
+				},
+				success: function () {
+					section.remove();
+				},
+			});
 		} else if (action === "move-up" || action === "move-down") {
-			var section = $(this).closest(".creator-section-content");
-			if (!section.length > 0) {
-				section = $(this).closest(".creator-section");
-			}
+			var source_id = section.data("dataid");
+			var source_order = section.data("ordering");
+			if (!source_id) return;
+
+			var url = applink + "/components/smartcreator/section/order.html";
+
 			if (action === "move-up") {
-				section.prev().before(section);
+				var target = section.prev();
+				if (!target) return;
+				var target_id = target.data("dataid");
+				var target_order = target.data("ordering");
+
+				$.ajax({
+					url: url,
+					data: {
+						searchtype: dataType,
+						source: source_id,
+						sourceorder: source_order,
+						target: target_id,
+						targetorder: target_order,
+					},
+					success: function () {
+						target.before(section);
+					},
+				});
 			} else {
-				section.next().after(section);
+				var target = section.next();
+				if (!target) return;
+				var source_id = target.data("dataid");
+				var target_order = target.data("ordering");
+
+				$.ajax({
+					url: url,
+					data: {
+						searchtype: dataType,
+						source: source_id,
+						sourceorder: source_order,
+						target: target_id,
+						targetorder: target_order,
+					},
+					success: function () {
+						target.after(section);
+					},
+				});
 			}
 
 			// TODO: Update the section order in the backend
@@ -53,7 +109,6 @@ $(document).ready(function () {
 		e.stopImmediatePropagation();
 		var editor = $(this).find(".editable-content");
 		if (!editor.hasClass("ck")) {
-			editor.data("imagepickerhidden", "true");
 			$(window).trigger("inlinehtmlstart", [editor]);
 		}
 	});

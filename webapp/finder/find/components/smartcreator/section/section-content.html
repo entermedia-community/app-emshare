@@ -22,7 +22,11 @@
 
 $context.putPageValue("data", $data)
 
-<div class="creator-section-content">
+<div class="creator-section-content"
+  #ifnotnull($componentcontent)
+    data-dataid="$componentcontent.id"
+    data-ordering="$componentcontent.ordering"
+  #end>
   <div class="editable-content"
     data-sectionid="${section.id}"
     #ifnotnull($componentcontent)
@@ -35,7 +39,6 @@ $context.putPageValue("data", $data)
   </div>
   $pages.include("./ai-action.html", $context)
   <div class="action-btn-group light-dropdown">
-    $context.putPageValue("actiontype", "content")
-    $pages.include("./section-action.html", $context)
+    $pages.include("./component-action.html", $context)
   </div>
 </div>

@@ -1,4 +1,8 @@
-<div class="creator-section">
+<div class="creator-section"
+  #ifnotnull($section)
+    data-dataid="$section.id"
+    data-ordering="$section.ordering"
+  #end>
   $pages.include("./section-title.html", $context)
   <div class="creator-section-contents soft-scrollbar" id="creatorcontent-${section.id}">
     #set($componentcontents = $mediaarchive.query("componentcontent").exact("componentsectionid", $section.id).sort("ordering").search())
