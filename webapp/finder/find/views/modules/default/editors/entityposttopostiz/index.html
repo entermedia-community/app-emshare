@@ -69,13 +69,13 @@
 					</div>
 				
 					<div class="form-group">
-						<label for="date" class="fw-bold">Post Date (optional):</label>
+						<label for="date" class="fw-bold">[[Post Date (optional)]]:</label>
 						#set($postdate = $entity.get("entity_date"))
 						<input type="datetime-local" name="date.value" class="form-control" value="$context.getDateTime($postdate, "yyyy-MM-dd'T'HH:mm")" />
 					</div>
 					
 					<div class="form-group">
-						<label for="date" class="fw-bold">Asset (optional):</label>
+						<label for="date" class="fw-bold">[[Asset (optional)]]:</label>
 						#set( $value = $entity.get("primarymedia") )
 						#ifnull($value)
 							#set( $value = $entity.get("primaryimage") )
@@ -95,26 +95,35 @@
 					</div>
 	
 					<div class="form-group">
-						<label class="fw-bold">Select Channels:</label>
+						<label class="fw-bold">[[Select Channels]]:</label>
 						<div class="postiz-channels">
 							#if($postoptions && $postoptions.size() > 0)
 								#foreach($postoption in $postoptions)
-									<label class="postiz-channel" for="integration_${postoption.id}" title="#ID: $postoption.id">
+								$postoption
+								<div class="postiz-channel"> 
+									<label  for="integration_${postoption.id}" title="#ID: $postoption.id">
 										<input type="checkbox" name="integrations" value="$postoption.id" id="integration_${postoption.id}">
 										<div style="width:32px;height: 32px;" class="mx-2">
 											<img src="$postoption.picture" class="img-fluid rounded-circle" />
 										</div>
 										<span>$postoption.name</span>
 									</label>
+									
+									##only for reddit for now
+									
+									#if($postoption.identifier == "reddit")
+										$pages.include("./channels/reddit.html", $context)
+									#end
+									</div>
 								#end
 							#else
-								<p>No integrations available.</p>
+								<p>[[No integrations available]].</p>
 							#end
 						</div>
 					</div>
 					
 					<div class="form-group w-100 text-center mt-2">
-						<button type="submit" class="btn btn-lg btn-primary">Send It!</button>
+						<button type="submit" class="btn btn-lg btn-primary">[[Send It!]]</button>
 					</div>
 	
 				</form>
