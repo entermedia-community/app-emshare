@@ -20,10 +20,13 @@
 
 #set($data = $componentcontent.content)
 
-$context.putPageValue("data", $data)
+#ifnotnull($data)
+  $context.putPageValue("data", $data)
+#end
 
 <div class="creator-section-content"
   #ifnotnull($componentcontent)
+    id="component-$componentcontent.id"
     data-dataid="$componentcontent.id"
     data-ordering="$componentcontent.ordering"
   #end>
@@ -34,11 +37,15 @@ $context.putPageValue("data", $data)
     #end
     data-componenttype="$type"
     data-ordering="$ordering"
-    data-savepath="$applink/components/smartcreator/section/create-content.html">
+    data-savepath="$applink/components/smartcreator/section/create-content.html"
+    title="[[Click to edit]]"
+    >
     $pages.include("./types/${type}.html", $context)
   </div>
   $pages.include("./ai-action.html", $context)
-  <div class="action-btn-group light-dropdown">
-    $pages.include("./component-action.html", $context)
+  <div class="action-btn-container">
+    <div class="action-btn-group light-dropdown">
+      $pages.include("./component-action.html", $context)
+    </div>
   </div>
 </div>
