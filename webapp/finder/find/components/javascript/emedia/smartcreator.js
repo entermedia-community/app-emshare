@@ -144,6 +144,33 @@ $(document).ready(function () {
 		}
 	});
 
+	lQuery(".section-rename").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		var btn = $(this);
+		btn.prop("disabled", true);
+		var tutorialId = btn.data("tutorialid");
+		var sectionId = btn.data("sectionid");
+		var sectionEl = btn.closest(".creator-section-title");
+		var newTitle = sectionEl.find("textarea").val();
+		var url = applink + "/components/smartcreator/section/create-section.html";
+		$.ajax({
+			url: url,
+			data: {
+				sectionid: sectionId,
+				tutorialid: tutorialId,
+				name: newTitle,
+			},
+			success: function () {
+				sectionEl.find("h3").text(newTitle);
+				sectionEl.removeClass("edit-mode");
+			},
+			complete: function () {
+				btn.prop("disabled", false);
+			},
+		});
+	});
+
 	lQuery(".creator-section-content").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
