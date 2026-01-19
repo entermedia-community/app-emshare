@@ -196,4 +196,12 @@ $(document).ready(function () {
 	$(document).on("click", "#closecreator", function () {
 		closeemdialog($(this).closest(".modal"));
 	});
+
+	lQuery(".creator-section-content.new-content").livequery(function () {
+		$(this).removeClass("new-content");
+		var editorEl = $(this).find(".editable-content");
+		if (!editorEl.hasClass("ck")) {
+			$(window).trigger("inlinehtmlstart", [editorEl]);
+		}
+	});
 });
