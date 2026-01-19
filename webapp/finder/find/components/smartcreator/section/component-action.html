@@ -16,12 +16,18 @@
     #foreach($componenttype in $componenttypes)
     <a class="dropdown-item add-componentcontent"
       data-componenttype="${componenttype.id}"
-      data-targetdiv="component-${componentcontent.id}"
+      #ifnotnull($componentcontent)
+        data-targetdiv="component-${componentcontent.id}"
+        data-ordering="${componentcontent.ordering}"
+        data-targetappendtype="insertafter"
+      #end
+      #ifnull($componentcontent)
+        data-targetdivinner="creatorcontent-${section.id}"
+        data-ordering="0"
+      #end
       data-sectionid="${section.id}"
-      data-ordering="${componentcontent.ordering}"
       href="$applink/components/smartcreator/section/create-componentcontent.html"
-      data-oemaxlevel="1"
-      data-targetappendtype="insertafter">
+      data-oemaxlevel="1">
       <i class="bi bi-${componenttype.icon}"></i>
       <span class="ml-2">${componenttype.name}</span>
     </a>
@@ -34,6 +40,7 @@
     Duplicate
   </span>
 </a>
+#ifnotnull($componentcontent)
 <a
   class="action-btn"
   data-action="delete"
@@ -45,3 +52,4 @@
     Delete
   </span>
 </a>
+#end

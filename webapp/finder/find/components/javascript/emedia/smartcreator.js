@@ -2,7 +2,7 @@ $(document).ready(function () {
 	var applink =
 		$("#application").data("siteroot") + $("#application").data("apphome");
 
-	lQuery(".creator-maker").livequery("click", function (e) {
+	$(document).on("click", ".creator-maker", function (e) {
 		var editorEl = $(this).find(".editable-content.ck");
 		if (editorEl.length > 0) {
 			var clickedElement = $(e.target);
@@ -25,7 +25,7 @@ $(document).ready(function () {
 		}
 	});
 
-	lQuery(".add-componentcontent").livequery("click", function (e) {
+	$(document).on("click", ".add-componentcontent", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		var toBeUpdated = $(this)
@@ -40,7 +40,7 @@ $(document).ready(function () {
 		});
 	});
 
-	lQuery(".add-sectioncontent").livequery("click", function (e) {
+	$(document).on("click", ".add-sectioncontent", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		var toBeUpdated = $(this)
@@ -55,7 +55,7 @@ $(document).ready(function () {
 		});
 	});
 
-	lQuery(".action-btn").livequery("click", function (e) {
+	$(document).on("click", ".action-btn", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 
@@ -144,7 +144,7 @@ $(document).ready(function () {
 		}
 	});
 
-	lQuery(".section-rename").livequery("click", function (e) {
+	$(document).on("click", ".section-rename", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		var btn = $(this);
@@ -171,7 +171,8 @@ $(document).ready(function () {
 		});
 	});
 
-	lQuery(".creator-section-content").livequery("click", function (e) {
+	$(document).on("click", ".creator-section-content", function (e) {
+		console.log(editorEl);
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		var editorEl = $(this).find(".editable-content");
@@ -180,24 +181,19 @@ $(document).ready(function () {
 		}
 	});
 
-	lQuery(".section-edit").livequery("click", function (e) {
+	$(document).on("click", ".section-edit", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		$(this).closest(".creator-section-title").addClass("edit-mode");
 	});
-	lQuery(".section-cancel").livequery("click", function (e) {
+
+	$(document).on("click", ".section-cancel", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		$(this).closest(".creator-section-title").removeClass("edit-mode");
 	});
 
-	// var $a = $(
-	// 	'<a href="/site/find/components/smartcreator/index.html" class="emdialog" data-oemaxlevel="1" data-tutorialid="AZvHpBlhg8ry2CWCtU8N"></a>'
-	// );
-	// $(document.body).append($a);
-	// $a.trigger("click");
-
-	lQuery("#closecreator").livequery("click", function () {
+	$(document).on("click", "#closecreator", function () {
 		closeemdialog($(this).closest(".modal"));
 	});
 });
