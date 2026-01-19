@@ -40,6 +40,21 @@ $(document).ready(function () {
 		});
 	});
 
+	lQuery(".add-sectioncontent").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		var toBeUpdated = $(this)
+			.closest(".creator-section")
+			.nextAll(".creator-section");
+		$(this).runAjax(function () {
+			toBeUpdated.each(function () {
+				var currentOrder = $(this).data("ordering");
+				$(this).data("ordering", currentOrder + 1);
+				$(this).attr("data-ordering", currentOrder + 1);
+			});
+		});
+	});
+
 	lQuery(".action-btn").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
