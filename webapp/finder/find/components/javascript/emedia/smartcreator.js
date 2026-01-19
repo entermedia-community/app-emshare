@@ -2,7 +2,7 @@ $(document).ready(function () {
 	var applink =
 		$("#application").data("siteroot") + $("#application").data("apphome");
 
-	$(document).on("click", ".creator-maker", function (e) {
+	lQuery(".creator-maker").livequery("click", function (e) {
 		var editorEl = $(this).find(".editable-content.ck");
 		if (editorEl.length > 0) {
 			var clickedElement = $(e.target);
@@ -25,7 +25,7 @@ $(document).ready(function () {
 		}
 	});
 
-	$(document).on("click", ".add-componentcontent", function (e) {
+	lQuery(".add-componentcontent").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		var toBeUpdated = $(this)
@@ -40,7 +40,7 @@ $(document).ready(function () {
 		});
 	});
 
-	$(document).on("click", ".add-sectioncontent", function (e) {
+	lQuery(".add-sectioncontent").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		var toBeUpdated = $(this)
@@ -55,7 +55,7 @@ $(document).ready(function () {
 		});
 	});
 
-	$(document).on("click", ".action-btn", function (e) {
+	lQuery(".action-btn").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 
@@ -144,7 +144,7 @@ $(document).ready(function () {
 		}
 	});
 
-	$(document).on("click", ".section-rename", function (e) {
+	lQuery(".section-rename").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		var btn = $(this);
@@ -171,7 +171,7 @@ $(document).ready(function () {
 		});
 	});
 
-	$(document).on("click", ".creator-section-content", function (e) {
+	lQuery(".creator-section-content").livequery("click", function (e) {
 		console.log(editorEl);
 		e.preventDefault();
 		e.stopImmediatePropagation();
@@ -181,19 +181,19 @@ $(document).ready(function () {
 		}
 	});
 
-	$(document).on("click", ".section-edit", function (e) {
+	lQuery(".section-edit").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		$(this).closest(".creator-section-title").addClass("edit-mode");
 	});
 
-	$(document).on("click", ".section-cancel", function (e) {
+	lQuery(".section-cancel").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		$(this).closest(".creator-section-title").removeClass("edit-mode");
 	});
 
-	$(document).on("click", "#closecreator", function () {
+	lQuery("#closecreator").livequery("click", function () {
 		closeemdialog($(this).closest(".modal"));
 	});
 
