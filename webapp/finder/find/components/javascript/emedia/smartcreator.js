@@ -120,7 +120,7 @@ $(document).ready(function () {
 			} else {
 				var target = section.next();
 				if (!target.length) return;
-				var source_id = target.data("dataid");
+				var target_id = target.data("dataid");
 				var target_order = target.data("ordering");
 
 				$.ajax({
