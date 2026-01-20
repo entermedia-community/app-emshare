@@ -1,20 +1,27 @@
-<div class="creator-preview">
-  #foreach($componentsection in $componentsections)
-    <h5>${componentsection.name}</h5>
-    
-    #set($componentcontents = $mediaarchive.query("componentcontent").exact("componentsectionid", $componentsection.id).sort("ordering").search())
-
+<div class="creator-preview"
+  data-playbacksection="${playbacksection}"
+  data-playbackentityid="${playbackentityid}"
+  data-playbackentitymoduleid="${playbackentitymoduleid}">
+  <h5>${selectedsection.name}</h5>
+  
+  <div class="creator-content soft-scrollbar">
+    #set($componentcontents = $mediaarchive.query("componentcontent").exact("componentsectionid", $selectedsection.id).sort("ordering").search())
+  
     #foreach($componentcontent in $componentcontents)
       ${componentcontent.content}
     #end
+  </div>
 
-  #end
   <div class="creator-nav">
-    <a class="prev">
-      Next: Create Your First AI Tutorial
+    #ifnotnull($prevsection)
+    <a class="prev" data-ordering="${prevsection.ordering}">
+      ${prevsection.name}
     </a>
-    <a class="next">
-      Next: Create Your First AI Tutorial
+    #end
+    #ifnotnull($nextsection)
+    <a class="next" data-ordering="${nextsection.ordering}">
+      ${nextsection.name}
     </a>
+    #end
   </div>
 </div>
