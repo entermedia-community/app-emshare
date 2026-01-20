@@ -1,8 +1,8 @@
 
-<div id="header" class="mediacenterheader autostickywidth d-flex align-items-center justify-content-between px-2">
-	<div class="d-flex align-items-center">
+<div id="header" class="mediacenterheader autostickywidth d-flex justify-content-between px-2">
+	<div class="d-flex ">
 		#if( $browser.isNarrow() )
-			<button class="emdrawer btn icon-btn icon-btn mr-2 px-1" data-source="#col-sidebars" data-noheader="true"><i class="bi bi-list"></i></button>
+			<button class="emdrawer btn icon-btn icon-btn me-2 px-1" data-source="#col-sidebars" data-noheader="true"><i class="bi bi-list"></i></button>
 		#end
 		<div class="logocontainer">
 			#set ($homeurl = "$!{siteroot}$apphome/index.html")
@@ -48,7 +48,7 @@
 						#set($linkurl = $link.get("url"))
 						#ifnotnull($linkurl) 
 							<a href='$linkurl' class='dropdown-item d-flex align-items-center' title='#if( $link.deploypath != $apphome)[[Go to]] #end #text($link)'>
-								#text($link) #if( $link.deploypath == $apphome)<i class="bi bi-check-circle-fill ns ml-2"></i>#end
+								#text($link) #if( $link.deploypath == $apphome)<i class="bi bi-check-circle-fill ns ms-2"></i>#end
 							</a>
 						#end
 					#end
@@ -58,186 +58,193 @@
 		</div>
 	</div>
 	
-	#if($user)
-	<div class="z-n1 nav-btn-row">
-		#set($uploadmodules = 0)
-		#foreach ( $amodule in $userprofile.getEntities() )
-			#if($amodule.getBoolean("enableuploading"))
-				#set($uploadmodules = $uploadmodules  +1)
-			#end
+	#set($uploadmodules = 0)
+	#foreach ( $amodule in $userprofile.getEntities() )
+		#if($amodule.getBoolean("enableuploading"))
+			#set($uploadmodules = $uploadmodules  +1)
 		#end
-
-		#if( !$browser.isNarrow() )
-			#if($canviewquicksearchheader)
-				$pages.include("$apphome/components/quicksearch/search-btn.html", $context)
-			#end
-		#end
-		
-		#if($canviewaiagent)
-		<a href="$siteroot$applink/views/modules/user/editors/aichatsearch/index.html" 
-			class='btn-topnav chatEmDialog' 
-			data-dialogid="aichatsearch"
-			data-hidefooter="true" 
-			data-dialogwidth="1200"
-			title="[[AI Chat Search]]">
-			<i class="bi bi-robot" style="font-size: 18px;"></i>
-		</a> 
-		#end
-		
-		#if( $uploadmodules > 0 && $canviewupload )
-			<div class="headeruploadarea">
-				<div class="dropdown">
-					<a class="btn-topnav dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						[[Upload To]]
-					</a>
-					<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-						#foreach ( $amodule in $userprofile.getEntities() )
-							#set($amoduleid = $amodule.getId())
-							#if($amodule.getBoolean("enableuploading"))
-								#if($permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
-								
-									#set($addurl = "$siteroot$applink/views/modules/${amoduleid}/editors/pickerforuploading/index.html")
-									<a class="dropdown-item emdialog" 
-										data-hidefooter="true"
-										data-dialogid="entityuploadto"
-										href="$addurl" 
-										title="[[Upload To]] #text($amodule)"
-										data-dialogwidth="1200"	>#text($amodule)</a>
-								#end
-							#end
-						#end
-					</div>
-				</div>
-			</div>
-		#end
-		
-		#if($canviewsettings && $userprofile.hasModule("order") )
-			#set( $pendingorders = $mediaarchive.query("order").named("pendingorders").exact("checkoutstatus","pending").search($context))
-			$context.putPageValue("pendingorders", $pendingorders)
-			
-		#end
-		
-		#if($cancheckout)
-			$pages.include("$apphome/components/basket/menuitem.html", $context)
-		#end
-
-		#if($user && $canaddtofavorites)
-			<a href="$siteroot$applink/views/modules/modulesearch/editors/modulesearchbookmarks/index.html" 
-				class='ajax activelistener btn-topnav #if($content.section == "favorites") btn-cta #end' 
-				data-targetdiv="applicationmaincontent" 
-				data-oemaxlevel="3" 
-				data-clearselection="true"
-				data-clearfilters="true"
-				data-updateurl="true"
-				data-scrolltotop="true"
-				title="[[View Bookmarks]]">
-				<i class="bi bi-bookmarks-fill"></i>
-			</a> 
-		#end
-		
-		#set($guidelink = $mediaarchive.getCatalogSettingValue("guidelink"))
-		#ifnotnull($guidelink)
-			<a class="btn-topnav" target="_blank" href="$guidelink" title="[[Guides]]">
-				<i class="bi bi-book"></i>
-			</a>
-		#end
-		
-		<div class="position-relative em account-btn">
-			<div class="dropdown">
-			<button class="dropdown-toggle dropdown-toggle-btn" type="button" data-toggle="dropdown">
-				<span class="navbar-toggler-icon">
-					<i class="bi bi-person-circle"></i>
-				</span>
-			</button> 
-			
-			<div class="dropdown-menu dropdown-menu-right"> 
-				
-					#if($canviewsettings && $pendingorders.size() > 0)
-						<a href="$apphome/views/modules/order/editors/orderlistpending/index.html" 
-							class="dropdown-item ajax" 
-							data-targetdiv="applicationmaincontent" 
-							data-oemaxlevel="3" 
-							data-updateurl="true" 
-							title="[[Pending Orders]]">
-							[[Pending Orders]] ($pendingorders.size())
-						</a>
-					#end
-					## <a href="$!{siteroot}$apphome/views/dashboard/index.html" class="dropdown-item ajax" data-targetdivinner="application" data-updateurl="true" data-oemaxlevel="4" title="[[Dashboard]]">
-					## 	[[Dashboard]]
-					## </a>
-				
-				#if( $user )
-					#if( $canviewmyaccount ) 
-						<a class="dropdown-item ajax" 
-							data-targetdivinner="application" 
-							data-updateurl="true" 
-							data-oemaxlevel="4" 
-							href="$!siteroot$apphome/views/myaccount/index.html"  
-							title="$user.getScreenName() [[Account Settings]]">
-							<i class="bi bi-person-circle mr-1"></i>
-							[[My Account]]
-						</a>
-						<a class="dropdown-item ajax" data-targetdivinner="application" data-updateurl="true" data-oemaxlevel="4" href="$!siteroot$apphome/views/modules/order/editors/orderuserlist/index.html"  title="[[My Orders]]">
-							<i class="bi bi-bag mr-1"></i>
-							[[My Orders]]
-						</a>
-					#end
-					#if($desktop)
-						<a class="dropdown-item emdialog" href="$apphome/components/sidebars/localdrives/workspacedialog.html"  title="[[Desktop Settings]]">
-							<i class="bi bi-gear-fill mr-1"></i>
-							[[Desktop Settings]]
-						</a>
-					#end
-					<div class="dropdown dropleft">
-						<a class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown" style="padding-left:0.25rem">
-							<i class="bi bi-palette mr-1"></i> [[Theme]]: <strong>#text($theme)</strong>
-						</a>
-						<div class="dropdown-menu">
-							#set($themes = $mediaarchive.getList("theme") )
-							#set($currentthemeid = $userprofile.getValue("themeid") )
-							#foreach( $th in $themes)
-							<a class="dropdown-item changeuserprofile" 
-								href="$home$apphome"
-								data-propertyname="themeid"
-								data-themeid="$th.id">#if($currentthemeid==$th.id)<i class="bi bi-check-circle-fill ns mr-1"></i>#end#text($th)</a>
-							#end
-						</div>
-					</div>
-					#set( $localesearcher = $mediaarchive.getSearcher("locale") )
-					#set($currentlang = $localesearcher.searchById($context.language))
-					<div class="dropdown dropleft">
-						<a class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown" style="padding-left:0.25rem">
-							<i class="bi bi-translate mr-1"></i>
-							#if($currentlang)
-								$currentlang
-							#else
-								[[Language]]
-							#end
-						</a> 
-						<div id="language-bar-select" class="dropdown-menu">
-							#set( $languages = $localesearcher.query().named("localehits").match("enabled", "true").search($context) )
-							#foreach( $lang in $languages)
-								#set($langurl = "$home$apphome/components/languages/changelanguage.html?newlang=locale_${lang.id}&origURL=$context.getPathUrl()")
-								<a class="dropdown-item" href="#urlescape($langurl)">$lang</a>
-							#end
-						</div> 
-					</div>
-					#ifnull($desktop)
-						<a class="dropdown-item" target="_blank" href="https://emedialibrary.com/downloads.html" title="[[Download Desktop App]]">
-							<i class="bi bi-laptop mr-1"></i> [[Download Desktop App]]
-						</a>
-					#end
-					<a class="dropdown-item" href="$!siteroot$apphome/authentication/logout.html" title="$user.getScreenName() [[Logout]]">
-						<i class="bi bi-box-arrow-right mr-1"></i> [[Logout]] ($user)
-					</a> 
-				#else
-					<a class="dropdown-item" href="$!siteroot$apphome/authentication/login.html"  title="[[Login]]">
-						[[Login]]
-					</a> 
-				#end 
-			</div>
-			</div>
-		</div>
-	</div>
 	#end
+
+
+	
+	#if($user)
+	<nav class="navbar d-flex navbar-expand-lg">
+		<div class="">
+		    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					#if( !$browser.isNarrow() )
+						#if($canviewquicksearchheader)
+							$pages.include("$apphome/components/quicksearch/search-btn.html", $context)
+						#end
+					#end
+					#if($canviewaiagent)
+					<li>
+						<a href="$siteroot$applink/views/modules/user/editors/aichatsearch/index.html" 
+							class='btn-topnav chatEmDialog' 
+							data-dialogid="aichatsearch"
+							data-hidefooter="true" 
+							data-dialogwidth="1200"
+							title="[[AI Chat Search]]">
+							<i class="bi bi-robot"></i>
+						</a>
+					</li> 
+					#end
+				
+					#if( $uploadmodules > 0 && $canviewupload )
+						<li class="dropdown">
+							<a class="btn-topnav dropdown-toggle" href="#" role="button" id="dropdownMenuUploadTo" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								[[Upload To]]
+							</a>
+							<div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuUploadTo">
+								#foreach ( $amodule in $userprofile.getEntities() )
+									#set($amoduleid = $amodule.getId())
+									#if($amodule.getBoolean("enableuploading"))
+										#if($permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+										
+											#set($addurl = "$siteroot$applink/views/modules/${amoduleid}/editors/pickerforuploading/index.html")
+											<a class="dropdown-item emdialog" 
+												data-hidefooter="true"
+												data-dialogid="entityuploadto"
+												href="$addurl" 
+												title="[[Upload To]] #text($amodule)"
+												data-dialogwidth="1200"	>#text($amodule)</a>
+										#end
+									#end
+								#end
+							</div>
+						</li>
+					#end
+					#if($canviewsettings && $userprofile.hasModule("order") )
+						#set( $pendingorders = $mediaarchive.query("order").named("pendingorders").exact("checkoutstatus","pending").search($context))
+						$context.putPageValue("pendingorders", $pendingorders)
+						
+					#end
+					
+					#if($cancheckout)
+						## $pages.include("$apphome/components/basket/menuitem.html", $context)
+					#end
+					
+					#if($user && $canaddtofavorites)
+						<li><a href="$siteroot$applink/views/modules/modulesearch/editors/modulesearchbookmarks/index.html" 
+								class='ajax activelistener btn-topnav #if($content.section == "favorites") btn-cta #end' 
+								data-targetdiv="applicationmaincontent" 
+								data-oemaxlevel="3" 
+								data-clearselection="true"
+								data-clearfilters="true"
+								data-updateurl="true"
+								data-scrolltotop="true"
+								title="[[View Bookmarks]]">
+								<i class="bi bi-bookmarks-fill"></i>
+							</a>
+						</li> 
+					#end
+					#set($guidelink = $mediaarchive.getCatalogSettingValue("guidelink"))
+					#ifnotnull($guidelink)
+						<li><a class="btn-topnav" target="_blank" href="$guidelink" title="[[Guides]]">
+							<i class="bi bi-book"></i>
+						</a></li>
+					#end
+					
+				<li class="dropdown">
+					<button class="btn-topnav dropdown-toggle" type="button" data-bs-toggle="dropdown">
+						
+							<i class="bi bi-person-circle me-1"></i>
+						
+					</button> 
+					
+					<ul class="dropdown-menu dropdown-menu-md-end"> 
+						#if($canviewsettings && $pendingorders.size() > 0)
+							<li><a href="$apphome/views/modules/order/editors/orderlistpending/index.html" 
+								class="dropdown-item ajax" 
+								data-targetdiv="applicationmaincontent" 
+								data-oemaxlevel="3" 
+								data-updateurl="true" 
+								title="[[Pending Orders]]">
+								[[Pending Orders]] ($pendingorders.size())
+							</a></li>
+						#end
+						## <a href="$!{siteroot}$apphome/views/dashboard/index.html" class="dropdown-item ajax" data-targetdivinner="application" data-updateurl="true" data-oemaxlevel="4" title="[[Dashboard]]">
+						## 	[[Dashboard]]
+						## </a>
+						
+						#if( $user )
+							#if( $canviewmyaccount ) 
+								<li><a class="dropdown-item ajax" 
+									data-targetdivinner="application" 
+									data-updateurl="true" 
+									data-oemaxlevel="4" 
+									href="$!siteroot$apphome/views/myaccount/index.html"  
+									title="$user.getScreenName() [[Account Settings]]">
+									<i class="bi bi-person-circle me-1"></i>
+									[[My Account]]
+								</a></li>
+								<li><a class="dropdown-item ajax" data-targetdivinner="application" data-updateurl="true" data-oemaxlevel="4" href="$!siteroot$apphome/views/modules/order/editors/orderuserlist/index.html"  title="[[My Orders]]">
+									<i class="bi bi-bag me-1"></i>
+									[[My Orders]]
+								</a></li>
+							#end
+							#if($desktop)
+								<li><a class="dropdown-item emdialog" href="$apphome/components/sidebars/localdrives/workspacedialog.html"  title="[[Desktop Settings]]">
+									<i class="bi bi-gear-fill me-1"></i>
+									[[Desktop Settings]]
+								</a></li>
+							#end
+							
+								<li class="dropdown dropend">
+									<a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+									<i class="bi bi-palette me-1"></i> [[Theme]]: <strong>#text($theme)</strong>
+									</a>
+									<ul class="dropdown-menu">
+										#set($themes = $mediaarchive.getList("theme") )
+										#set($currentthemeid = $userprofile.getValue("themeid") )
+										#foreach( $th in $themes)
+											<li>
+												<a class="dropdown-item changeuserprofile" 
+												href="$home$apphome"
+												data-propertyname="themeid"
+												data-themeid="$th.id">#if($currentthemeid==$th.id)<i class="bi bi-check-circle-fill ns me-1"></i>#end#text($th)</a>
+											</li>
+										#end
+									</ul>
+								</li>
+							#set( $localesearcher = $mediaarchive.getSearcher("locale") )
+							#set($currentlang = $localesearcher.searchById($context.language))
+							<li class="dropdown">
+								<a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">
+									<i class="bi bi-translate me-1"></i>
+									#if($currentlang)
+										$currentlang
+									#else
+										[[Language]]
+									#end
+								</a> 
+								<ul class="dropdown-menu ">
+									#set( $languages = $localesearcher.query().named("localehits").match("enabled", "true").search($context) )
+									#foreach( $lang in $languages)
+										#set($langurl = "$home$apphome/components/languages/changelanguage.html?newlang=locale_${lang.id}&origURL=$context.getPathUrl()")
+										<a class="dropdown-item" href="#urlescape($langurl)">$lang</a>
+									#end
+								</ul> 
+							</li>
+							#ifnull($desktop)
+								<li><a class="dropdown-item" target="_blank" href="https://emedialibrary.com/downloads.html" title="[[Download Desktop App]]">
+									<i class="bi bi-laptop me-1"></i> [[Download Desktop App]]
+								</a></li>
+							#end
+							<li><a class="dropdown-item" href="$!siteroot$apphome/authentication/logout.html" title="$user.getScreenName() [[Logout]]">
+								<i class="bi bi-box-arrow-right me-1"></i> [[Logout]] ($user)
+							</a> 
+						#else
+							<li><a class="dropdown-item" href="$!siteroot$apphome/authentication/login.html"  title="[[Login]]">
+								[[Login]]
+							</a> </li>
+						#end 
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	#end	
+
+
+
 </div>
