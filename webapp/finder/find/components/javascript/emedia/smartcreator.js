@@ -172,7 +172,6 @@ $(document).ready(function () {
 	});
 
 	lQuery(".creator-section-content").livequery("click", function (e) {
-		console.log(editorEl);
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		var editorEl = $(this).find(".editable-content");
