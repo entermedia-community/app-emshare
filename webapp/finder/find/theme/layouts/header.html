@@ -145,11 +145,11 @@
 					#end
 					
 				<li class="dropdown">
-					<button class="btn-topnav dropdown-toggle no-icon" type="button" data-bs-toggle="dropdown">
+					<button class="btn-topnav dropdown-toggle no-icon" type="button" data-bs-display="static" data-bs-toggle="dropdown">
 							<i class="bi bi-person-circle"></i>
 					</button> 
 					
-					<ul class="dropdown-menu dropdown-menu-md-end"> 
+					<ul class="dropdown-menu end-0"> 
 						#if($canviewsettings && $pendingorders.size() > 0)
 							<li><a href="$apphome/views/modules/order/editors/orderlistpending/index.html" 
 								class="dropdown-item ajax" 
@@ -187,11 +187,11 @@
 								</a></li>
 							#end
 							
-								<li class="dropdown dropend">
+								<li class="dropstart">
 									<a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
 									<i class="bi bi-palette me-1"></i> [[Theme]]: <strong>#text($theme)</strong>
 									</a>
-									<ul class="dropdown-menu">
+									<ul class="dropdown-menu dropdown-nested-start">
 										#set($themes = $mediaarchive.getList("theme") )
 										#set($currentthemeid = $userprofile.getValue("themeid") )
 										#foreach( $th in $themes)
@@ -206,7 +206,7 @@
 								</li>
 							#set( $localesearcher = $mediaarchive.getSearcher("locale") )
 							#set($currentlang = $localesearcher.searchById($context.language))
-							<li class="dropdown">
+							<li class="dropstart">
 								<a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">
 									<i class="bi bi-translate me-1"></i>
 									#if($currentlang)
@@ -215,7 +215,7 @@
 										[[Language]]
 									#end
 								</a> 
-								<ul class="dropdown-menu ">
+								<ul class="dropdown-menu dropdown-nested-start">
 									#set( $languages = $localesearcher.query().named("localehits").match("enabled", "true").search($context) )
 									#foreach( $lang in $languages)
 										#set($langurl = "$home$apphome/components/languages/changelanguage.html?newlang=locale_${lang.id}&origURL=$context.getPathUrl()")
