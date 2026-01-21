@@ -1,0 +1,11 @@
+
+#set ($componentcontentseasrcher = $searcherManager.getSearcher($catalogid, "componentcontent"))
+$context.putPageValue("searcher", $componentcontentseasrcher)     
+$context.putPageValue("viewid", "asset")  
+$context.putPageValue("data", $componentcontent) 
+
+#ifnotnull($componentcontent.assetid)
+  <input type="hidden" name="assetid" value="$!{componentcontent.assetid}" />
+#end
+	
+$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
