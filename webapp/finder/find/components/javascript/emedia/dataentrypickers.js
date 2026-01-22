@@ -29,7 +29,7 @@ $(document).ready(function () {
 			}
 
 			preview.append(
-				`<div class="p-1"><span class="mr-2">${assetName}</span><a href="#" class="removefieldassetvalue" title="Remove Selected Asset" data-detailid="${detailId}"><i class="bi bi-x"></i> Remove</a></div>`
+				`<div class="p-1"><span class="mr-2">${assetName}</span><a href="#" class="removefieldassetvalue" title="Remove Selected Asset" data-detailid="${detailId}"><i class="bi bi-x"></i> Remove</a></div>`,
 			);
 		};
 		fileReader.readAsDataURL(asset);
@@ -51,7 +51,7 @@ $(document).ready(function () {
 			if (theform.hasClass("autosubmit")) {
 				theform.trigger("submit");
 			}
-		}
+		},
 	);
 
 	//Not used? Or used in admin area?
@@ -147,7 +147,7 @@ $(document).ready(function () {
 
 		clickableresultlist.data(
 			"url",
-			`${apphome}/views/modules/${entitymoduleid}/editors/default/tabs/index.html`
+			`${apphome}/views/modules/${entitymoduleid}/editors/default/tabs/index.html`,
 		);
 
 		clickableresultlist.data("updateurl", true);
@@ -173,7 +173,7 @@ $(document).ready(function () {
 			clickableresultlist.data("id", row.data("dataid")); //They picked an entity
 
 			clickableresultlist.runAjax();
-		}
+		},
 	);
 	//To open an entity in a submodule. CB Lose Back button
 	lQuery(".entitysubmodules .resultsdivdata").livequery("click", function (e) {
@@ -188,11 +188,14 @@ $(document).ready(function () {
 		submoduleOpener.data("updateurl", true);
 		var urlbar = submoduleOpener.data("baseurlbar");
 		submoduleOpener.data("urlbar", urlbar + "?entityid=" + rowid);
-		
+
 		var editdiv = row.closest(".editdiv");
 		submoduleOpener.data("parententityid", editdiv.data("entityid"));
-		submoduleOpener.data("parententitymoduleid", editdiv.data("entitymoduleid"));
-		
+		submoduleOpener.data(
+			"parententitymoduleid",
+			editdiv.data("entitymoduleid"),
+		);
+
 		submoduleOpener.runAjax();
 	});
 
@@ -213,7 +216,7 @@ $(document).ready(function () {
 			submoduleOpener.data("urlbar", url);
 			submoduleOpener.data("searchcategoryid", searchId);
 			submoduleOpener.runAjax();
-		}
+		},
 	);
 
 	//CB working for entity fieldpicking
@@ -235,7 +238,7 @@ $(document).ready(function () {
 				clickableresultlist.runAjax();
 				closeemdialog(clickableresultlist.closest(".modal"));
 			}
-		}
+		},
 	);
 
 	// CM-CB
@@ -260,7 +263,7 @@ $(document).ready(function () {
 					closeemdialog(clicked.closest(".modal"));
 				});
 			}
-		}
+		},
 	);
 
 	// CB
@@ -287,7 +290,7 @@ $(document).ready(function () {
 					clicked.css("pointer-events", "auto");
 				});
 			}
-		}
+		},
 	);
 
 	// CM: 2024-12-17
@@ -308,7 +311,7 @@ $(document).ready(function () {
 				clickableresultlist.runAjax();
 				closeemdialog(clickableresultlist.closest(".modal"));
 			}
-		}
+		},
 	);
 
 	//CB: assign a asset to a field
@@ -337,12 +340,12 @@ $(document).ready(function () {
 						apphome +
 							"/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" +
 							rowid,
-						function () {}
+						function () {},
 					);
 				}
 				closeemdialog(clicked.closest(".modal"));
 			}
-		}
+		},
 	);
 
 	//http://einnovation.local.org:8080/site/blockfind/views/modules/asset/editors/oipickasset/index.html
@@ -368,7 +371,7 @@ $(document).ready(function () {
 				sourcepath;
 
 			$(window).trigger("assetpicked", [url]);
-		}
+		},
 	);
 
 	//CB: Is good. for submodules
@@ -406,7 +409,7 @@ $(document).ready(function () {
 				}
 				closeemdialog(clicked.closest(".modal"));
 			}
-		}
+		},
 	);
 
 	//CB: Good assign a searchcategory to some selected entities
@@ -429,7 +432,7 @@ $(document).ready(function () {
 				closeemdialog(clicked.closest(".modal"));
 				//Reload parent
 			});
-		}
+		},
 	);
 
 	lQuery(".editdiv.pickercopycategoryto .resultsdivdata").livequery(
@@ -459,7 +462,7 @@ $(document).ready(function () {
 					closeemdialog(clicked.closest(".modal"));
 				},
 			});
-		}
+		},
 	);
 
 	//CB: Good assign assets to a selected entity
@@ -489,7 +492,7 @@ $(document).ready(function () {
 					closeemdialog(clicked.closest(".modal"));
 				},
 			});
-		}
+		},
 	);
 
 	/**
@@ -516,7 +519,7 @@ $(document).ready(function () {
 				closeemdialog(clickableresultlist.closest(".modal"));
 				closeemdialog($("#faceprofiledialog"));
 			}
-		}
+		},
 	);
 
 	$(window).on("assetpicked", function (_, params) {
@@ -622,7 +625,7 @@ $(window).on(
 		if (pickertarget.length > 0) {
 			updateentityfield(pickertarget, dataid, dataname);
 		}
-	}
+	},
 );
 
 //not used?
@@ -651,7 +654,7 @@ showmodal = function (emselecttable, url) {
 		$("#application").append(
 			'<div class="modal " tabindex="-1" id="' +
 				id +
-				'" style="display:none" ></div>'
+				'" style="display:none" ></div>',
 		);
 		modaldialog = $("#" + id);
 	}

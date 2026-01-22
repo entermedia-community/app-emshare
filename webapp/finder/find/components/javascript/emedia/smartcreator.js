@@ -185,27 +185,28 @@ $(document).ready(function () {
 	lQuery(".creator-section-content").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
-		toggleContentEditor($(this));
+		makeContentEditable($(this));
 	});
 
 	lQuery(".creator-section-content.new-content").livequery(function () {
 		$(this).removeClass("new-content");
-		toggleContentEditor($(this));
+		makeContentEditable($(this));
 	});
 
-	function toggleContentEditor(component) {
+	function makeContentEditable(component) {
 		var editorEl = component.find(".editable-content");
 		if (component.hasClass("paragraph")) {
 			if (!editorEl.hasClass("ck")) {
 				$(window).trigger("inlinehtmlstart", [editorEl]);
 			}
+			return;
 		}
+		component.addClass("edit-mode");
 		if (component.hasClass("heading")) {
-			console.log(component);
 			var heading = editorEl.find("h1").text().trim();
 			editorEl.data("originalcontent", editorEl.text());
 			editorEl.html(
-				`<textarea class="form-control heading-editor" rows="2">${heading}</textarea><br><button class="btn btn-primary content-h1-edit" data-contentcomponentid="">Save</button> <button class="btn btn-secondary content-h1-cancel">Cancel</button>`,
+				`<textarea class="form-control heading-editor" rows="2">${heading}</textarea><br><button class="btn btn-primary content-h1-edit">Save</button> <button class="btn btn-secondary content-h1-cancel">Cancel</button>`,
 			);
 			editorEl.find("textarea").focus();
 		}
@@ -228,6 +229,7 @@ $(document).ready(function () {
 			},
 			success: function () {
 				editorEl.html(`<h1>${content}</h1>`);
+				editorEl.closest(".creator-section-content").removeClass("edit-mode");
 			},
 			complete: function () {
 				btn.prop("disabled", false);
@@ -241,6 +243,20 @@ $(document).ready(function () {
 		var editorEl = $(this).closest(".editable-content");
 		var originalContent = editorEl.data("originalcontent");
 		editorEl.html(`<h1>${originalContent}</h1>`);
+	});
+
+	lQuery(".content-img-save").livequery("click", function (e) {
+		e.preventDefault();
+		var form = $(this).closest("form");
+		form.ajaxFormSubmit(function () {
+			form.closest(".creator-section-content").removeClass("edit-mode");
+		});
+	});
+
+	lQuery(".content-img-cancel").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		$(this).closest(".creator-section-content").removeClass("edit-mode");
 	});
 
 	lQuery(".section-edit").livequery("click", function (e) {
