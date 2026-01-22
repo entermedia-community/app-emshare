@@ -10,30 +10,15 @@ $(document).ready(function () {
 	});
 
 	lQuery("#closecreator").livequery("click", function () {
-		closeemdialog($(this).closest(".modal"));
-	});
-
-	lQuery(".creator-maker").livequery("click", function (e) {
-		var editorEl = $(this).find(".editable-content.ck");
-		if (editorEl.length > 0) {
-			var clickedElement = $(e.target);
+		var activeEditor = $(".editable-content.ck");
+		if (activeEditor.length > 0) {
 			if (
-				!clickedElement.closest(".editable-content.ck").length &&
-				!clickedElement.closest(".ck-toolbar").length
+				!confirm("You have unsaved changes. Are you sure you want to close?")
 			) {
-				e.preventDefault();
-				e.stopImmediatePropagation();
-				setTimeout(function () {
-					if (editorEl.hasClass("ck-focused")) return;
-					customToast(
-						"You have unsaved changes. Please save or cancel your current edit.",
-						{ id: "alert", positive: false },
-					);
-				}, 100);
-				editorEl.focus();
-				return false;
+				return;
 			}
 		}
+		closeemdialog($(this).closest(".modal"));
 	});
 
 	lQuery(".add-componentcontent").livequery("click", function (e) {
