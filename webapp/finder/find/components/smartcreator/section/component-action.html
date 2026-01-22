@@ -1,17 +1,17 @@
-<a class="action-btn icon move-up" data-action="move-up">
+<a class="action-btn icon move-up" data-action="move-up" title="[[Move Up]]">
   <i class="fas fa-arrow-up"></i>
 </a>
-<a class="action-btn icon move-down" data-action="move-down">
+<a class="action-btn icon move-down" data-action="move-down" title="[[Move Down]]">
   <i class="fas fa-arrow-down"></i>
 </a>
 <div class="dropdown fixed">
-  <a class="action-btn dropdown-toggle no-icon" type="button" data-bs-display="static" data-bs-toggle="dropdown">
+  <a class="action-btn dropdown-toggle no-icon" data-action="add" type="button" data-bs-display="static" data-bs-toggle="dropdown">
     <i class="fas fa-plus"></i>
     <span class="ms-2">
       Add
     </span>
   </a>
-  <div class="dropdown-menu">
+  <div class="dropdown-menu dropdown-menu-end">
     #set($componenttypes = $mediaarchive.getList("componenttype"))
     #foreach($componenttype in $componenttypes)
     <a class="dropdown-item add-componentcontent"
@@ -36,6 +36,8 @@
 </div>
 #ifnotnull($componentcontent)
 <a class="action-btn ajax"
+  title="[[Duplicate]]"
+  data-action="duplicate"
   data-id="${componentcontent.id}"
   data-searchtype="componentcontent"
   data-targetdiv="component-${componentcontent.id}"
@@ -43,19 +45,13 @@
   data-targetappendtype="insertafter"
   href="$applink/components/smartcreator/section/duplicate.html">
   <i class="fas fa-copy"></i>
-  <span class="ms-2">
-    Duplicate
-  </span>
 </a>
-<a
-  class="action-btn"
+<a class="action-btn"
+  title="[[Delete]]"
   data-action="delete"
   href="$applink/components/smartcreator/section/delete.html"
   data-confirm="Are you sure you want to delete this component?"
   data-id="${componentcontent.id}">
   <i class="fas fa-trash-alt"></i>
-  <span class="ms-2">
-    Delete
-  </span>
 </a>
 #end
