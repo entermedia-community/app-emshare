@@ -1,0 +1,25 @@
+<form method="POST" action="$applink/components/smartcreator/section/create-componentcontent.html" class="m-0 component-img-form">
+  <input type="hidden" name="componentcontentid" value="$!{componentcontent.id}" />
+  <input type="hidden" name="componenttype" value="asset" />
+  #set ($contentseasrcher = $mediaarchive.getSearcher("componentcontent"))
+  $context.putPageValue("searcher", $contentseasrcher)     
+  $context.putPageValue("viewid", "componentcontentcontentasset")  
+  $context.putPageValue("data", $componentcontent) 
+
+  #ifnotnull($componentcontent.assetid)
+    <input type="hidden" name="assetid" value="field" />
+  #end
+
+  $context.putPageValue("entity", $playbackentity)
+  $context.putPageValue("module", $playbackmodule)
+  $context.putPageValue("textarearow", 2)
+
+  $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+
+  <div class="align-items-center justify-content-center gap-2 content-img-btns">
+    <button class="btn btn-primary content-img-save">
+      <i class="fas fa-save me-1"></i> Save
+    </button>
+    <button class="btn btn-secondary content-img-cancel">Cancel</button>
+  </div>
+</form>

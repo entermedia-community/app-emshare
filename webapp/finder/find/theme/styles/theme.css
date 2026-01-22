@@ -2480,13 +2480,18 @@ img.imagethumb,
 	box-shadow: 1px 1px 10px 1px rgb(160 160 160 / 75%);
 }
 .assetpicker {
-	padding: 8px 0;
+	padding: 0 0 8px;
 }
 .assetpicker img {
 	box-shadow: none !important;
 }
 .assetpicker .emthumbholder-mime {
 	padding: 1rem 2rem;
+}
+.asset-picker-btns {
+	display: flex;
+	align-items: center;
+	gap: 8px;
 }
 .clonedragging {
 	display: block !important;
@@ -9654,7 +9659,7 @@ a.action-link:hover {
 }
 .creator-section-content {
 	flex: 1;
-	min-height: 200px;
+	min-height: 120px;
 	display: flex;
 	flex-direction: column;
 	position: relative;
@@ -9686,9 +9691,29 @@ a.action-link:hover {
 	border-radius: 4px;
 	margin: 0 auto;
 }
-.editable-content:has(img),
-.editable-content:has(video) {
-	text-align: center;
+.creator-section-content .asset-picker-btns,
+.creator-section-content .removefieldassetvalue,
+.creator-section-content .content-img-btns {
+	display: none;
+}
+.creator-section-content.edit-mode .asset-picker-btns,
+.creator-section-content.edit-mode .content-img-btns {
+	display: flex;
+}
+.creator-section-content .stackedplayer {
+	pointer-events: none;
+}
+.creator-section-content.edit-mode .removefieldassetvalue {
+	display: block;
+}
+.creator-section-content textarea {
+	color: #888888;
+	border: none;
+	resize: none;
+}
+.creator-section-content.edit-mode textarea {
+	color: #444444;
+	border: var(--1px-light);
 }
 .action-btn-container {
 	width: 100%;
@@ -9744,6 +9769,14 @@ a.action-link:hover {
 	opacity: 0.3;
 	pointer-events: none;
 }
+.creator-section-content.heading textarea {
+	font-size: 1.5rem !important;
+}
+.creator-section-content.asset {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
 .action-btn-container:hover .action-btn-group {
 	opacity: 1;
 }
@@ -9795,7 +9828,6 @@ a.action-link:hover {
 	background: #afaff7;
 	color: #fff;
 }
-
 .creator-canvas:has(.ck-content) .action-btn-group {
 	opacity: 0 !important;
 	display: none !important;
@@ -9806,7 +9838,6 @@ a.action-link:hover {
 	right: -4px;
 	z-index: 99;
 }
-
 .ai-content-helper:hover ~ .action-btn-group {
 	opacity: 0;
 	display: none;

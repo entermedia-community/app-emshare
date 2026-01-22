@@ -2,6 +2,17 @@ $(document).ready(function () {
 	var applink =
 		$("#application").data("siteroot") + $("#application").data("apphome");
 
+	lQuery(".opensmartcreator").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		closeemdialog($("#entitydialog"));
+		$(this).emDialog();
+	});
+
+	lQuery("#closecreator").livequery("click", function () {
+		closeemdialog($(this).closest(".modal"));
+	});
+
 	lQuery(".creator-maker").livequery("click", function (e) {
 		var editorEl = $(this).find(".editable-content.ck");
 		if (editorEl.length > 0) {
@@ -174,10 +185,78 @@ $(document).ready(function () {
 	lQuery(".creator-section-content").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
-		var editorEl = $(this).find(".editable-content");
-		if (!editorEl.hasClass("ck")) {
-			$(window).trigger("inlinehtmlstart", [editorEl]);
+		makeContentEditable($(this));
+	});
+
+	lQuery(".creator-section-content.new-content").livequery(function () {
+		$(this).removeClass("new-content");
+		makeContentEditable($(this));
+	});
+
+	function makeContentEditable(component) {
+		var editorEl = component.find(".editable-content");
+		if (component.hasClass("paragraph")) {
+			if (!editorEl.hasClass("ck")) {
+				$(window).trigger("inlinehtmlstart", [editorEl]);
+			}
+			return;
 		}
+		component.addClass("edit-mode");
+		if (component.hasClass("heading")) {
+			var heading = editorEl.find("h1").text().trim();
+			editorEl.data("originalcontent", editorEl.text());
+			editorEl.html(
+				`<textarea class="form-control heading-editor" rows="2">${heading}</textarea><br><button class="btn btn-primary content-h1-edit">Save</button> <button class="btn btn-secondary content-h1-cancel">Cancel</button>`,
+			);
+			editorEl.find("textarea").focus();
+		}
+	}
+
+	lQuery(".content-h1-edit").livequery("click", function (e) {
+		var btn = $(this);
+		btn.prop("disabled", true);
+		var editorEl = btn.closest(".editable-content");
+		var content = editorEl.find("textarea").val().trim();
+		var componenttype = "heading";
+		var componentcontentid = editorEl.data("componentcontentid");
+		var url = editorEl.data("savepath");
+		$.ajax({
+			url: url,
+			data: {
+				content: content,
+				componenttype: componenttype,
+				componentcontentid: componentcontentid,
+			},
+			success: function () {
+				editorEl.html(`<h1>${content}</h1>`);
+				editorEl.closest(".creator-section-content").removeClass("edit-mode");
+			},
+			complete: function () {
+				btn.prop("disabled", false);
+			},
+		});
+	});
+
+	lQuery(".content-h1-cancel").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		var editorEl = $(this).closest(".editable-content");
+		var originalContent = editorEl.data("originalcontent");
+		editorEl.html(`<h1>${originalContent}</h1>`);
+	});
+
+	lQuery(".content-img-save").livequery("click", function (e) {
+		e.preventDefault();
+		var form = $(this).closest("form");
+		form.ajaxFormSubmit(function () {
+			form.closest(".creator-section-content").removeClass("edit-mode");
+		});
+	});
+
+	lQuery(".content-img-cancel").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		$(this).closest(".creator-section-content").removeClass("edit-mode");
 	});
 
 	lQuery(".section-edit").livequery("click", function (e) {
@@ -190,18 +269,6 @@ $(document).ready(function () {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		$(this).closest(".creator-section-title").removeClass("edit-mode");
-	});
-
-	lQuery("#closecreator").livequery("click", function () {
-		closeemdialog($(this).closest(".modal"));
-	});
-
-	lQuery(".creator-section-content.new-content").livequery(function () {
-		$(this).removeClass("new-content");
-		var editorEl = $(this).find(".editable-content");
-		if (!editorEl.hasClass("ck")) {
-			$(window).trigger("inlinehtmlstart", [editorEl]);
-		}
 	});
 
 	lQuery(".aitutorial").livequery("click", function () {
