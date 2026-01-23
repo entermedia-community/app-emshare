@@ -15,11 +15,16 @@
   <div class="chatter-guides">
     <span class="text-muted me-2">[[Using records from]]:</span>
     #foreach($status in $statuses)
+		#set($groupedby = $status.getViewData())
+		
+		#ifnull($groupedby)
+			#set($groupedby = $mediaarchive.getCachedData("module", $status.getSearchType()) )
+		#end
       <span class="chatter-guide #if($status.isReady()) success #end me-2">
         #if($status.isReady())
-          <i class="bi bi-check-lg me-1"></i> #text($status.getViewData()) <span>($status.getCountTotal())</span>
+          <i class="bi bi-check-lg me-1"></i> #text($groupedby) <span>($status.getCountTotal())</span>
         #else
-          <i class="fas fa-spinner fa-spin me-1"></i> #text($status.getViewData()) <span>($status.getCountPending() / $status.getCountTotal())</span>
+          <i class="fas fa-spinner fa-spin me-1"></i> #text($groupedby) <span>($status.getCountPending() / $status.getCountTotal())</span>
         #end
       </span>
     #end
