@@ -297,4 +297,22 @@ $(document).ready(function () {
 			$(".ai-functions").remove();
 		});
 	});
+
+	lQuery(".ai-action").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		var contentEl = $(this).closest(".creator-section-content");
+		var dataEl = contentEl.find(".editable-content");
+		var componentId = dataEl.data("componentcontentid");
+		var action = $(this).data("action");
+		if (action === "caption") {
+			var assetInput = dataEl.find('input[name="assetid.value"]');
+			var assetId = assetInput.val();
+			if (!assetId) {
+				alert("Please select an image first.");
+				return;
+			}
+			console.log(assetId);
+		}
+	});
 });
