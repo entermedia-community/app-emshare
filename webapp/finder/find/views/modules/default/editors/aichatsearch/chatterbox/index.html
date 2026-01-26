@@ -24,7 +24,7 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 
 #set($playbackmodule = $currentchannel.get("playbackentitymoduleid"))
 
-#set($functiongroup = $currentchannel.get("functiongroup"))
+#set($toplevelaifunctionid = $currentchannel.get("toplevelaifunctionid"))
 
 <div class='chatterbox #if($cansendchat == "false") chatterbox-readonly#end'
 	#ifnotnull($entity)data-entityid="$!entity.id"#end
@@ -40,24 +40,13 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 	data-catalogid="$!{catalogid}"
 	data-broadcastall="false">
 
-	#if($playbackmodule != "aitutorials")
-		#ifnull($functiongroup)
-			$pages.include("${edithome}/functiongrouppicker.html", $context)
-		#end
-	#end
 
-	#ifnotnull($functiongroup)
+	$pages.include("${chatterboxhome}/messages.html", $context)
 
-		$pages.include("${chatterboxhome}/messages.html", $context)
+	$pages.include("${edithome}/functiongrouppicker.html", $context)
 
-		#if($playbackmodule != "aitutorials")
-			$pages.include("${edithome}/functiongrouppicker.html", $context)
-		#end
-
-		#if($cansendchat)
-			$pages.include("${chatterboxhome}/editarea.html", $context)				
-		#end
-
+	#if($cansendchat)
+		$pages.include("${chatterboxhome}/editarea.html", $context)				
 	#end
 
 </div>

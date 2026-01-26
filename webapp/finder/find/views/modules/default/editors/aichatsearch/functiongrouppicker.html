@@ -1,25 +1,25 @@
-#set($functiongroups = $mediaarchive.query("functiongroup").sort("ordering").search())
+#set($aifunctions = $mediaarchive.query("aifunction").exact("toplevel",true).sort("ordering").search())
 
-
-#set($selectedgroup = $currentchannel.get("functiongroup"))
+#set($toplevelaifunctionid = $currentchannel.get("toplevelaifunctionid"))
 
 <div class="ai-functions mx-2">
   <div class="d-flex align-items-center">
 		<div class="dropup">
 			<a class="btn btn-cta dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-				<span class="pe-1">Chat Mode</span>
+				<span class="pe-1">Chat Mode</span> 
 			</a>
 			<div class="dropdown-menu dropdown-menu-end">
-					#foreach( $functiongroup in $functiongroups )
-						<a class="dropdown-item  ajax ai-func #if($selectedgroup == $functiongroup.getId())active#end me-2"
+					#foreach( $aifunction in $aifunctions )
+						<a class="dropdown-item  ajax ai-func #if($toplevelaifunctionid == $aifunction.getId())active#end me-2"
 							href="$edithome/functiongroupsave.html"
 							data-targetdiv="aichatsearch"
 							data-channel="$!{currentchannel.getId()}"
-							data-functiongroup="$functiongroup.getId()"
+							data-toplevelaifunctionid="$aifunction.id"
+							data-functionname="$aifunction.id"
 							data-showsuggestions="true"
 							data-oemaxlevel="1">
-							<i class="bi bi-${functiongroup.icon}"></i>
-							<span>$functiongroup.get("name")</span>
+							<i class="bi bi-${aifunction.icon}"></i>
+							<span>#text( $aifunction )</span>
 						</a>
 					#end 
 			</div>	
