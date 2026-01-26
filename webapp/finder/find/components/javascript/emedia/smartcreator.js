@@ -2,6 +2,8 @@ $(document).ready(function () {
 	var applink =
 		$("#application").data("siteroot") + $("#application").data("apphome");
 
+	var mediadb = $("#application").data("mediadbappid");
+
 	lQuery(".opensmartcreator").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
@@ -159,10 +161,10 @@ $(document).ready(function () {
 			},
 			success: function () {
 				sectionEl.find("h3").text(newTitle);
-				sectionEl.removeClass("edit-mode");
 			},
 			complete: function () {
 				btn.prop("disabled", false);
+				sectionEl.removeClass("edit-mode");
 			},
 		});
 	});
@@ -182,6 +184,7 @@ $(document).ready(function () {
 		var editorEl = component.find(".editable-content");
 		if (component.hasClass("paragraph")) {
 			if (!editorEl.hasClass("ck")) {
+				editorEl.data("imagepickerhidden", true);
 				$(window).trigger("inlinehtmlstart", [editorEl]);
 			}
 			return;
@@ -214,10 +217,10 @@ $(document).ready(function () {
 			},
 			success: function () {
 				editorEl.html(`<h1>${content}</h1>`);
-				editorEl.closest(".creator-section-content").removeClass("edit-mode");
 			},
 			complete: function () {
 				btn.prop("disabled", false);
+				editorEl.closest(".creator-section-content").removeClass("edit-mode");
 			},
 		});
 	});
@@ -228,6 +231,7 @@ $(document).ready(function () {
 		var editorEl = $(this).closest(".editable-content");
 		var originalContent = editorEl.data("originalcontent");
 		editorEl.html(`<h1>${originalContent}</h1>`);
+		editorEl.closest(".creator-section-content").removeClass("edit-mode");
 	});
 
 	lQuery(".content-img-save").livequery("click", function (e) {
@@ -297,4 +301,69 @@ $(document).ready(function () {
 			$(".ai-functions").remove();
 		});
 	});
+
+	lQuery(".ai-action").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		var contentEl = $(this).closest(".creator-section-content");
+		var dataEl = contentEl.find(".editable-content");
+		var componentId = dataEl.data("componentcontentid");
+		var action = $(this).data("action");
+		var aiprompt;
+		if (action === "generate") {
+			//TODO: modal to get prompt from user
+			aiprompt = prompt("Enter a prompt for the AI to generate content:");
+			if (!aiprompt) {
+				return;
+			}
+		} else if (action === "image") {
+			//TODO: modal to get prompt from user
+			aiprompt = prompt("Enter a prompt for the AI to generate an image:");
+			if (!aiprompt) {
+				return;
+			}
+		} else if (action === "caption") {
+			var assetInput = dataEl.find('input[name="assetid.value"]');
+			var assetId = assetInput.val();
+			if (!assetId) {
+				customToast("Please select an image first.", { positive: false });
+				return;
+			}
+		}
+		runComponentAiAction(
+			{
+				aiaction: action,
+				aiprompt: aiprompt,
+				componentcontentid: componentId,
+			},
+			function (data) {
+				if (data.paragraph) {
+					dataEl.html(data.paragraph);
+					makeContentEditable(contentEl);
+				} else if (data.caption) {
+					contentEl.find('textarea[name="caption.value"]').val(data.caption);
+					makeContentEditable(contentEl);
+				} else if (data.assetid) {
+				}
+			},
+		);
+	});
+	function runComponentAiAction(data, callback) {
+		$.ajax({
+			url: `/${mediadb}/services/module/creatoraiaction/create.json`,
+			method: "POST",
+			data: data,
+			success: function (res) {
+				var data = res.data;
+				if (!data || data.length === 0) {
+					customToast("No response from AI service.", { positive: false });
+					return;
+				}
+				callback(data);
+			},
+			error: function () {
+				customToast("Error processing AI action.", { positive: false });
+			},
+		});
+	}
 });

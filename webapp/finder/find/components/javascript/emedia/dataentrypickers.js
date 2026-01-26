@@ -333,9 +333,10 @@ $(document).ready(function () {
 				pickertarget = $("#" + pickertarget); //This is the field itself
 				if (pickertarget.length > 0) {
 					var detailid = pickertarget.data("detailid");
-					$("#" + detailid + "-value").attr("value", rowid);
-					let preview = $("#" + detailid + "-preview");
+					var detailinput = pickertarget.find("#" + detailid + "-value");
+					detailinput.attr("value", rowid);
 
+					let preview = pickertarget.find("#" + detailid + "-preview");
 					preview.load(
 						apphome +
 							"/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" +

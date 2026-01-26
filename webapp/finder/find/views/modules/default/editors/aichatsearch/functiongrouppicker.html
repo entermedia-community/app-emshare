@@ -5,27 +5,25 @@
 
 <div class="ai-functions mx-2">
   <div class="d-flex align-items-center">
-    ##<strong class="text-secondary me-2">Chat Mode:</strong>
-	<div>
-	<a class="btn btn-cta dropdown-toggle" 
-		href="#" role="button" id="dropdownMenuUploadTo" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		<span class="pe-1">Chat Mode</span>
-	</a>
-	<div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuUploadTo">
-	    #foreach( $functiongroup in $functiongroups )
-	      <a class="dropdown-item  ajax ai-func #if($selectedgroup == $functiongroup.getId())active#end me-2"
-	        href="$edithome/functiongroupsave.html"
-	        data-targetdiv="aichatsearch"
-	        data-channel="$!{currentchannel.getId()}"
-	        data-functiongroup="$functiongroup.getId()"
-	        data-showsuggestions="true"
-	        data-oemaxlevel="1">
-	        <i class="bi bi-${functiongroup.icon}"></i>
-	        <span>$functiongroup.get("name")</span>
-	      </a>
-	    #end 
-	</div>	
-  </div>
+		<div class="dropup">
+			<a class="btn btn-cta dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+				<span class="pe-1">Chat Mode</span>
+			</a>
+			<div class="dropdown-menu dropdown-menu-end">
+					#foreach( $functiongroup in $functiongroups )
+						<a class="dropdown-item  ajax ai-func #if($selectedgroup == $functiongroup.getId())active#end me-2"
+							href="$edithome/functiongroupsave.html"
+							data-targetdiv="aichatsearch"
+							data-channel="$!{currentchannel.getId()}"
+							data-functiongroup="$functiongroup.getId()"
+							data-showsuggestions="true"
+							data-oemaxlevel="1">
+							<i class="bi bi-${functiongroup.icon}"></i>
+							<span>$functiongroup.get("name")</span>
+						</a>
+					#end 
+			</div>	
+		</div>
   </div>
   $pages.include("${edithome}/suggestions/index.html", $context)
 </div>
