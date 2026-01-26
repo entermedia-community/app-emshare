@@ -1,0 +1,31 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You correct spelling and grammar only. Do not add, remove, or rephrase content beyond what is required for correctness. Keep the same HTML structure."
+		},
+		{
+			"role": "user",
+			"content": "${paragraph}"
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "fix_grammar",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"corrected_text": {
+						"type": "string",
+						"description": "The input text with spelling and grammar corrected, with no additional text."
+					}
+				},
+				"required": ["corrected_text"],
+				"additionalProperties": false
+			}
+		}
+	}
+}
