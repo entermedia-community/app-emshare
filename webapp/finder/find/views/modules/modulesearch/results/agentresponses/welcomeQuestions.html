@@ -16,6 +16,16 @@
       </span>
     #end
   </div>
-
-<strong>Would you like a summary?</strong> 
-<messageplain>Make a detailed summary</messageplain>
+  
+  #ifnotnull($suggestions)
+  <div class="d-flex flex-column">
+    <strong class="ai-suggestions-title mb-1">[[Example questions]]:</strong>
+    <ul class="ai-suggestions">
+      #foreach( $suggestion in $suggestions )
+      <li class="ai-suggestion autoprefixchatmsg" data-prefix="$suggestion.prompt">
+        $suggestion.prompt
+      </li>
+      #end
+    </ul>
+  </div>
+  #end
