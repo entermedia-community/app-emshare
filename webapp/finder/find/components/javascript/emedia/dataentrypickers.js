@@ -524,7 +524,6 @@ $(document).ready(function () {
 	);
 
 	$(window).on("assetpicked", function (_, params) {
-		debugger;
 		if (typeof params === "string") {
 			var params = JSON.parse(params);
 		}
