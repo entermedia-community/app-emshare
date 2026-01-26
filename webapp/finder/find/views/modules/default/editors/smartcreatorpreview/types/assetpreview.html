@@ -1,0 +1,15 @@
+#set( $rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
+
+#if($rendertype == "image")
+  #if($asset.fileformat == "gif")
+    #set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
+    #if(!$cdnprefix )
+      #set($cdnprefix = $context.siteRoot )
+    #end
+    $context.putPageValue("cdnprefix", $cdnprefix)
+    $context.putPageValue("useoriginal", "true")
+  #end
+#end 						
+
+$context.putPageValue("thumbsize", "largepreview")
+$pages.include("$searchhome/thumbnails/${rendertype}.html", $context) 
