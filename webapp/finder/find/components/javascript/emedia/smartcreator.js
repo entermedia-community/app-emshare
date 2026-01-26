@@ -159,10 +159,10 @@ $(document).ready(function () {
 			},
 			success: function () {
 				sectionEl.find("h3").text(newTitle);
-				sectionEl.removeClass("edit-mode");
 			},
 			complete: function () {
 				btn.prop("disabled", false);
+				sectionEl.removeClass("edit-mode");
 			},
 		});
 	});
@@ -215,10 +215,10 @@ $(document).ready(function () {
 			},
 			success: function () {
 				editorEl.html(`<h1>${content}</h1>`);
-				editorEl.closest(".creator-section-content").removeClass("edit-mode");
 			},
 			complete: function () {
 				btn.prop("disabled", false);
+				editorEl.closest(".creator-section-content").removeClass("edit-mode");
 			},
 		});
 	});
@@ -229,6 +229,7 @@ $(document).ready(function () {
 		var editorEl = $(this).closest(".editable-content");
 		var originalContent = editorEl.data("originalcontent");
 		editorEl.html(`<h1>${originalContent}</h1>`);
+		editorEl.closest(".creator-section-content").removeClass("edit-mode");
 	});
 
 	lQuery(".content-img-save").livequery("click", function (e) {
@@ -315,5 +316,21 @@ $(document).ready(function () {
 			}
 			console.log(assetId);
 		}
+		var url = applink + "/components/smartcreator/section/ai/fix-grammer.html";
+		$.ajax({
+			url: url,
+			data: {
+				content: content,
+				componenttype: componenttype,
+				componentcontentid: componentcontentid,
+			},
+			success: function () {
+				editorEl.html(`<h1>${content}</h1>`);
+				editorEl.closest(".creator-section-content").removeClass("edit-mode");
+			},
+			complete: function () {
+				btn.prop("disabled", false);
+			},
+		});
 	});
 });
