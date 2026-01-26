@@ -182,6 +182,7 @@ $(document).ready(function () {
 		var editorEl = component.find(".editable-content");
 		if (component.hasClass("paragraph")) {
 			if (!editorEl.hasClass("ck")) {
+				editorEl.data("imagepickerhidden", true);
 				$(window).trigger("inlinehtmlstart", [editorEl]);
 			}
 			return;
