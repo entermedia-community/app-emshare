@@ -1,23 +1,17 @@
-#set($functionname = $context.getRequestParameter("functionname"))
 
-
-#ifnotnull($functionname)
-	#set($aifunction = $mediaarchive.getCachedData("aifunction", $functionname))
-#end
-
-#set($aifunctions = $mediaarchive.query("aifunction").exact("toplevel",true).sort("ordering").search())
-#set($toplevelaifunctionid = $currentchannel.get("toplevelaifunctionid"))
+#set($toplevelaifunctionid = $agentcontext.getTopLevelFunctionName())
+#set($aifunction = $mediaarchive.getCachedData("aifunction", $toplevelaifunctionid))
 
 <div class="ai-functions mx-2">
   <div class="d-flex align-items-center">
 		<div class="dropup">
 			<a class="btn btn-cta dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
 				<span class="pe-1">
-					#ifnull($aifunction)Auto Detect#end
-					#ifnotnull($aifunction)#text($aifunction)#end
+					#text($aifunction)
 				</span> 
 			</a>
 			<div class="dropdown-menu dropdown-menu-end">
+					#set($aifunctions = $mediaarchive.query("aifunction").exact("toplevel",true).sort("ordering").search())
 					#foreach( $function in $aifunctions )
 						<a class="dropdown-item  ajax ai-func #if($toplevelaifunctionid == $function.getId())active#end me-2"
 							href="$edithome/functiongroupsave.html"
