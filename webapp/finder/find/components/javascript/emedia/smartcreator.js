@@ -74,7 +74,7 @@ $(document).ready(function () {
 				}
 			}
 			var dataid = $(this).data("id");
-			var url = applink + "/components/smartcreator/section/delete.html";
+			var url = $(this).attr("href");
 			$.ajax({
 				url: url,
 				data: {
@@ -90,7 +90,7 @@ $(document).ready(function () {
 			var source_order = section.data("ordering");
 			if (!source_id) return;
 
-			var url = applink + "/components/smartcreator/section/order.html";
+			var url = $(this).attr("href");
 
 			if (action === "move-up") {
 				var target = section.prev();
@@ -147,18 +147,20 @@ $(document).ready(function () {
 		e.stopImmediatePropagation();
 		var btn = $(this);
 		btn.prop("disabled", true);
-		var tutorialId = btn.data("tutorialid");
-		var sectionId = btn.data("sectionid");
 		var sectionEl = btn.closest(".creator-section-title");
 		var newTitle = sectionEl.find("textarea").val();
-		var url = applink + "/components/smartcreator/section/create-section.html";
+
+		var data = btn.data();
+		data.name = newTitle;
+
+		var url = btn.attr("href");
+
 		$.ajax({
 			url: url,
 			data: {
-				sectionid: sectionId,
-				tutorialid: tutorialId,
-				name: newTitle,
+				...data,
 			},
+			method: "POST",
 			success: function () {
 				sectionEl.find("h3").text(newTitle);
 			},
