@@ -1,0 +1,20 @@
+<div class="creator-preview"
+  data-playbacksection="${playbacksection}"
+  data-playbackentityid="${playbackentityid}"
+  data-playbackentitymoduleid="${playbackentitymoduleid}">
+  #foreach($componentsection in $componentsections)
+  <section class="creator-section-preview">
+    <h5>${componentsection.name}</h5>
+
+    <div class="creator-content-preview">
+      #set($componentcontents = $mediaarchive.query("componentcontent").exact("componentsectionid", $componentsection.id).sort("ordering").search())
+    
+      #foreach($componentcontent in $componentcontents)
+        #set($type = $componentcontent.componenttype)
+        $context.putPageValue("componentcontent", $componentcontent)
+        $pages.include("$edithome/types/${type}.html", $context)
+      #end
+    </div>
+  </section>
+  #end
+</div>
