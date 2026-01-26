@@ -1,8 +1,21 @@
-AI Generated questions are loading:
 
-ajax...
+  <div class="chatter-guides mb-1">
+    <span class="text-muted">[[You can ask questions about]]:</span>
+    #foreach($status in $statuses)
+		#set($groupedby = $status.getViewData())
+		
+		#ifnull($groupedby)
+			#set($groupedby = $mediaarchive.getCachedData("module", $status.getSearchType()) )
+		#end
+      <span class="chatter-guide #if($status.isReady()) success #end me-2">
+        #if($status.isReady())
+          <i class="bi bi-check-lg me-1"></i> #text($groupedby) <span>($status.getCountTotal())</span>
+        #else
+          <i class="fas fa-spinner fa-spin me-1"></i> #text($groupedby) <span>($status.getCountPending() / $status.getCountTotal())</span>
+        #end
+      </span>
+    #end
+  </div>
 
-Searching across Documents,etc.
-<p>
-What would you like to know?
-</p>
+<strong>Would you like a summary?</strong> 
+<messageplain>Make a detailed summary</messageplain>
