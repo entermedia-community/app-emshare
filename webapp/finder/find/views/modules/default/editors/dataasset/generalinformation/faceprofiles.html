@@ -1,5 +1,13 @@
 #set( $reloadface = $context.getRequestParameter("reloadface") )
 
+#if($asset.isLocked())
+	#set($userlock = $asset.getLockOwner())
+	#if($userlock.id != $user.id)
+		#set($caneditasset = false)	
+		$context.putPageValue("caneditasset", $caneditasset)
+	#end
+#end
+
 #ifnotnull($reloadface)	
 	#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
 	#set( $faceboxescollection =  $facemanager.collectFaceBoxesAllPeople($asset) )
@@ -13,6 +21,7 @@
 	data-runwhenhidden="true"
 	data-oemaxlevel="1"
 	data-showloader="true"
+	data-caneditasset="${caneditasset}"
 >
 	<div class="d-flex align-items-center justify-content-between me-3">
 		<h4 class="m-0">[[People]]</h4>
