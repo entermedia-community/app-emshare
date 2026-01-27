@@ -262,14 +262,6 @@ $(document).ready(function () {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		$(this).closest(".creator-section-content").removeClass("edit-mode");
-		// $(this)
-		// 	.closest("form")
-		// 	.find("textarea,input,select")
-		// 	.each(function () {
-		// 		if ($(this).val().trim() === "") {
-		// 			$(this).insertBefore(`<p class="text-muted">Not set</p>`);
-		// 		}
-		// 	});
 	});
 
 	lQuery(".section-edit").livequery("click", function (e) {
