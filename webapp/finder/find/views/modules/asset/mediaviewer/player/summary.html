@@ -64,11 +64,68 @@ $context.putPageValue("assetheight",$assetheight)
 			</div>
 			
 		    <div class="media-player-mini-links d-flex flex-wrap justify-content-center" >
+				
+				
+			#if( !$ismulti )
+				<div class="assetlock #if($asset.isLocked()) assetlocked #end me-2">
+				#if($caneditasset || $canviewsettings)	
+					<form name="lockform" 
+					class="autosubmit ajaxform noautofocus" 
+					style="display: inline-block;" 
+					action="$siteroot${apphome}/views/modules/asset/editors/dataasset/generalinformation/toggleassetlock.html" 
+					data-targetdiv="tabsummarypanel">
+						<input type="hidden" name="assetid" value="${asset.id}"/>
+						
+							<a href="#" 
+								class="btn #if(!$asset.isLocked())btn-primary #else btn-cta #end submitform"
+								#if(!$asset.isLocked()) 
+									title="[[Lock Asset]]"
+								#else
+									title="[[Unlock Asset]]" 
+								#end
+								>
+								#if(!$asset.isLocked())
+									<i class="bi bi-lock me-1"></i>[[Lock]]
+								#else
+									#set($userlock = $asset.getLockOwner())
+									#if($userlock.id != $user.id)
+										<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+										[[Currently locked by]]  <strong>$asset.getLockOwner()</strong>
+									#else
+										<i class="bi bi-lock-fill me-1"></i> [[Locked by You]]
+									#end
+								#end
+								
+							</a>
+							
+					</form>
+				#else
+					#if($asset.isLocked())
+						
+						<a href="#" class="btn btn-cta">
+							#if(!$asset.isLocked())
+								<i class="bi bi-lock me-1"></i>[[Lock]]
+							#else
+								#set($userlock = $asset.getLockOwner())
+								#if($userlock.id != $user.id)
+									<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+									[[Currently locked by]]  <strong>$asset.getLockOwner()</strong>
+								#else
+									<i class="bi bi-lock-fill me-1"></i> [[Locked by You]]
+								#end
+							#end
+							
+						</a>
+						
+					#end
+				#end
+				</div>
+			#end
 				   
 			#if($caneditasset && $canviewapprovereject )
 			<div class="btn-group dropup">
 				<a href="#" 
-					class="btn btn-primary dropdown-toggle  me-2"
+					class="btn btn-cta dropdown-toggle  me-2"
 					role="button" id="dropdownStatusAsset" data-toggle="dropdown" data-bs-toggle="dropdown"
 				>
 					#if($asset.editstatus =="rejected")
@@ -103,14 +160,14 @@ $context.putPageValue("assetheight",$assetheight)
 				   
 			#if($caneditasset)
 			<a href="$siteroot$apphome/views/modules/asset/editor/conversions/replaceoriginal/index.html" 
-				class="btn btn-cta emdialog me-2"
+				class="btn btn-primary emdialog me-2"
 				data-assetid="$asset.getId()"
 				data-dialogid="replaceoriginalasset">
 				<i class="bi bi-files ns me-1"></i>
 				[[Replace Original File]]
 			</a>
 			#end
-			#if( $candeleteasset )
+			#if($caneditasset && $candeleteasset )
 				#if ( $ismulti )
 					#if($canmultidelete)  
 					<a class="btn btn-danger  emdialog" href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/delete/index.html?collectionid=$!collectionid&hitssessionid=$!hitssessionid">
