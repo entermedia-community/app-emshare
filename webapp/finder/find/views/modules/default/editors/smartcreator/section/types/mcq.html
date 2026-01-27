@@ -1,0 +1,29 @@
+<form method="POST" action="$edithome/section/create-componentcontent.html" class="my-0 mx-auto component-mcq-form">
+  <input type="hidden" name="componentcontentid" value="$!{componentcontent.id}" />
+  <input type="hidden" name="componenttype" value="mcq" />
+  #set ($questionsearcher = $mediaarchive.getSearcher("entityquestion"))
+  $context.putPageValue("searcher", $questionsearcher)     
+  $context.putPageValue("viewid", "entityquestiongeneral")
+
+  
+  #ifnotnull($componentcontent.questionid)
+    #set($question = $questionsearcher.loadData($componentcontent.questionid))
+    $context.putPageValue("data", $question)
+    <input type="hidden" name="questionid" value="field" />
+    <input type="hidden" name="questionid.value" value="$componentcontent.questionid" />
+  #end
+
+  $context.putPageValue("entity", $componentcontent.questionid)
+  $context.putPageValue("module", "entityquestion")
+  $context.putPageValue("textarearow", 2)
+  $context.putPageValue("caneditlists",false)
+
+  $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+
+  <div class="align-items-center justify-content-center gap-2 content-mcq-btns">
+    <button class="btn btn-primary content-mcq-save">
+      <i class="fas fa-save me-1"></i> Save
+    </button>
+    <button class="btn btn-secondary content-mcq-cancel">Cancel</button>
+  </div>
+</form>

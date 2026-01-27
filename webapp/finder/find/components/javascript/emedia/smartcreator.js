@@ -250,6 +250,28 @@ $(document).ready(function () {
 		$(this).closest(".creator-section-content").removeClass("edit-mode");
 	});
 
+	lQuery(".content-mcq-save").livequery("click", function (e) {
+		e.preventDefault();
+		var form = $(this).closest("form");
+		form.ajaxFormSubmit(function () {
+			form.closest(".creator-section-content").removeClass("edit-mode");
+		});
+	});
+
+	lQuery(".content-mcq-cancel").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		$(this).closest(".creator-section-content").removeClass("edit-mode");
+		// $(this)
+		// 	.closest("form")
+		// 	.find("textarea,input,select")
+		// 	.each(function () {
+		// 		if ($(this).val().trim() === "") {
+		// 			$(this).insertBefore(`<p class="text-muted">Not set</p>`);
+		// 		}
+		// 	});
+	});
+
 	lQuery(".section-edit").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
