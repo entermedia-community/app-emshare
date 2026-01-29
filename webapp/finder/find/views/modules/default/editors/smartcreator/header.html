@@ -2,7 +2,7 @@
   <div class="d-flex align-items-center me-2" style="min-width:300px">
     <img src="$siteroot$apphome/theme/images/emedialogo.png" alt="eMedia Logo" />
     <div class="d-flex flex-column">
-      <h2>Smart Creator</h2>
+      <h2>[[Smart Creator]]</h2>
       <h1>${playbackentity.name}</h1>
     </div>
   </div> 
@@ -11,71 +11,89 @@
     <a class="btn text-primary rounded ms-4">
       <i class="bi bi-clock-history"></i>
       <span class="ms-2">
-        Versions
+        [[Versions]]
       </span>
     </a>
-    <a class="btn text-dark rounded ms-4">
+    <a class="btn  btn-light me-2">
       <i class="bi bi-arrow-90deg-left"></i>
       <span class="ms-2">
-        Undo
+        [[Undo]]
       </span>
     </a>
-    <a class="btn text-dark rounded ms-4">
+    <a class="btn  btn-light me-2">
       <i class="bi bi-arrow-90deg-right"></i>
       <span class="ms-2">
-        Redo
-      </span>
-    </a>
-
-    <a class="btn text-dark rounded ms-4">
-      <i class="bi bi-box-arrow-right"></i>
-      <span class="ms-2">
-        Export
-      </span>
-    </a>
-    <a class="btn text-dark rounded ms-4">
-      <i class="bi bi-box-arrow-in-right"></i>
-      <span class="ms-2">
-        Import
-      </span>
-    </a>
-    <a class="btn text-dark rounded ms-4">
-      <i class="fas fa-share-alt"></i>
-      <span class="ms-2">
-        Share
+        [[Redo]]
       </span>
     </a>
 	
-	
-	<a href="#"
-		class="resultsnavlink emdialog btn btn-cta"
-		data-dialogid="entitypickeraddnew"
-		data-dialogwidth="1400"
-		data-hidefooter="true"
-		data-autosetformtargetdiv="editdiv"
-		title="[[Create New Render]]">
-		<span class="mbl-hidden"><i class="bi bi-check2-circle"></i> [[Save]]</span></a>
-		
-
 	#set($newedithome= "$apphome/views/modules/componentrenderversion/editors/dataentity")
 	#set($addnew = "${newedithome}/addnew.html")
+
+	<a class="resultsnavlink btn btn-light dropdown-toggle me-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+			<span class="mbl-hidden"><i class="bi bi-copy me-1"></i> [[Export]]</span>
+	</a>
+	<div class="dropdown-menu dropdown-menu-end" style="">
+			#set($rendertypes = $mediaarchive.getList("componentrenderversiontype"))
+			#foreach($type in $rendertypes)
+			<a class="dropdown-item  emdialog ai-func  me-2" 
+				href="#" 
+				data-dialogid="entitypickeraddnew"
+				data-dialogwidth="1400"
+				data-hidefooter="true"
+				data-entityid="${entity.id}"
+				data-entitymoduleid="${entitymodule.id}"
+				data-fieldexternalid="entityid"
+				data-fieldexternalvalue="${entity.id}"
+				data-fieldexternalid2="entitymoduleid"
+				data-fieldexternalvalue2="${entitymodule.id}"
+				data-autosetformtargetdiv="editdiv"
+				title="[[Create New Render]]">
+				<i class="bi bi-${function.icon} me-1"></i>
+				<span>#text($type)</span>
+			</a>
+			#end
+		</div>
+		
+    <a class="btn  btn-light rounded me-4">
+      <i class="bi bi-box-arrow-in-right me-1"></i>
+        [[Import]]
+    </a>
 	
+
+	<a class="resultsnavlink btn btn-primary dropdown-toggle me-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+		<span class="mbl-hidden"><i class="bi bi-copy me-1"></i> [[Make a copy]]</span>
+	</a>
+	<div class="dropdown-menu dropdown-menu-end" style="">
+		#foreach ( $amodule in $userprofile.getEntities() )
+			#set($creationmethod = $amodule.get("aicreationmethod"))
+			#if($creationmethod && $creationmethod == "smartcreator")
+				<a class="dropdown-item  emdialog ai-func  me-2" 
+					href="#" 
+					data-dialogid="entitypickeraddnew"
+					data-dialogwidth="1400"
+					data-hidefooter="true"
+					data-entityid="${entity.id}"
+					data-entitymoduleid="${entitymodule.id}"
+					data-fieldexternalid="entityid"
+					data-fieldexternalvalue="${entity.id}"
+					data-fieldexternalid2="entitymoduleid"
+					data-fieldexternalvalue2="${entitymodule.id}"
+					data-autosetformtargetdiv="editdiv"
+					title="[[Create New]] #text($amodule)">
+					<span>#text($amodule)</span>
+				</a>
+			#end
+		#end
+	</div>
 	
-	<a href="$addnew"
-	class="resultsnavlink emdialog btn btn-primary ms-2"
-	data-dialogid="entitypickeraddnew"
-	data-dialogwidth="1400"
-	data-hidefooter="true"
-	data-entityid="${entity.id}"
-	data-entitymoduleid="${entitymodule.id}"
-	data-fieldexternalid="entityid"
-	data-fieldexternalvalue="${entity.id}"
-	data-fieldexternalid2="entitymoduleid"
-	data-fieldexternalvalue2="${entitymodule.id}"
-	data-autosetformtargetdiv="editdiv"
-	title="[[Create New Render]]">
-	<span class="mbl-hidden"><i class="bi bi-check2-circle"></i> [[Save As]]</span></a>
-	
-	
+	<a href="#"
+			class="resultsnavlink emdialog btn btn-cta"
+			data-dialogid="entitypickeraddnew"
+			data-dialogwidth="1400"
+			data-hidefooter="true"
+			data-autosetformtargetdiv="editdiv"
+			title="[[Share]]">
+			<span class="mbl-hidden"><i class="bi bi-share me-1"></i> [[Share]]</span></a>
   </div> 
 </div>
