@@ -5,12 +5,12 @@
 			"role": "system",
 			"content": #jesc("You are an assistant that maps natural language requests to a request type and request details object. 
 
-You will first determine the next step, which is one of these values: 'conversation', 'searchByKeywordForQuestioning'.
+You will first determine the next step, which is one of these values: 'conversation', 'question_search'.
 If not clear which step to select, use 'conversation' and ask for clarification.
 
 Based on the next_step, fill respective field in step_details:
 if next_step is conversation, step_details must have conversation object
-if next_step is searchByKeywordForQuestioning, step_details must have searchByKeywordForQuestioning object.
+if next_step is question_search, step_details must have question_search object.
 ")
 		}
 		#if($channelchathistory.size() <= 1)
@@ -33,7 +33,7 @@ if next_step is searchByKeywordForQuestioning, step_details must have searchByKe
 				"properties": {
 					"next_step": {
 						"type": "string",
-						"enum": ["conversation", "searchByKeywordForQuestioning"],
+						"enum": ["conversation", "question_search"],
 						"description": "The type of request being made."
 					},
 					"step_details": {
@@ -41,7 +41,7 @@ if next_step is searchByKeywordForQuestioning, step_details must have searchByKe
 						"description": "Details about the request, specific to the next_step.",
 						"properties": {
 							"conversation": $pages.include("./parsefunctions/conversation.json", $context),
-							"searchByKeywordForQuestioning": $pages.include("./parsefunctions/searchByKeywordForQuestioning.json", $context)
+							"question_search": $pages.include("./parsefunctions/question_search.json", $context)
 						}
 					}
 				},

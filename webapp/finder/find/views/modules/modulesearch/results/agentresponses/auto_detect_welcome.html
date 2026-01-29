@@ -1,0 +1,26 @@
+<h5 class="mt-0 mb-2">What would you like to talk about?</h5>
+
+#set($aifunctions = $mediaarchive.query("aifunction").exact("toplevel",true).sort("ordering").search())
+<ul>
+  #ifnotnull($aifunctions)
+    #foreach( $function in $aifunctions )
+      #if($function.id != "auto_detect_welcome")
+      <li>
+        <a class="ajax"
+          href="$applink/views/modules/${module.id}/editors/entitychat/toplevelfunctionsave.html"
+          data-targetdiv="aichatsearch"
+          data-channel="$!{channel.getId()}"
+          data-toplevelaifunctionid="$function.id"
+          data-functionname="$function.id"
+          data-showsuggestions="true"
+          data-oemaxlevel="1">
+          <span>#text( $function )</span>
+        </a>
+      </li>
+      #end
+    #end
+  #end
+</ul>
+#ifnull($aifunctions)
+<p>I can help you create tutorials, answer your questions, generate images, and more.</p>
+#end
