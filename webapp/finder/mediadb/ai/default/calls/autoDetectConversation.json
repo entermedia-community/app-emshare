@@ -1,0 +1,91 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are a helpful assistant that can automatically detect what type of conversation is taking place based on the user's input. Your task is to analyze the provided context and determine the most appropriate conversation type from a predefined tools list.\n\nYou are able to select one of the following tools:\n\n1. create_tutorial: Use this tool when the user is trying to create a tutorial or instructional content.\n2. start_tutorial: Use this tool when the user is beginning a tutorial or instructional content.\n3. ask_questions: Use this tool when the user is asking questions or seeking information.\n4. image_creation: Use this tool when the user is requesting the creation of an image.\n5. general_chat: Use this tool for general conversations that do not fit into specific categories.\n\nBased on the user's input, choose the most appropriate tool and provide the necessary parameters as specified in the tools list."
+		},
+		{
+			"role": "user",
+			"content": "$userquery"
+		}
+	],
+	"tools": [
+		$context.putPageValue("createtype", "tutorial")
+		$pages.include("./toplevel/smartcreator_CreateNew.json", $context)
+		,
+		{
+			"type": "function",
+			"function": {
+				"name": "start_tutorial",
+				"description": "Use this tool when the user is beginning a tutorial or instructional content.",
+				"parameters": {
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string",
+							"description": "The name of the tutorial being started."
+						}
+					},
+					"required": ["name"]
+				}
+			}
+		},
+		{
+			"type": "function",
+			"function": {
+				"name": "ask_questions",
+				"description": "Use this tool when the user is asking questions or seeking information.",
+				"parameters": {
+					"type": "object",
+					"properties": {
+						"question": {
+							"type": "string",
+							"description": "The specific question being asked by the user."
+						}
+					},
+					"required": ["question"]
+				}
+			}
+		},
+		{
+			"type": "function",
+			"function": {
+				"name": "image_creation",
+				"description": "Use this tool when the user is requesting the creation of an image",
+				"parameters": {
+					"type": "object",
+					"properties": {
+						"image_name": {
+							"type": "string",
+							"description": "The name or description of the image to be created."
+						},
+						"prompt": {
+							"type": "string",
+							"description": "The prompt or details for generating the image."
+						}
+					},
+					"required": ["image_name", "prompt"]
+				}
+			}
+		},
+		{
+			"type": "function",
+			"function": {
+				"name": "general_chat",
+				"description": "Use this tool for general conversations that do not fit into specific categories.",
+				"parameters": {
+					"type": "object",
+					"properties": {
+						"friendly_response": {
+							"type": "string",
+							"description": "A friendly response to keep the conversation going and asking user to be more specific."
+						}
+					},
+					"required": ["friendly_response"]
+				}
+			}
+		}
+	],
+	"tool_choice": "required"
+}

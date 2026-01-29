@@ -1,1 +1,26 @@
-Outline and content created.  <a href="#">View #text($module) Created Now</a>
+#set($previewlink = "$applink/views/modules/${playbackentitymodule.getId()}/index.html")
+<p>
+  Created <a class="emdialog" href="$previewlink?entityid=${playbackentity.getId()}"><strong>#text($playbackentity)</strong></a> in <a class="emdialog" href="$previewlink"><strong>#text($playbackentitymodule)</strong></a>
+</p>
+#set($sections = $mediaarchive.query("componentsection").exact("playbackentityid", $playbackentity.getId()).sort("ordering").search())
+#ifnotnull($sections)
+<p class="m-0">Outlines:</p>
+<ul>
+  #foreach($section in $sections)
+    <li>
+      ${section.name}
+    </li>
+  #end
+</ul>
+
+<div class="d-flex align-items">
+  <a href="$applink/views/modules/${playbackentitymodule.getId()}/editors/listentities/tabs/index.html" class="emdialog me-3" data-dialogid="entitydialog" data-entityid="${playbackentity.getId()}" data-entitymoduleid="${playbackentitymodule.getId()}" data-entitymoduleviewid="${playbackentitymodule.getId()}smartcreator">
+    <i class="bi bi-pencil-square ns me-1"></i> Edit
+  </a>
+  <a href="$applink/views/modules/${playbackentitymodule.getId()}/editors/listentities/tabs/index.html" class="emdialog text-secondary" data-dialogid="entitydialog" data-entityid="${playbackentity.getId()}" data-entitymoduleid="${playbackentitymodule.getId()}" data-entitymoduleviewid="${playbackentitymodule.getId()}preview">
+    <i class="bi bi-eye ns me-1"></i> View
+  </a>
+</div>
+
+#end
+
