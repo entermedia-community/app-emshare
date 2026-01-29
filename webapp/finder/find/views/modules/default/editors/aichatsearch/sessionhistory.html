@@ -11,6 +11,8 @@
     <strong>[[Session History]]</strong>
   </p>
 
+  #set($toplevelfunctionid = $agentcontext.getTopLevelFunctionName())
+
   #set( $hits = $mediaarchive.query("channel").exact("dataid",$user).exact("searchtype", "user").sort("refreshdateDown").search($context))
 
   #foreach($hit in $hits.getPageOfHits() )
@@ -22,11 +24,10 @@
         data-oemaxlevel="1"
 	      href="$edithome/sessionrestore.html" 
         title="[[Retrieve this session]]">
-        #set($functiongroupid = $hit.get("functiongroup"))
         <span class="session-name">
-          #ifnotnull($functiongroupid)
-            #set($functiongroup = $mediaarchive.query("functiongroup").id($functiongroupid).searchOne())
-            <i class="bi ns bi-${functiongroup.icon} me-1"></i> 
+          #ifnotnull($toplevelfunctionid)
+            #set($toplevelfunction = $mediaarchive.query("aifunction").id($toplevelfunctionid).searchOne())
+            <i class="bi ns bi-${toplevelfunction.icon} me-1"></i> 
           #end
           #ifnotnull($hit.name)
             #esc($!hit.name)

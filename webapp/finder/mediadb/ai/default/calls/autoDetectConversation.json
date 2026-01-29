@@ -11,26 +11,12 @@
 		}
 	],
 	"tools": [
-		$context.putPageValue("createtype", "tutorial")
-		$pages.include("./toplevel/smartcreator_CreateNew.json", $context)
+		#foreach($toplevelfunction in toplevelfunctions)
+			#if($foreach.count > 1),#end
+			$pages.include("./toplevel/${toplevelfunction}.json", $context)
+		#end
 		,
-		{
-			"type": "function",
-			"function": {
-				"name": "start_tutorial",
-				"description": "Use this tool when the user is beginning a tutorial or instructional content.",
-				"parameters": {
-					"type": "object",
-					"properties": {
-						"name": {
-							"type": "string",
-							"description": "The name of the tutorial being started."
-						}
-					},
-					"required": ["name"]
-				}
-			}
-		},
+		,
 		{
 			"type": "function",
 			"function": {
