@@ -22,6 +22,12 @@
 #end
 
 #ifnull($entitymoduleviewid)
+	#set($renderfirstview = $context.getRequestParameter("renderfirstview"))
+	#ifnotnull($renderfirstview)
+		#set($entitymoduleviewid = $enttiyviews.first().getId())
+	#end
+#end
+#ifnull($entitymoduleviewid)
 	#set( $entitymoduleviewid = $userprofile.get("${module.id}_entitytabopen"))
 #end
 #ifnull($entitymoduleviewid)
@@ -84,6 +90,9 @@ $context.putPageValue("enttiyviews", $enttiyviews)
 
 		#set($parententitymoduleid = $context.getRequestParameter("parententitymoduleid"))
 		$context.putPageValue("parententitymoduleid", $parententitymoduleid)
+		
+		#set($parententitymoduleviewid = $context.getRequestParameter("parententitymoduleviewid"))
+		$context.putPageValue("parententitymoduleviewid", $parententitymoduleviewid)
 
 		$pages.include("${edithome}/tabs/dialogheader.html", $context)
 
