@@ -291,33 +291,6 @@ $(document).ready(function () {
 		});
 	});
 
-	lQuery(".creator-nav a").livequery("click", function () {
-		var container = $(this).closest(".creator-preview");
-		var playbackentityid = container.data("playbackentityid");
-		var playbackentitymoduleid = container.data("playbackentitymoduleid");
-
-		var chatterbox = $(this).closest(".chatterbox");
-		chatterbox.data("playbackentityid", playbackentityid);
-		chatterbox.data("playbackentitymoduleid", playbackentitymoduleid);
-		var playbacksection = $(this).data("ordering");
-		chatterbox.data("playbacksection", playbacksection);
-
-		var label = "";
-		if ($(this).hasClass("prev")) {
-			label = "Prev:";
-		} else if ($(this).hasClass("next")) {
-			label = "Next:";
-		}
-		label += $(this).text().trim();
-
-		$("#chatter-msg").val(label);
-
-		setTimeout(function () {
-			$(".chatter-send").trigger("click");
-			$(".ai-functions").remove();
-		});
-	});
-
 	lQuery(".ai-action").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
