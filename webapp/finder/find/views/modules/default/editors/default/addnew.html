@@ -1,14 +1,4 @@
 
-#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
-#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
-#ifnull($data)
-	#ifnotnull($fieldexternalid)
-		#set($data = $mediaarchive.getSearcher($module.id).createNewData())
-		$data.setValue($fieldexternalid, $fieldexternalvalue)
-		$context.putPageValue("data",$data)
-	#end
-#end
-
 #set( $searcher = $mediaarchive.getSearcher($module.id) )
 $context.putPageValue("searcher",$searcher)
 
@@ -40,7 +30,27 @@ $context.putPageValue("edit", $edit)
 				<input name="entitymoduleviewid" type="hidden" value="$!entitymoduleviewid" />
 				<input name="viewid" type="hidden" value="$!viewid" />
 				<input name="view" type="hidden" value="$!view" />
+				
+				#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+				#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+				#ifnull($data)
+					#ifnotnull($fieldexternalid)
+						#set($data = $mediaarchive.getSearcher($module.id).createNewData())
+						$data.setValue($fieldexternalid, $fieldexternalvalue)
+						<input name="fieldexternalid" type="hidden" value="$!fieldexternalid" />
+						<input name="fieldexternalvalue" type="hidden" value="$!fieldexternalvalue" />
 						
+						##second external field
+						#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid2"))
+						#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue2"))
+						#ifnotnull($fieldexternalid)
+								$data.setValue($fieldexternalid, $fieldexternalvalue)
+								<input name="fieldexternalid2" type="hidden" value="$!fieldexternalid" />
+								<input name="fieldexternalvalue2" type="hidden" value="$!fieldexternalvalue" />
+						#end
+						$context.putPageValue("data",$data)
+					#end
+				#end	
 		
 			#ifnull($showmedia)
 				#set($showmedia = $context.getRequestParameter("showmedia"))
