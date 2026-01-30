@@ -8,39 +8,43 @@
   #end
   #ifnotnull($question)
     <h3>
-      ${question.question}
+      #escarea($question.question)
     </h3>
-    <div class="d-flex flex-column mb-2">
+    <div class="d-flex flex-column mb-2 mcq">
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="option" value="" id="option_a-${componentcontent.getId()}" required>
+        <input class="form-check-input" type="radio" name="option" value="a" id="option_a-${componentcontent.getId()}" required>
         <label class="form-check-label" for="option_a-${componentcontent.getId()}">
-          ${question.option_a}
+          #escarea($question.option_a)
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="option" value="" id="option_b-${componentcontent.getId()}" required>
+        <input class="form-check-input" type="radio" name="option" value="b" id="option_b-${componentcontent.getId()}" required>
         <label class="form-check-label" for="option_b-${componentcontent.getId()}">
-          ${question.option_b}
+          #escarea($question.option_b)
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="option" value="" id="option_c-${componentcontent.getId()}" required>
+        <input class="form-check-input" type="radio" name="option" value="c" id="option_c-${componentcontent.getId()}" required>
         <label class="form-check-label" for="option_c-${componentcontent.getId()}">
-          ${question.option_c}
+          #escarea($question.option_c)
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="option" value="" id="option_d-${componentcontent.getId()}" required>
+        <input class="form-check-input" type="radio" name="option" value="d" id="option_d-${componentcontent.getId()}" required>
         <label class="form-check-label" for="option_d-${componentcontent.getId()}">
-          ${question.option_d}
+          #escarea($question.option_d)
         </label>
+      </div>
+      <div class="alert alert-info my-2 py-1 px-2" style="display: none;">
+        Correct Answer: <strong>#escarea($question.correctanswer)</strong>
+      </div>
+      <div class="d-flex mt-1 gap-2">
+        <a href="#" class="btn btn-sm btn-accent mcq-submit">Submit</a>
+        <a href="#" class="btn btn-sm btn-secondary mcq-cancel">Cancel</a>
       </div>
     </div>
 
     <div class="d-flex flex-column">
-      #if($question.grade > 0)
-        <p class="text-muted">Grade: <strong>${question.grade}</strong></p>
-      #end
       #ifnotnull($question.mcqcognitivelevel)
         #set($level = $mediaarchive.getCachedData("mcqcognitivelevel", $question.mcqcognitivelevel))
         <p class="text-muted">Cognitive Level: <strong>$level</strong></p>

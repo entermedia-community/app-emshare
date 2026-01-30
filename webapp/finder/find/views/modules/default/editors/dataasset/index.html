@@ -129,12 +129,15 @@ $context.putPageValue("searchtype", $searchtype)
 		<div class="container-fluid">
 	 		<div class="row">
 		 		<div class="col">
-					<div class="btns">
-						<input class="btn btn-accent submitform" type="button" value="[[Save values]]"/>
-						
-						#set( $args = "assetid=$!asset.getId()&viewid=$!viewid&assethitssessionid=$!hitssessionid")
-						<a class="ajax btn btn-secondary" style="margin-right:10px;" data-targetdiv="asset-detail-editor" data-oemaxlevel="1" 
-							href="${edithome}/generalinformation/metadatapanel.html?save=false&${args}">[[Cancel]]</a>
+					<div class="d-flex justify-content-between align-items-center mt-2">
+						<div class="d-flex align-items-center">
+							<a class="btn btn-accent submitform me-2" role="button">
+								<i class="fas fa-save me-1"></i> [[Save]]
+							</a>
+							#set( $args = "assetid=$!asset.getId()&viewid=$!viewid&assethitssessionid=$!hitssessionid")
+							<a class="ajax btn btn-secondary" style="margin-right:10px;" data-targetdiv="asset-detail-editor" data-oemaxlevel="1" 
+								href="${edithome}/generalinformation/metadatapanel.html?save=false&${args}">[[Cancel]]</a>
+						</div>
 					
 						#if($caneditmetadatasetup)
 						<a class="emdialog float-right btn btn-secondary"
@@ -142,10 +145,6 @@ $context.putPageValue("searchtype", $searchtype)
 							 data-dialogid="fieldpicker" data-hidefooter="true"
 							 data-ajaxreloadtargetid="${edithomeid}${viewid}"
 							 title="[[Configure View]]"><i class="bi bi-gear-fill me-1"></i> [[Fields]]</a>
-						#end
-						
-						#if( $caneditmetadatasetup  )
-							<div class="clearfix"></div>
 						#end
 					</div>
 				</div>
