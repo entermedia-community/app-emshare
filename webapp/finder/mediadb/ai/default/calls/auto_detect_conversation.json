@@ -68,6 +68,36 @@
 					"required": ["friendly_response"]
 				}
 			}
+		},
+		{
+			##TODO: addd message ihistory
+			"type": "function",
+			"function": {
+				"name": "search_tables",
+				"description": 	#jesc("Use this tool to search as a search assistant that maps natural language requests to a logical steps that could be executed as sequential database or API operations. 
+
+				You will first determine the next step, which is one of these values: 'conversation' and 'parseSearchParts'.
+				If not clear which step to select, use 'conversation' and ask for clarification.
+
+				Based on the selected next_step, fill respective field in step_details:
+				if next_step is conversation, step_details must have conversation object
+				if next_step is parseSearchParts, step_details must have parseSearchParts object.
+				"),
+				"parameters": {
+					"type": "object",
+					"properties": {
+						"step_details": {
+								"type": "object",
+								"description": "Details about the selected step.",
+								"properties": {
+									"conversation": $pages.include("./parsefunctions/conversation.json", $context),
+									"parseSearchParts": $pages.include("./parsefunctions/parseSearchParts.json", $context)
+								}
+							}
+					},
+					"required": ["friendly_response"]
+				}
+			}
 		}
 	],
 	"tool_choice": "required"

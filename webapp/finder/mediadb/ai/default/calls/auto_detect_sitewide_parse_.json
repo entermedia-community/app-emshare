@@ -1,0 +1,52 @@
+{
+	"model": "${model}",
+	"messages": [
+    {
+			"role": "system",
+			"content": #jesc("You are an assistant that maps natural language requests to a logical steps that could be executed as sequential database or API operations. 
+
+You will first determine the next step, which is one of these values: 'conversation' and 'parseSearchParts'.
+If not clear which step to select, use 'conversation' and ask for clarification.
+
+Based on the selected next_step, fill respective field in step_details:
+if next_step is conversation, step_details must have conversation object
+if next_step is parseSearchParts, step_details must have parseSearchParts object.
+")
+		}
+		#if($channelchathistory.size() <= 1)
+		, 
+		#else 
+		$pages.include("./commons/messagehistory.json", $context) 
+		#end
+		{
+			"role": "user",
+			"content": #jesc(${message.message})
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "start_search_parsing",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"next_step": {
+						"type": "string",
+						"enum": ["conversation", "parseSearchParts"],
+						"description": "The type of request being made."
+					},
+					"step_details": {
+						"type": "object",
+						"description": "Details about the selected step.",
+						"properties": {
+							"conversation": $pages.include("./parsefunctions/conversation.json", $context),
+							"parseSearchParts": $pages.include("./parsefunctions/parseSearchParts.json", $context)
+						}
+					}
+				},
+				"required": ["next_step", "step_details"]
+			}
+		}
+	}	
+}
