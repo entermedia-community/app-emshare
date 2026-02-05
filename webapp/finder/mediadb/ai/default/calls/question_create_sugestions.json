@@ -1,0 +1,44 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content":  "You are a assistant that generates up to 3 short questions using the information provided. The questions should be short, direct and clear. Avoid overly complex or multi-part questions. Focus on the key details from the provided information to create relevant and engaging questions. Do not include any constraints on how to answer the question like 'according to ...', 'based on ...' etc."
+		},
+    {
+      "role": "user",
+      "content": #jesc("Make 3 question suggestions from the following information: $embeddedtext")
+    }
+	],
+	"response_format": {
+			"type": "json_schema",
+			"json_schema": {
+				"name": "question_create_suggestions",
+				"strict": true,
+				"schema": {
+					"type": "object",
+					"properties": {
+						"suggestions": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"title": {
+										"type": "string",
+										"description": "A short name for this suggestion"
+									},
+									"prompt": {
+										"type": "string",
+										"description": "A full question that can be asked about this subject"
+									}
+								},
+								"required": ["title", "prompt"],
+								"additionalProperties": false
+							}
+						}
+					},
+					"required": ["suggestions"],
+					"additionalProperties": false
+				}
+			}
+		}
