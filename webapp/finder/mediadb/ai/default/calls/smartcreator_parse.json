@@ -1,0 +1,53 @@
+{
+	  "model": "${model}",
+	  "messages": [
+	    {
+	      "role": "system",
+	      "content": "You are a precise data extraction assistant. Parse the user's sentence into structured instructions. For each instruction, identify the target output, the style/format, and the subject topic. Extract the topic as a noun phrase, excluding action verbs."
+	    },
+	    {
+	      "role": "user",
+	      "content": "Create blog containing a short outline on how to make a cake. For each step create a detailed summary"
+	    }
+	  ],
+	  "response_format": {
+	    "type": "json_schema",
+	    "json_schema": {
+	      "name": "sentence_parser",
+	      "strict": true,
+	      "schema": {
+	        "type": "object",
+	        "properties": {
+	          "instructions": {
+	            "type": "array",
+	            "items": {
+	              "type": "object",
+	              "properties": {
+	                "text": { 
+	                  "type": "string", 
+	                  "description": "The specific segment of text for this instruction." 
+	                },
+	                "target": { 
+	                  "type": "string", 
+	                  "description": "The specific output being created (e.g., 'blog', 'section')." 
+	                },
+	                "style": { 
+	                  "type": "string", 
+	                  "description": "The formatting or length constraint (e.g., 'short outline', 'detailed')." 
+	                },
+	                "topic": { 
+	                  "type": "string", 
+	                  "description": "The core subject matter (e.g., 'how to make a cake', 'summary')." 
+	                }
+	              },
+	              "required": ["text", "target", "style", "topic"],
+	              "additionalProperties": false
+	            }
+	          }
+	        },
+	        "required": ["instructions"],
+	        "additionalProperties": false
+	      }
+	    }
+	  }
+	}
