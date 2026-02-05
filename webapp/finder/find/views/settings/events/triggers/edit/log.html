@@ -5,20 +5,21 @@
 >
   <div class="position-sticky bg-light py-1 p-2" style="top:0">
     <div class="d-flex justify-content-between">
-      #if( $pathevent.isRunning() )
-      <p class="d-flex align-items-center m-0" style="font-weight: bold;">
-        <svg height="10" width="10" class="blinking">
-          <circle cx="5" cy="5" r="5" fill="green" /> 
-        </svg>
-        &nbsp;[[Event is running]]
-      </p>
-      #end
+
       <p class="m-0">
         <b>[[Last ran]]:</b> $!pathevent.getFormattedLastRun()
         <br/>
         <b>[[Total Runs]]:</b> $pathevent.getTotalRunCount()
       </p>
+	  #if( $pathevent.isRunning() )
+	  <p class="d-flex align-items-center m-0" style="font-weight: bold;">
+	    <svg height="12" width="12" class="blinking">
+	      <circle cx="6" cy="6" r="6" fill="green" /> 
+	    </svg>
+	    &nbsp;[[Event is running]]
+	  </p>
+	  #end
     </div>
   </div>
-  <div class="p-2 d-hide-empty border-top-subtle">$!pathevent.getLastOutputHtml()</div>
+  <div class="output-container  p-2 d-hide-empty border-top-subtle">$!pathevent.getLastOutputHtml()</div>
 </div>
