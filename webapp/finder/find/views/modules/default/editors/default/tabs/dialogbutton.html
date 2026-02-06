@@ -23,20 +23,23 @@
 		role="tab" 
 		title="#text($viewdata)">
 
-#if( $viewdata.rendertype == "data" )
+#set($rendertype = $viewdata.rendertype )
+#ifnotnull($rendertype)		
+#if( $rendertype == "data" )
 	#set($moduleicon = $entitymodule.moduleicon)
-#elseif( $viewdata.rendertype == "entityshare" )
+#elseif( $rendertype == "entityshare" )
 	#set($moduleicon = "share")
-#elseif( $viewdata.rendertype == "tablightboxes" )
+#elseif( $rendertype == "tablightboxes" )
 	#set($moduleicon = "check-circle")
-#elseif( $viewdata.rendertype == "tabrenderditaeditor" )
+#elseif( $rendertype == "tabrenderditaeditor" )
 	#set($moduleicon = "file-richtext")
-#elseif( $viewdata.rendertype == "entityupload" )
+#elseif( $rendertype == "entityupload" )
 	#set($moduleicon = "upload")
-#elseif( $viewdata.rendertype == "tabworkflowchat" )
+#elseif( $rendertype == "tabworkflowchat" )
 	#set($moduleicon = "robot")
-#elseif( $viewdata.rendertype == "entitymedia" )
+#elseif( $rendertype == "entitymedia" )
 	#set($moduleicon = "images")
+#end
 #end
 
 #ifnull($moduleicon)
