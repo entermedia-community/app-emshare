@@ -2,16 +2,18 @@
 <p>
   Created <a class="emdialog" href="$previewlink?entityid=${playbackentity.getId()}"><strong>#text($playbackentity)</strong></a> in <a class="emdialog" href="$previewlink"><strong>#text($playbackentitymodule)</strong></a>
 </p>
-#set($sections = $mediaarchive.query("componentsection").exact("playbackentityid", $playbackentity.getId()).sort("ordering").search())
-#ifnotnull($sections)
-<p class="m-0">Outlines:</p>
-<ul>
-  #foreach($section in $sections)
+<messageplain>Created #text($playbackentity) in #text($playbackentitymodule)</messageplain>
+
+<messageplain>Outline:</messageplain>
+<p class="m-0">Outline:</p>
+<ol>
+  #foreach($section in $confirmedoutline)
     <li>
-      ${section.name}
+      ${section}
+      <messageplain>${foreach.count}. ${section}</messageplain>
     </li>
   #end
-</ul>
+</ol>
 
 <div class="d-flex align-items">
   <a href="$applink/views/modules/${playbackentitymodule.getId()}/editors/listentities/tabs/index.html" class="emdialog me-3" data-dialogid="entitydialog" data-entityid="${playbackentity.getId()}" data-entitymoduleid="${playbackentitymodule.getId()}" data-entitymoduleviewid="${playbackentitymodule.getId()}smartcreator">
@@ -23,4 +25,3 @@
 </div>
 
 #end
-
