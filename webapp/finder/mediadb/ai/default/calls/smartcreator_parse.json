@@ -3,11 +3,28 @@
 	"messages": [
 		{
 			"role": "system",
-			"content": "You are a precise data extraction assistant. Parse the user's sentence into structured instructions. For each instruction, identify the target output, the style/format, and the subject topic. Extract the topic as a noun phrase, excluding action verbs."
+			"content": #jesc("You are a precise data extraction assistant. Parse the user's sentence(s) into structured instructions. There are two type of instruction:
+- outline_section: instruction related to creating the outline sections.
+- section_content: instruction related to creating the content for each section.
+Use the similar sentence structure as user's query do not rephrase if nopt necessary. Instruction should be a short single sentence.
+Extract the topic as a noun phrase, excluding action verbs.
+
+Example:
+User input: 'Create an outline for How to make a cake. Make short and concise 2 or 3 paragraph for each section.'
+Output: {
+  'topic': 'How to Make a Cake',
+  'outline_section': {
+    'instruction': 'Create an outline for making a cake.'
+  },
+  'section_content': {
+    'instruction': 'Make content for section.',
+    'style': 'short and concise, 2 or 3 paragraphs'
+  }
+}")
 		},
 		{
 			"role": "user",
-			"content": #jesc($creationprompt)
+			"content": "Create a Employee Code of Conduct outline. Make short and concise 2 or 3 paragraph for each section."
 		}
 	],
 	"response_format": {
@@ -18,34 +35,42 @@
 			"schema": {
 				"type": "object",
 				"properties": {
-					"instructions": {
-						"type": "array",
-						"items": {
-							"type": "object",
-							"properties": {
-								"text": {
-									"type": "string",
-									"description": "The specific segment of text for this instruction."
-								},
-								"target": {
-									"type": "string",
-									"description": "The specific output being created (e.g., 'blog', 'section')."
-								},
-								"topic": {
-									"type": "string",
-									"description": "The core subject matter (e.g., 'how to make a cake')."
-								},
-								"style": {
-									"type": "string",
-									"description": "The formatting or length constraint (e.g., 'short outline', 'detailed')."
-								}
+					"topic": {
+						"type": "string",
+						"description": "The core subject matter (e.g., 'how to make a cake')."
+					},
+					"outline_section": {
+						"type": "object",
+						"properties": {
+							"instruction": {
+								"type": "string",
+								"description": "The instruction for creating the outline sections."
 							},
-							"required": ["text", "target", "style", "topic"],
-							"additionalProperties": false
-						}
+							"style": {
+								"type": "string",
+								"description": "The formatting or length constraint for the outline sections (e.g., 'short', 'max <number> sections')."
+							}
+						},
+						"required": ["instruction"],
+						"additionalProperties": false
+					},
+					"section_content": {
+						"type": "object",
+						"properties": {
+							"instruction": {
+								"type": "string",
+								"description": "The instruction for creating the section content."
+							},
+							"style": {
+								"type": "string",
+								"description": "The formatting or length constraint for the section content (e.g., 'short paragraphs', 'detailed paragraphs', '<number> paragraphs')."
+							}
+						},
+						"required": ["instruction"],
+						"additionalProperties": false
 					}
 				},
-				"required": ["instructions"],
+				"required": ["outline_section"],
 				"additionalProperties": false
 			}
 		}
