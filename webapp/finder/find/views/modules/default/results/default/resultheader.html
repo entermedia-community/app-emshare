@@ -206,6 +206,21 @@ $context.putPageValue("enableactions", $enableactions)
 					</li>
 					#end
 					
+					
+					#if($entity.id)			
+						#set($removefrom = "${edithome}/actions/removeselections.html")
+						<li><a class="dropdown-item ajax"
+							data-targetdiv="tab_media" 
+								data-entityid="${entity.id}"
+								data-entitymoduleid="${entitymodule.id}"
+								data-moduleid="${module.id}"
+								data-removinghitssessionid="$hits.getSessionId()"
+								data-ajaxreloadtargets="dataeditedreload"
+								title="[[Remove selected records from]]: #text($entity)"
+								href="$removefrom" >[[Remove selected records from]]: #text($entity)</a>
+						</li>
+					#end
+					
 					#ifnull($tabid)
 					#set($tabid = $context.getRequestParameter("tabid"))
 					#end
@@ -227,7 +242,7 @@ $context.putPageValue("enableactions", $enableactions)
 						 title="[[Delete selected items]]">[[Delete]] $!hits.getSelectionSize() [[Records]]</a></li>
 					#end
 					
-					<li class="dropdown-submenu">
+					<li class="dropend">
 						<a class="dropdown-item  dropdown-toggle" href="#" data-bs-toggle="dropdown">[[Export]]</a>
 							<ul class="submenu dropdown-menu">
 								<li><a class="dropdown-item" href="$!{siteroot}${apphome}/views/modules/${moduleid}/export/download/export_${moduleid}.csv?hitssessionid=$hits.sessionId"
@@ -238,7 +253,7 @@ $context.putPageValue("enableactions", $enableactions)
 					</li>
 					
 					
-
+		
 				#if($permissions.canModule("searchcategory", "create"))
 					#set($edithome = "$apphome/views/modules/${module.id}/editors/picksearchcategory")
 					#set($addurl = "$!{edithome}/index.html") 
@@ -253,6 +268,21 @@ $context.putPageValue("enableactions", $enableactions)
 							title="[[Add To Category]]"
 							data-dialogwidth="1200"><i class="bi bi-category me-2"></i>[[Assign]] #text( $mediaarchive.getCachedData("module","searchcategory") )</a></li>
 			 	#end	
+				
+				#if($canrunaiinformatics)
+					#set($reseturl = "$apphome/views/modules/${module.id}/editors/aitools/resetinformatics.html")
+					<li><a 
+						class="dropdown-item ajax" 
+							href="$reseturl" 
+							data-targetdiv="nada"
+							data-hitssessionid="$hits.getSessionId()"	
+							data-toastmessage="[[Reseting Informatics]]"
+							data-toastsuccess="[[Reset Informatics Scheduled]]"
+							title="[[Reset Informatics]]"
+							><i class="bi bi-robot me-2"></i>[[Reset Informatics]]</a></li>
+					
+				#end
+				
 			#end ##Selection					
 			
 			</ul>
