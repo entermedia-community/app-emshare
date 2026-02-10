@@ -176,7 +176,10 @@ $(function () {
 		}
 
 		//jQuery.get(prefix + nodeid + postfix,
-		jQuery.get(prefix, options, function (data) {
+		jQuery.get(prefix, 
+			{
+				...options
+			}, function (data) {
 			//data = $(data);
 
 			var targetdiv = tree.data("targetdivinner");
@@ -283,7 +286,10 @@ $(function () {
 			//tree.closest("#treeholder").load(link, {edittext: value}, function() {
 			var options = tree.data();
 			options["edittext"] = value;
-			$.get(link, options, function (data) {
+			$.get(link, 
+					{
+						...options
+					}, function (data) {
 				targetdiv.replaceWith(data);
 				//Reload tree in case it moved order
 				//repaintEmTree(tree);
@@ -419,7 +425,10 @@ $(function () {
 				"&depth=" +
 				node.data("depth");
 			var options = tree.data();
-			$.get(link, options, function (data) {
+			$.get(link, 
+					{
+						...options
+					}, function (data) {
 				//tree.closest("#treeholder").replaceWith(data);
 				//Reload tree in case it moved order
 				repaintEmTree(tree);
@@ -664,7 +673,10 @@ $(function () {
 		var link = home + "/components/emtree/tree.html";
 		var options = tree.data();
 		options["treename"] = tree.data("treename"); //why?
-		$.get(link, options, function (data) {
+		$.get(link, 
+				{
+					...options
+				}, function (data) {
 			tree.closest("#treeholder").replaceWith(data);
 			$(document).trigger("domchanged");
 		});
