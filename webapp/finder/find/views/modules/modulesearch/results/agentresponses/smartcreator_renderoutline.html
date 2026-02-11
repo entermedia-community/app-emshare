@@ -1,6 +1,18 @@
-#set($previewlink = "$applink/views/modules/${playbackentitymodule.getId()}/index.html")
+#set($previewlink = "$applink/views/modules/${playbackentitymodule.getId()}/editors/default/tabs/index.html")
 <p>
-  Created <a class="emdialog" href="$previewlink?entityid=${playbackentity.getId()}"><strong>#text($playbackentity)</strong></a> in <a class="emdialog" href="$previewlink"><strong>#text($playbackentitymodule)</strong></a>
+  Created <a class="emdialog"
+  			data-dialogid="entitydialog"
+  			data-entityid="${playbackentity.getId()}"
+			data-parententityid="$entity.getId()" 
+			data-parententitymoduleid="$entitymodule.getId()"  
+  			href="$previewlink"><strong>#text($playbackentity)</strong></a> in 
+			
+			#set($previewlink = "$applink/views/modules/${entitymodule.getId()}/editors/listentities/tabs/index.html")
+			<a class="emdialog" 
+				data-dialogid="entitydialog"
+	  			data-entityid="${entity.getId()}"
+				data-entitymoduleviewid="${entitymodule.getId()}${playbackentitymodule.getId()}" 
+				href="$previewlink"><strong>#text($playbackentitymodule)</strong></a>
 </p>
 <messageplain>Created #text($playbackentity) in #text($playbackentitymodule)</messageplain>
 
