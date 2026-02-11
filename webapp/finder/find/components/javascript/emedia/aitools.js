@@ -35,24 +35,24 @@ $(document).ready(function () {
 		$(this).find("select[name='aistyle.values']").trigger("change");
 		$(this).find("input[name='aiexamples.value']").trigger("input");
 	});
-	lQuery(".updateaiimagetemplate input[name='aitarget.value']").livequery(
+	lQuery('.updateaiimagetemplate textarea[name="aitarget.value"]').livequery(
 		"input",
-		function () {
+		function () { 
 			var value = $(this).val();
 			if (!value) return;
 			promptBuilder.aitarget = value;
 			updatePrompt();
-		}
+		},
 	);
-	lQuery(".updateaiimagetemplate select[name='aicontentlist.value']").livequery(
+	lQuery('.updateaiimagetemplate select[name="aicontentlist.value"]').livequery(
 		"change",
 		function () {
 			var value = $(this).val();
 			promptBuilder.aicontentlist = getCommaSeparatedList(value);
 			updatePrompt();
-		}
+		},
 	);
-	lQuery(".updateaiimagetemplate select[name='aistyle.values']").livequery(
+	lQuery('.updateaiimagetemplate select[name="aistyle.values"]').livequery(
 		"change",
 		function () {
 			var value = $(this).val();
@@ -68,21 +68,21 @@ $(document).ready(function () {
 			});
 			promptBuilder.aistyle = getCommaSeparatedList(values);
 			updatePrompt();
-		}
+		},
 	);
-	lQuery(".updateaiimagetemplate input[name='aiexamples.value']").livequery(
+	lQuery('.updateaiimagetemplate textarea[name="aiexamples.value"]').livequery(
 		"input",
 		function () {
 			var value = $(this).val();
 			if (!value) return;
 			promptBuilder.aiexamples = value;
 			updatePrompt();
-		}
+		},
 	);
 
 	function updatePrompt() {
 		//updateaiimagetemplate
-		
+
 		var prompt = `Create a picture of ${
 			promptBuilder.aitarget || "[[TARGET]]"
 		}.`;
@@ -146,16 +146,16 @@ $(document).ready(function () {
 							apphome +
 								"/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" +
 								assetid,
-							function () {}
+							function () {},
 						);
 					}
 				}
 				//reset variable:
-				promptBuilder.aitarget = '';
-				promptBuilder.aicontentlist = '';
-				promptBuilder.aistyle = '';
-				promptBuilder.aiexamples = '';
-				
+				promptBuilder.aitarget = "";
+				promptBuilder.aicontentlist = "";
+				promptBuilder.aistyle = "";
+				promptBuilder.aiexamples = "";
+
 				closeemdialog(form.closest(".modal"));
 			},
 		});
