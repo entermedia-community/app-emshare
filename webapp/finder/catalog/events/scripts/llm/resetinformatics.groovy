@@ -37,7 +37,6 @@ public void init() {
 			row.setValue("taggedbyllm", false);
 			row.setValue("llmerror", false);
 			
-			row.setValue("semantictopicsindexed", false);
 			row.setValue("semantictopics", null);
 			row.setValue("searchcategory", null);
 			

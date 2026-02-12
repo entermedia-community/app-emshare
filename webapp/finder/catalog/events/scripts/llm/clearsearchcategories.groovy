@@ -29,7 +29,6 @@ public void init() {
 			Data row = searcher.loadData(data);
 			
 			row.setValue("taggedbyllm", false);
-			row.setValue("semantictopicsindexed", false);
 			row.setValue("searchcategory", null);
 			
 			saveAll.add(row);
