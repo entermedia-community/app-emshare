@@ -21,15 +21,17 @@
 	#end
   </div>
   
-  #if(!$suggestions.isEmpty())
-  <div class="d-flex flex-column">
-    <strong class="ai-suggestions-title mb-1">[[Example questions]]:</strong>
-    <ul class="ai-suggestions">
-      #foreach( $suggestion in $suggestions )
-      <li class="ai-suggestion autoprefixchatmsg" data-prefix="$suggestion.prompt">
-        $suggestion.prompt
-      </li>
-      #end
-    </ul>
-  </div>
+  #ifnotnull($suggestions)
+	  #if(!$suggestions.isEmpty())
+	  <div class="d-flex flex-column">
+	    <strong class="ai-suggestions-title mb-1">[[Example questions]]:</strong>
+	    <ul class="ai-suggestions">
+	      #foreach( $suggestion in $suggestions )
+	      <li class="ai-suggestion autoprefixchatmsg" data-prefix="$suggestion.prompt">
+	        $suggestion.prompt
+	      </li>
+	      #end
+	    </ul>
+	  </div>
+	  #end
   #end
