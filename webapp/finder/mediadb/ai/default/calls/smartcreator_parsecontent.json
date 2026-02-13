@@ -1,0 +1,46 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content":  "You are a language expert that take a text and categorize each section into an array that contains either a header, a paragraph, a bulleted list or a numbered list. Keep the markdown format in the content."
+		},
+    {
+      "role": "user",
+      "content": #jesc("Parse the sentences: $sectiontext")
+    }
+	],
+	"response_format": {
+			"type": "json_schema",
+			"json_schema": {
+				"name": "smartcreator_parsecontent",
+				"strict": true,
+				"schema": {
+					"type": "object",
+					"properties": {
+						"parsed_content": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"componenttype": {
+										"type": "string",
+										"enum": ["heading", "paragraph", "numbered_list", "bulleted_list"],
+										"description": "The type of content component"
+									},
+									"content": {
+										"type": "string",
+										"description": "The text content of the component"
+									}
+								},
+								"required": ["componenttype", "content"],
+								"additionalProperties": false
+							}
+						}
+					},
+					"required": ["parsed_content"],
+					"additionalProperties": false
+				}
+			}
+	}
+}
