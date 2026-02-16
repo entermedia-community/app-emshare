@@ -1,0 +1,24 @@
+#set($edithome = "$apphome/views/modules/${playbackentitymodule.id}/results/agentresponses/smartcreator")
+$context.putPageValue("edithome", $edithome)
+<div class="creator-preview"
+  #ifnotnull($playbacksection)
+  data-playbacksection="${playbacksection}"
+  #end
+  data-playbackentityid="${playbackentity.id}"
+  data-playbackentitymoduleid="${playbackentitymodule.id}">
+  #foreach($componentsection in $componentsections)
+  <section class="creator-section-preview">
+    <h5>${componentsection.name}</h5>
+
+    <div class="creator-content-preview">
+      #set($componentcontents = $mediaarchive.query("componentcontent").exact("componentsectionid", $componentsection.id).sort("ordering").search())
+    
+      #foreach($componentcontent in $componentcontents)
+        #set($type = $componentcontent.componenttype)
+        $context.putPageValue("componentcontent", $componentcontent)
+        $pages.include("$edithome/types/${type}.html", $context)
+      #end
+    </div>
+  </section>
+  #end
+</div>
