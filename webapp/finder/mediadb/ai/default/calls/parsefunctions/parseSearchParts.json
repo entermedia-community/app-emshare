@@ -28,7 +28,7 @@
           "foreign_table_name": {
             "type": "string",
             "description": "Name of the foreign table to join with, if applicable.",
-            "enum": [$!{modulesenum.names}]
+            "enum": [#ifnotnull($modulesenum) #foreach($module in $modulesenum) "${module}"#if( !$foreach.last ),#end #end #end]
           },
           "foreign_table_parameters": {
             "type": "object",
