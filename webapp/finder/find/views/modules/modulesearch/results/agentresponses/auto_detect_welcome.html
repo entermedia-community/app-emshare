@@ -1,31 +1,79 @@
 
-#ifnotnull($entity)
-	<h5 class="mt-0 mb-2">[[What would you like to talk about?]]</h5>
-	#set($aifunctions = $mediaarchive.query("aifunction").exact("toplevel",true).sort("ordering").search())
-	#ifnotnull($aifunctions)
-	<ul>
-	  #foreach( $function in $aifunctions )
-	    #if($function.id != "auto_detect_welcome")
-	    <li>
-	      <a class="ajax"
-	        href="$applink/views/modules/${agentcontext.entitymoduleid}/editors/entitychat/toplevelfunctionsave.html"
-	        data-targetdiv="aichatsearch"
-	        data-channel="$!{channel.getId()}"
-	        data-toplevelaifunctionid="$function.id"
-	        data-functionname="$function.id"
-	        data-showsuggestions="true"
-	        data-oemaxlevel="1">
-	        <span>#text( $function )</span>
-	      </a>
-	    </li>
-	    #end
-	  #end
-	</ul>
+<div class="ai-welcome">
+	#ifnotnull($entity)
+		<div class="d-flex">
+			<div class="flex-grow-1">
+				<p>
+					[[Welcome to the AI Agent!]]
+				</p>
+				<p>
+					I can help you with any query related to <strong>#text($entity)</strong>.
+				</p>
+				#set($description = $entity.get("longcaption"))
+				#ifnull($description)
+					#set($description = $entity.get("collectivedescription"))
+				#end
+				#ifnotnull($description)
+					<p>
+						<span class="trim-text" data-max="300">$description</span>
+						<button class="see-more-btn see-more" data-seemore="(...[[see more]])" data-seeless="(...[[see less]])"></button>
+					</p>
+				#end
+			</div>
+			#set($assetid = $entity.get("primarymedia"))
+			#ifnull($assetid)
+				#set($assetid = $entity.get("primaryimage"))
+			#end
+			#ifnotnull($assetid)
+				$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=${assetid}&readonly=true", $context)
+			#end
+		</div>
+		<div class="d-flex">
+			<div class="d-flex flex-column me-2 flex-grow-1">
+				<h5 class="my-2">[[Here are some things I can help you with:]]</h5>
+				#set($aifunctions = $mediaarchive.query("aifunction").exact("toplevel",true).sort("ordering").search())
+				#ifnotnull($aifunctions)
+				<ul>
+					#foreach( $function in $aifunctions )
+						#if($function.id != "auto_detect_welcome")
+						<li>
+							<a class="ajax"
+								href="$applink/views/modules/${agentcontext.entitymoduleid}/editors/entitychat/toplevelfunctionsave.html"
+								data-targetdiv="aichatsearch"
+								data-channel="$!{channel.getId()}"
+								data-toplevelaifunctionid="$function.id"
+								data-functionname="$function.id"
+								data-oemaxlevel="1">
+								<span>#text( $function )</span>
+							</a>
+						</li>
+						#end
+					#end
+				</ul>
+				#end
+				#ifnull($aifunctions)
+					<p>[[I can help you create tutorials, answer your questions, generate images, and more.]]</p>
+				#end
+			</div>
+			<div class="d-flex flex-column flex-grow-1">
+				<h5 class="my-2">[[Quick Access]]:</h5>
+				<ul>
+					<li>
+						<a class="ajax"
+							href="$applink/views/modules/${agentcontext.entitymoduleid}/editors/entitychat/toplevelfunctionsave.html"
+							data-targetdiv="aichatsearch"
+							data-channel="$!{channel.getId()}"
+							data-toplevelaifunctionid="search_welcome"
+							data-functionname="view_related_records"
+							data-oemaxlevel="1">
+							<span>View Related Records</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
 	#end
-	#ifnull($aifunctions)
-	<p>[[I can help you create tutorials, answer your questions, generate images, and more.]]</p>
+	#ifnull($entity)
+		<h5 class="mt-0 mb-2">[[What would you like to search for?]]</h5>
 	#end
-#end
-#ifnull($entity)
-	<h5 class="mt-0 mb-2">[[What would you like to search for?]]</h5>
-#end
+</div>

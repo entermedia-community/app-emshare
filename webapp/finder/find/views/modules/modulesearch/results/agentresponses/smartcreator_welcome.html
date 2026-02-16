@@ -1,6 +1,9 @@
 #set($creatortype = $inflector.singularize($playbackentitymodule.getName()))
-<h5 class="mt-0 mb-2">
-  [[Welcome to]] $creatortype [[creation wizard]]. [[What]] $creatortype [[subject you would like to create?]]
+<p class="m-0">
+  [[Welcome to]] $creatortype [[creation wizard]].
+</p>
+<h5 class="mb-2">
+  [[What]] $creatortype [[subject you would like to create?]]
 </h5>
 
 #set($semantictopics = $entity.getValues("semantictopics"))
@@ -8,16 +11,14 @@
   <p class="mb-1">
     [[Here are some suggestions]]:
   </p>
-  #foreach($topic in $semantictopics)
   <ul>
-    <li class="autoprefixchatmsg"
-      style="text-transform: capitalize;"
-      data-prefix="Create a $creatortype using a breaf outline about $topic. For each outline topic create a detailed summary."
-    >
-    <span class="text-success">
-      $topic
-    </span>
-  </li>
+    #foreach($topic in $semantictopics)
+      <li class="autoprefixchatmsg"
+        style="text-transform: capitalize;"
+        data-prefix="Create a brief outline for a $creatortype about $topic. For each outline topic create a detailed summary."
+      >
+      <span>$topic</span>
+    </li>
+    #end
   </ul>
-  #end
 #end
