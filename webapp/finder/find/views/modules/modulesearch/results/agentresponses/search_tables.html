@@ -1,5 +1,4 @@
 
-
 <div class="quicksearchresults">
 	#set( $input = $keywordsstring)
 
@@ -9,64 +8,65 @@
 	#if(!$input)
 		#set( $input = $organizedResults.getEntityResults().getSearchQuery().getMainInput())
 	#end
-
+	
 	#if($organizedResults.isEmpty())
-		<div class="text-secondary py-3 text-center">
+		<div class="text-secondary py-3 ">
 			<messageplain>We did not find any results for your search.</messageplain>
 			[[No results found]] #ifnotnull($input) [[for]] <strong>#esc($input)</strong> #end #ifnotnull($modulenamestext) [[in]] <strong>#esc($modulenamestext)</strong> #end
 		</div>
 	#end
 	
 	#set($aisearch = $agentcontext.getAiSearchParams())
+	#if ($aisearch.getStep2() || $aisearch.getStep1())
 	<div class="mb-3">
-	[[Searched for]] 
-	#ifnotnull($aisearch.getStep2())
-		#set($searchstep = $aisearch.getStep2())
+		[[Searched for]] 
+		#ifnotnull($aisearch.getStep2())
+			#set($searchstep = $aisearch.getStep2())
+				#foreach($module1 in $searchstep.getModules())
+					#text($module1)
+					#if( $foreach.hasNext )
+						#if($foreach.count == $searchstep.getModules().size() - 1)
+						[[or]] 
+						#else
+					    , 
+						#end
+					 #end
+				#end
+				
+				#set($keywords = $aisearch.getStep2().getParameterValues())
+				#ifnotnull($keywords)
+					<span class="text-muted">(keywords: <em>$keywords</em>)</span>
+				#end
+				
+				within $aisearch.getStep1().getModule() 
+				
+				#set($keywords = $aisearch.getStep1().getParameterValues())
+				#ifnotnull($keywords)
+					filtered by <em>$keywords</em>
+				#end
+				
+		#end
+		#ifnull($aisearch.getStep2())
+			#set($searchstep = $aisearch.getStep1())
 			#foreach($module1 in $searchstep.getModules())
-				#text($module1)
+				#if($module1.id == "modulesearch")
+					[[All Modules]]
+				#else
+					#text($module1)
+				#end
 				#if( $foreach.hasNext )
 					#if($foreach.count == $searchstep.getModules().size() - 1)
-					[[or]] 
+					or 
 					#else
 				    , 
 					#end
 				 #end
 			#end
-			
-			#set($keywords = $aisearch.getStep2().getParameterValues())
+			#set($keywords = $aisearch.getStep1().getParameterValues())
 			#ifnotnull($keywords)
 				<span class="text-muted">(keywords: <em>$keywords</em>)</span>
 			#end
-			
-			within $aisearch.getStep1().getModule() 
-			
-			#set($keywords = $aisearch.getStep1().getParameterValues())
-			#ifnotnull($keywords)
-				filtered by <em>$keywords</em>
-			#end
-			
-	#end
-	#ifnull($aisearch.getStep2())
-		#set($searchstep = $aisearch.getStep1())
-		#foreach($module1 in $searchstep.getModules())
-			#if($module1.id == "modulesearch")
-				[[All Modules]]
-			#else
-				#text($module1)
-			#end
-			#if( $foreach.hasNext )
-				#if($foreach.count == $searchstep.getModules().size() - 1)
-				or 
-				#else
-			    , 
-				#end
-			 #end
-		#end
-		#set($keywords = $aisearch.getStep1().getParameterValues())
-		#ifnotnull($keywords)
-			<span class="text-muted">(keywords: <em>$keywords</em>)</span>
-		#end
-	#end	
+		#end	
 	
 		#if($hits.size() > 0)		
 			[[found]]:  
@@ -82,6 +82,7 @@
 		#end
 		
 	</div>
+	#end
 	##$context.putPageValue("hidemoduleheaders", true)
 	
 	#if($hits.size() > 0)
@@ -108,7 +109,4 @@
 	#end
 </div>
 
-#ifnotnull($semanticquery)
-  $agentcontext.setNextFunctionName("search_semantic")
-  $agentcontext.setValue("semanticquery", $semanticquery)
-#end
+

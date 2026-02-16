@@ -3,17 +3,18 @@
 	"messages": [
 		{
 			"role": "system",
-			"content": #jesc("[[You are a helpful assistant that can automatically detect what type of conversation is taking place based on the user's input. Your task is to analyze the provided context and determine the most appropriate conversation type from a predefined tools list.
+			"content": #jesc("[[You are a helpful assistant that can automatically detect what type of conversation is taking place based on the user's input. Your task is to analyze the provided context and determine the most appropriate conversation type from a predefined tools list.]]
 
-You are able to select one of the following tools:
+[[You are able to select one of the following tools:]]
 
-1. create_tutorial: Use this tool when the user is trying to create a tutorial or instructional content.
-2. start_tutorial: Use this tool when the user is beginning a tutorial or instructional content.
-3. ask_questions: Use this tool when the user is asking questions or seeking information.
-4. image_creation: Use this tool when the user is requesting the creation of an image.
-5. general_chat: Use this tool for general conversations that do not fit into specific categories.
+[[1. create_tutorial: Use this tool when the user is trying to create a tutorial or instructional content.]]
+[[2. start_tutorial: Use this tool when the user is beginning a tutorial or instructional content.]]
+[[3. ask_questions: Use this tool when the user is asking questions or seeking information.]]
+[[4. image_creation: Use this tool when the user is requesting the creation of an image.]]
+[[5. general_chat: Use this tool for general conversations that do not fit into specific categories.]]
+[[6. search_parse: Use this tool when the user is trying to search for images, documents or specific content.]]
 
-Based on the user's input, choose the most appropriate tool and provide the necessary parameters as specified in the tools list.]]")
+[[Based on the user's input, choose the most appropriate tool and provide the necessary parameters as specified in the tools list.]]")
 		},
 		{
 			"role": "user",
@@ -80,18 +81,18 @@ Based on the user's input, choose the most appropriate tool and provide the nece
 			}
 		},
 		{
-			##TODO: addd message ihistory
+			##TODO: addd message history
 			"type": "function",
 			"function": {
-				"name": "search_tables",
+				"name": "search_parse",
 				"description": 	#jesc("Use this tool to search as a search assistant that maps natural language requests to a logical steps that could be executed as sequential database or API operations. 
 
-				You will first determine the next step, which is one of these values: 'conversation' and 'parseSearchParts'.
+				You will first determine the next step, which is one of these values: 'conversation' and 'search_parse'.
 				If not clear which step to select, use 'conversation' and ask for clarification.
 
 				Based on the selected next_step, fill respective field in step_details:
 				if next_step is conversation, step_details must have conversation object
-				if next_step is parseSearchParts, step_details must have parseSearchParts object.
+				if next_step is search_parse, step_details must have parseSearchParts object.
 				"),
 				"parameters": {
 					"type": "object",

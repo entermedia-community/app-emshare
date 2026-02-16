@@ -5,12 +5,12 @@
 			"role": "system",
 			"content": #jesc("You are an assistant that maps natural language requests to a logical steps that could be executed as sequential database or API operations. 
 
-You will first determine the next step, which is one of these values: 'conversation' and 'parseSearchParts'.
+You will first determine the next step, which is one of these values: 'conversation' and 'search_tables'.
 If not clear which step to select, use 'conversation' and ask for clarification.
 
 Based on the selected next_step, fill respective field in step_details:
 if next_step is conversation, step_details must have conversation object
-if next_step is parseSearchParts, step_details must have parseSearchParts object.
+if next_step is search_tables, step_details must have parseSearchParts object.
 ")
 		}
 		#if($channelchathistory.size() <= 1)
@@ -33,7 +33,7 @@ if next_step is parseSearchParts, step_details must have parseSearchParts object
 				"properties": {
 					"next_step": {
 						"type": "string",
-						"enum": ["conversation", "parseSearchParts"],
+						"enum": ["conversation", "search_tables"],
 						"description": "The type of request being made."
 					},
 					"step_details": {
