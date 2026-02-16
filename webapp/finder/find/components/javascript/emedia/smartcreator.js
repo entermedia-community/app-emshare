@@ -174,6 +174,10 @@ $(document).ready(function () {
 	lQuery(".creator-section-content").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
+		if ($(this).hasClass("edit-mode")) {
+			return;
+		}
+		$(this).addClass("edit-mode");
 		makeContentEditable($(this));
 	});
 
@@ -188,6 +192,11 @@ $(document).ready(function () {
 			if (!editorEl.hasClass("ck")) {
 				editorEl.data("imagepickerhidden", true);
 				$(window).trigger("inlinehtmlstart", [editorEl]);
+				editorEl.one("ckeditordestroyed", function () {
+					setTimeout(function () {
+						component.removeClass("edit-mode");
+					}, 10);
+				});
 			}
 			return;
 		}
