@@ -42,7 +42,7 @@ function hexToRgb(hex) {
 				r: parseInt(result[1], 16),
 				g: parseInt(result[2], 16),
 				b: parseInt(result[3], 16),
-		  }
+			}
 		: null;
 }
 function rgbToHex(r, g, b) {
@@ -55,7 +55,7 @@ function setContrast(hex) {
 	var rgb = hexToRgb(hex);
 	const brightness = Math.round(
 		(parseInt(rgb.r) * 299 + parseInt(rgb.g) * 587 + parseInt(rgb.b) * 114) /
-			1000
+			1000,
 	);
 	return brightness > 125 ? "#000000" : "#ffffff";
 }
@@ -63,7 +63,8 @@ function setContrast(hex) {
 function fallbackCopyText(text) {
 	var $temp = $("<input>");
 	$("body").append($temp);
-	$temp.val(text).select();
+	$temp.val(text);
+	$temp.trigger("select");
 	document.execCommand("copy");
 	$temp.remove();
 }
@@ -490,7 +491,7 @@ $(document).ready(function () {
 					});
 					return conn;
 				},
-			})
+			}),
 		);
 
 		canvas.installEditPolicy(new draw2d.policy.canvas.ShowGridEditPolicy());
@@ -498,7 +499,7 @@ $(document).ready(function () {
 		canvas.installEditPolicy(new draw2d.policy.canvas.CoronaDecorationPolicy());
 		canvas.uninstallEditPolicy(new draw2d.policy.canvas.WheelZoomPolicy());
 		canvas.uninstallEditPolicy(
-			new draw2d.policy.canvas.DefaultKeyboardPolicy()
+			new draw2d.policy.canvas.DefaultKeyboardPolicy(),
 		);
 		canvas.installEditPolicy(new draw2d.policy.canvas.ZoomPolicy());
 
@@ -534,10 +535,10 @@ $(document).ready(function () {
 							var assignedFigures = figure.getAssignedFigures();
 							if (figure.cssClass === "folderGroup") {
 								var label = assignedFigures.find(
-									(f) => f.cssClass === "folderLabel"
+									(f) => f.cssClass === "folderLabel",
 								);
 								var icon = assignedFigures.find(
-									(f) => f.cssClass === "folderIcon"
+									(f) => f.cssClass === "folderIcon",
 								);
 								var dupFolder = folderJson({
 									x: figure.getX() + 20,
@@ -553,13 +554,13 @@ $(document).ready(function () {
 								readerUnmarshal(canvas, dupFolder);
 							} else if (figure.cssClass === "labelGroup") {
 								var title = assignedFigures.find(
-									(f) => f.cssClass === "titleLabel"
+									(f) => f.cssClass === "titleLabel",
 								);
 								var caption = assignedFigures.find(
-									(f) => f.cssClass === "captionLabel"
+									(f) => f.cssClass === "captionLabel",
 								);
 								var image = assignedFigures.find(
-									(f) => f.cssClass === "labelImage"
+									(f) => f.cssClass === "labelImage",
 								);
 								var titleText = title ? title.getText() : "";
 								var titleFS = title ? title.getFontSize() : 16;
@@ -578,7 +579,7 @@ $(document).ready(function () {
 								var { width: tW, height: tH } = measureText(titleText, titleFS);
 								var { width: cW, height: cH } = measureText(
 									captionText,
-									captionFS
+									captionFS,
 								);
 								var width = Math.max(tW, cW, 110);
 
@@ -600,7 +601,7 @@ $(document).ready(function () {
 						});
 					}
 				},
-			})
+			}),
 		);
 
 		function recenterCanvas() {
@@ -790,7 +791,7 @@ $(document).ready(function () {
 								cssClass: "brandLogo",
 							}),
 							mainNode.getX() + (mainNode.getWidth() - imgWidth) / 2,
-							mainNode.getY() + (mainNode.getHeight() - imgHeight) / 2
+							mainNode.getY() + (mainNode.getHeight() - imgHeight) / 2,
 						);
 
 						mainNode.setColor(strokeColor);
@@ -840,7 +841,7 @@ $(document).ready(function () {
 				Math.max(
 					titleNode ? titleNode.getWidth() : 0,
 					captionNode ? captionNode.getWidth() : 0,
-					imageNode ? imageNode.getWidth() : 0
+					imageNode ? imageNode.getWidth() : 0,
 				) + 10;
 
 			if (onlyTitle || onlyCaption || onlyImage) {
@@ -947,7 +948,7 @@ $(document).ready(function () {
 					var selectedIcon = canvas.getFigure(selectedGroupId + "-icon");
 					if (selectedIcon) {
 						$("#folderThumbPickerBtn").html(
-							`<img src="${selectedIcon.getPath()}" />`
+							`<img src="${selectedIcon.getPath()}" />`,
 						);
 					} else {
 						$("#folderThumbPickerBtn").html("");
@@ -992,7 +993,7 @@ $(document).ready(function () {
 					A.className = "label-mod-toggler emdialog";
 					A.setAttribute(
 						"href",
-						applink + "/components/smartorganizer/label.html"
+						applink + "/components/smartorganizer/label.html",
 					);
 					A.setAttribute("role", "button");
 					A.dataset.dialogid = "addLabel";
@@ -1007,7 +1008,7 @@ $(document).ready(function () {
 					A.dataset.bgColor = rgbToHex(
 						bgColor.red,
 						bgColor.green,
-						bgColor.blue
+						bgColor.blue,
 					);
 					var color = selectedGroup.getColor();
 					A.dataset.color = rgbToHex(color.red, color.green, color.blue);
@@ -1146,7 +1147,7 @@ $(document).ready(function () {
 			var dirY = Math.random() > 0.5 ? 150 : -300;
 			addFolderAt(
 				centerX + dirX + Math.random() * 50,
-				centerY + dirY + Math.random() * 50
+				centerY + dirY + Math.random() * 50,
 			);
 		});
 
@@ -1205,7 +1206,7 @@ $(document).ready(function () {
 				if ($(ui.draggable).attr("id") === "addFolderBtn") {
 					addFolderAt(
 						(offsetLeft + ui.position.left) * zoom - 120 * zoom,
-						(offsetTop + ui.position.top) * zoom - 30 * zoom
+						(offsetTop + ui.position.top) * zoom - 30 * zoom,
 					);
 					return;
 				}
@@ -1399,7 +1400,7 @@ $(document).ready(function () {
 				function clearChildParentRelation(childId) {
 					var childNode = json.find(
 						(node) =>
-							node.composite === childId && node.cssClass === "folderLabel"
+							node.composite === childId && node.cssClass === "folderLabel",
 					);
 					if (childNode) {
 						childNode.userData.parents = [];
@@ -1408,12 +1409,12 @@ $(document).ready(function () {
 				function createChildParentRelation(parentId, childId) {
 					var parentNode = json.find(
 						(node) =>
-							node.composite === parentId && node.cssClass === "folderLabel"
+							node.composite === parentId && node.cssClass === "folderLabel",
 					);
 					if (parentNode && parentNode.userData.moduleid) {
 						var childNode = json.find(
 							(node) =>
-								node.composite === childId && node.cssClass === "folderLabel"
+								node.composite === childId && node.cssClass === "folderLabel",
 						);
 
 						//var childNode = json.find((node) => node.composite + "-label" === childId); //Hard to read
@@ -1565,7 +1566,7 @@ $(document).ready(function () {
 						canvasContainer.css("margin-left", pos);
 					}
 				},
-			})
+			}),
 		);
 
 		$("#vToTop").click(function (e) {
@@ -1759,7 +1760,7 @@ $(document).ready(function () {
 					}
 					labelGroup.fireEvent("resize");
 					closeemdialog($("#addLabel"));
-				}
+				},
 			);
 		}
 
@@ -2073,7 +2074,7 @@ $(document).ready(function () {
 						"?oemaxlevel=1&id=" +
 						versionrow.data("versionid") +
 						"&newname=" +
-						encodeURI(newName)
+						encodeURI(newName),
 				);
 		});
 		cancelBtn.click(hideInput);

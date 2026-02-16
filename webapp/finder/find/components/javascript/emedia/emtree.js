@@ -4,7 +4,7 @@ $(function () {
 		function (e) {
 			e.stopPropagation();
 			toggleExpandNode.call(this);
-		}
+		},
 	);
 	function toggleExpandNode(selecting = false) {
 		//console.log($(this), selecting);
@@ -39,7 +39,7 @@ $(function () {
 				(iscurrent ? "&currentnodeid=" + nodeid : ""),
 			function () {
 				$(window).trigger("resize");
-			}
+			},
 		);
 	}
 
@@ -82,7 +82,7 @@ $(function () {
 			if ($contextMenu.length > 0) {
 				$contextMenu.hide();
 			}
-		}
+		},
 	);
 
 	lQuery(".treerow.cat-current").livequery(function () {
@@ -176,45 +176,48 @@ $(function () {
 		}
 
 		//jQuery.get(prefix + nodeid + postfix,
-		jQuery.get(prefix, 
+		jQuery.get(
+			prefix,
 			{
-				...options
-			}, function (data) {
-			//data = $(data);
+				...options,
+			},
+			function (data) {
+				//data = $(data);
 
-			var targetdiv = tree.data("targetdivinner");
-			var onpage;
-			if (targetdiv) {
-				var cell = jQuery("#" + targetdiv);
-				onpage = cell;
-				cell.html(data);
-			} else {
-				targetdiv = tree.data("targetdiv");
+				var targetdiv = tree.data("targetdivinner");
+				var onpage;
 				if (targetdiv) {
 					var cell = jQuery("#" + targetdiv);
-					onpage = cell.parent();
-					cell.replaceWith(data);
+					onpage = cell;
+					cell.html(data);
+				} else {
+					targetdiv = tree.data("targetdiv");
+					if (targetdiv) {
+						var cell = jQuery("#" + targetdiv);
+						onpage = cell.parent();
+						cell.replaceWith(data);
+					}
 				}
-			}
 
-			cell = findClosest(onpage, "#" + targetdiv);
+				cell = findClosest(onpage, "#" + targetdiv);
 
-			$(window).trigger("setPageTitle", [cell]);
+				$(window).trigger("setPageTitle", [cell]);
 
-			if (
-				typeof global_updateurl !== "undefined" &&
-				global_updateurl == false
-			) {
-				//globaly disabled updateurl
-			} else {
-				//Update Address Bar
-				if (tree.data("updateaddressbar")) {
-					history.pushState($("#application").html(), null, reloadurl);
+				if (
+					typeof global_updateurl !== "undefined" &&
+					global_updateurl == false
+				) {
+					//globaly disabled updateurl
+				} else {
+					//Update Address Bar
+					if (tree.data("updateaddressbar")) {
+						history.pushState($("#application").html(), null, reloadurl);
+					}
 				}
-			}
 
-			$(window).trigger("resize");
-		});
+				$(window).trigger("resize");
+			},
+		);
 	};
 
 	var treeTop = $(".cat-current");
@@ -286,14 +289,17 @@ $(function () {
 			//tree.closest("#treeholder").load(link, {edittext: value}, function() {
 			var options = tree.data();
 			options["edittext"] = value;
-			$.get(link, 
-					{
-						...options
-					}, function (data) {
-				targetdiv.replaceWith(data);
-				//Reload tree in case it moved order
-				//repaintEmTree(tree);
-			});
+			$.get(
+				link,
+				{
+					...options,
+				},
+				function (data) {
+					targetdiv.replaceWith(data);
+					//Reload tree in case it moved order
+					//repaintEmTree(tree);
+				},
+			);
 		} else if (event.keyCode === 27) {
 			//esc
 			input.closest(".createnodetree").hide();
@@ -372,7 +378,7 @@ $(function () {
 				.removeClass("categorydroparea");
 
 			return false;
-		}
+		},
 	);
 
 	lQuery(".addtomodule").livequery("click", function (event) {
@@ -425,14 +431,17 @@ $(function () {
 				"&depth=" +
 				node.data("depth");
 			var options = tree.data();
-			$.get(link, 
-					{
-						...options
-					}, function (data) {
-				//tree.closest("#treeholder").replaceWith(data);
-				//Reload tree in case it moved order
-				repaintEmTree(tree);
-			});
+			$.get(
+				link,
+				{
+					...options,
+				},
+				function (data) {
+					//tree.closest("#treeholder").replaceWith(data);
+					//Reload tree in case it moved order
+					repaintEmTree(tree);
+				},
+			);
 		}
 		return false;
 	});
@@ -451,7 +460,7 @@ $(function () {
 			var theinput = $("#treeaddnodeinput");
 			if (theinput.length > 0) {
 				theinput.focus({ preventScroll: false });
-				//theinput.select();
+				//theinput.trigger("select");
 				//theinput.focus();
 			}
 			$(document).trigger("domchanged");
@@ -477,8 +486,8 @@ $(function () {
 			node.append(data);
 			var theinput = node.find("input");
 			theinput.focus({ preventScroll: false });
-			//theinput.select();
-			theinput.focus();
+			//theinput.trigger("select");
+			theinput.trigger("focus");
 			$(document).trigger("domchanged");
 		});
 		return false;
@@ -513,38 +522,32 @@ $(function () {
 		});
 		return false;
 	});
-	
-	
+
 	lQuery(".treecontext #togglefeatured").livequery("click", function (event) {
-			event.stopPropagation();
-			var node = getNode(this);
-			var nodeid = node.data("nodeid");
-			var catoptions = node.data();
-			var tree = node.closest(".emtree");
-			var link =
-				tree.data("home") +
-				"/components/emtree/togglefeatured.html";
+		event.stopPropagation();
+		var node = getNode(this);
+		var nodeid = node.data("nodeid");
+		var catoptions = node.data();
+		var tree = node.closest(".emtree");
+		var link = tree.data("home") + "/components/emtree/togglefeatured.html";
 
-			link = link + "?categoryid=" + catoptions.nodeid;
-			
-							
-			var targetdiv = "application";
+		link = link + "?categoryid=" + catoptions.nodeid;
 
-			$.get(link, function (data) {
-				//var cell = jQuery("#" + targetdiv);
-				//cell.replaceWith(data);
-				if (node.data("isfeatured")){
-					node.data("isfeatured", false);
-					customToast("Category Removed from Featured");
-				}
-				else {
-					node.data("isfeatured", true);
-					customToast("Category Marked as Featured");
-				}
-				
-			});
-			return false;
+		var targetdiv = "application";
+
+		$.get(link, function (data) {
+			//var cell = jQuery("#" + targetdiv);
+			//cell.replaceWith(data);
+			if (node.data("isfeatured")) {
+				node.data("isfeatured", false);
+				customToast("Category Removed from Featured");
+			} else {
+				node.data("isfeatured", true);
+				customToast("Category Marked as Featured");
+			}
 		});
+		return false;
+	});
 
 	lQuery(".treecontext #downloadnode").livequery("click", function (event) {
 		event.stopPropagation();
@@ -610,10 +613,9 @@ $(function () {
 			}
 			var isfeatured = noderow.data("isfeatured");
 			var menuitem = $("#" + treename + "contextMenu #togglefeatured");
-			if(isfeatured){
+			if (isfeatured) {
 				menuitem.text(menuitem.data("removefeatured"));
-            }
-			else {
+			} else {
 				menuitem.text(menuitem.data("addfeatured"));
 			}
 
@@ -673,12 +675,15 @@ $(function () {
 		var link = home + "/components/emtree/tree.html";
 		var options = tree.data();
 		options["treename"] = tree.data("treename"); //why?
-		$.get(link, 
-				{
-					...options
-				}, function (data) {
-			tree.closest("#treeholder").replaceWith(data);
-			$(document).trigger("domchanged");
-		});
+		$.get(
+			link,
+			{
+				...options,
+			},
+			function (data) {
+				tree.closest("#treeholder").replaceWith(data);
+				$(document).trigger("domchanged");
+			},
+		);
 	}
 });
