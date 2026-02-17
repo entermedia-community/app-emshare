@@ -1,0 +1,55 @@
+#set($edithome = "$applink/views/modules/${agentcontext.entitymoduleid}/editors")
+<p>
+  <a class="ajax"
+    href="$edithome/entitychat/toplevelfunctionsave.html"
+    data-targetdiv="aichatsearch"
+    data-channel="$!{channel.getId()}"
+    data-toplevelaifunctionid="search_welcome"
+    data-functionname="view_related_record_list"
+    data-context_relatedmoduleid="$recordmodule.getId()"
+    data-oemaxlevel="1">
+    <span>$recordmodule.getName()</span>
+  </a>
+  <span class="mx-1">&middot;</span>
+  <strong>#text($record)</strong>
+</p>
+<div class="d-flex">
+  <div class="flex-grow-1 mb-2">
+    #set($description = $record.get("longcaption"))
+    #ifnull($description)
+      #set($description = $record.get("collectivedescription"))
+    #end
+    #ifnull($description)
+      #set($description = $record.get("maincontent"))
+    #end
+    #ifnotnull($description)
+      <div class="soft-scrollbar msg-long-body" style="max-height: 400px;">
+        $description
+      </div>
+    #end
+  </div>
+  #set($assetid = $record.get("primarymedia"))
+  #ifnull($assetid)
+    #set($assetid = $record.get("primaryimage"))
+  #end
+  #ifnotnull($assetid)
+    $pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=${assetid}&readonly=true", $context)
+  #end
+</div>
+<div class="d-flex justify-content-between mt-2 msg-body-actions">
+  <a class="emdialog btn btn-light me-2"
+    href="$applink/views/modules/${record.entitysourcetype}/index.html?entityid=$record.getId()"
+    data-oemaxlevel="1">
+    <span><i class="bi bi-eye me-1"></i> [[Open]]</span>
+  </a>
+  <a class="ajax btn btn-light align-self-end"
+    href="$edithome/entitychat/toplevelfunctionsave.html"
+    data-targetdiv="aichatsearch"
+    data-channel="$!{channel.getId()}"
+    data-toplevelaifunctionid="search_welcome"
+    data-functionname="view_related_records"
+    data-context_relatedmoduleid="$recordmodule.id"
+    data-oemaxlevel="1">
+    <span><i class="bi bi-arrow-90deg-up me-1"></i> [[Related Records]]</span>
+  </a>
+</div>
