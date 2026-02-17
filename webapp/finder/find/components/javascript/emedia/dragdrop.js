@@ -62,7 +62,7 @@ toggleajax = function (e) {
 
 // window.addEventListener("hashchange", function(e) { //Try listening to
 // popstate and put the state (html) back in
-$(window).bind("popstate", function change(e) {
+$(window).on("popstate", function change(e) {
 	// alert('popped');
 	var state = e.originalEvent.state;
 	if (state) {
@@ -109,21 +109,18 @@ pageload = function (hash) {
 onloadselectors = function () {
 	// autoheight("#emcontent");
 
-	if (typeof toggleajax === "function")
-	{
+	if (typeof toggleajax === "function") {
 		lQuery("a.toggleajax").livequery("click", toggleajax);
 	}
-	
-	if (typeof updatebasket === "function")
-		{
+
+	if (typeof updatebasket === "function") {
 		lQuery("a.updatebasket").livequery("click", updatebasket);
 		lQuery("a.updatebasketmediaviewer").livequery(
 			"click",
-			updatebasketmediaviewer
+			updatebasketmediaviewer,
 		);
 		// $("a.updatebasketonasset").livequery('click', updatebasketonasset);
 	}
-	
 
 	lQuery(".em-delete").livequery("click", function (e) {
 		var data = jQuery(this).data();
@@ -343,13 +340,13 @@ onloadselectors = function () {
 				},
 				function () {
 					image.removeClass("baseemshowonhovershow");
-				}
+				},
 			);
 	});
 
 	// Handles emdropdowns
 	lQuery("div[id='emdropdown']").livequery(function () {
-		$(this).mouseleave(function () {
+		$(this).on("mouseleave", function () {
 			var el = document.getElementById("emdropdowndiv");
 			if (el) {
 				$(el).attr("status", "hide"); // Beware this gets
@@ -360,7 +357,7 @@ onloadselectors = function () {
 
 		$(this).click(function () {
 			var el = $(this).find(".emdropdowncontent");
-			el.bind("mouseleave", function () {
+			el.on("mouseleave", function () {
 				$(this).attr("status", "hide");
 				$(this).hide();
 			});
@@ -449,7 +446,7 @@ onloadselectors = function () {
 					var total = $("input.selectionbox:checked").length;
 					if (total > 1) {
 						cloned.append(
-							'<div class="dragcount emnotify">+' + total + "</div>"
+							'<div class="dragcount emnotify">+' + total + "</div>",
 						);
 					}
 
@@ -518,7 +515,7 @@ onloadselectors = function () {
 					var total = $("input.selectionbox:checked").length;
 					if (total > 1) {
 						cloned.append(
-							'<div class="dragcount emnotify">+' + total + "</div>"
+							'<div class="dragcount emnotify">+' + total + "</div>",
 						);
 					}
 
@@ -561,9 +558,8 @@ onloadselectors = function () {
 							params,
 							function (data) {
 								tree.closest("#treeholder").replaceWith(data);
-							}
+							},
 						);
-						
 					} else {
 						var assetid = ui.draggable.data("assetid");
 						if (!assetid) {
@@ -582,7 +578,7 @@ onloadselectors = function () {
 						/*if (node.closest(".assetdropcategorymove").length > 0) {
 							moveit = true;
 						}*/
-						
+
 						var rootcategory = node.closest(".emtree").data("rootnodeid");
 
 						jQuery.get(
@@ -598,7 +594,7 @@ onloadselectors = function () {
 							function (data) {
 								customToast(data);
 								node.removeClass("dragoverselected");
-							}
+							},
 						);
 					}
 				},
@@ -798,7 +794,7 @@ onloadselectors = function () {
 
 	$(this) //Is this used?
 		.find(".autosubmited")
-		.change(function () {
+		.on("change", function () {
 			$(this).parents("form").submit();
 		});
 
@@ -855,7 +851,7 @@ emcomponents = function () {
 				event.dataTransfer.setData("application/x-moz-file-promise-url", urls);
 				event.dataTransfer.setData(
 					"application/x-moz-file-promise-dest-filename",
-					filename
+					filename,
 				);
 				event.dataTransfer.effectAllowed = "all";
 			} else {

@@ -214,7 +214,7 @@ lQuery(".lenguagepicker").livequery("change", function (e) {
 			console.log("dispose " + this.id);
 			videojs(this.id).dispose();
 			$("#" + this.id)
-				.unbind()
+				.off()
 				.removeData();
 		}
 	});
