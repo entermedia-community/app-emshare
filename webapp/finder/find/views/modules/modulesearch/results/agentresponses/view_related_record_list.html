@@ -8,8 +8,16 @@
           href="$edithome/entitychat/toplevelfunctionsave.html"
           data-targetdiv="aichatsearch"
           data-channel="$!{channel.getId()}"
-          data-toplevelaifunctionid="search_welcome"
-          data-functionname="view_related_record_details"
+          #if($recordmodule.aicreationmethod == "smartcreator")
+            data-toplevelaifunctionid="smartcreator_welcome_${recordmodule.id}"
+            data-functionname="smartcreator_play"
+            data-context_playbackentityid="${record.id}"
+            data-context_playbackentitymoduleid="${recordmodule.id}"
+            data-context_playbacksection="0"
+          #else
+            data-toplevelaifunctionid="search_welcome"
+            data-functionname="view_related_record_details"
+          #end
           data-context_relatedmoduleid="$recordmodule.id"
           data-context_recordid="$record.id"
           data-oemaxlevel="1">

@@ -1,24 +1,51 @@
-<h5 class="mt-0 mb-2">[[Here are the available]] #text($playbackentitymodule):</h5>
+<div class="creator-preview"
+  data-playbacksection="${playbacksection}"
+  data-playbackentityid="${playbackentity.id}"
+  data-playbackentitymoduleid="${playbackentitymodule.id}">
+  <h5>${selectedsection.name}</h5>
+  
+  <div class="creator-content soft-scrollbar">
+    #set($componentcontents = $mediaarchive.query("componentcontent").exact("componentsectionid", $selectedsection.id).sort("ordering").search())
+  
+    #set($edithome = "$apphome/views/modules/modulesearch/results/agentresponses/smartcreator")
+    $context.putPageValue("edithome", $edithome)
 
-#ifnotnull($playables)
-<ul>
-  #foreach( $play in $playables )
-    <li>
-      <a class="ajax"
-        href="$applink/views/modules/${agentcontext.entitymoduleid}/editors/entitychat/toplevelfunctionsave.html"
-        data-targetdiv="aichatsearch"
-        data-channel="$!{channel.getId()}"
-        data-toplevelaifunctionid="smartcreator_play_${playbackentitymodule.id}"
-        data-functionname="smartcreator_play"
-        data-context_playbackentityid="${play.id}"
-        data-context_playbacksection="0"
-        data-oemaxlevel="1">
-        <span>#text( $play )</span>
-      </a>
-    </li>
-  #end
-</ul>
-#end
-#ifnull($playables)
-<p>[[I can help you create tutorials, answer your questions, generate images, and more]].</p>
-#end
+    #set($searchhome = "$apphome/views/modules/asset/results/default")
+    $context.putPageValue("searchhome", $searchhome)
+
+    #foreach($componentcontent in $componentcontents)
+      $context.putPageValue("componentcontent", $componentcontent)
+      $context.putPageValue("assetid", $componentcontent.assetid)
+      $pages.include("$edithome/types/${componentcontent.componenttype}.html", $context)
+    #end
+  </div>
+
+  <div class="creator-nav">
+    #ifnotnull($prevsection)
+    <a class="prev ajax"
+      href="$applink/views/modules/${agentcontext.entitymoduleid}/editors/entitychat/toplevelfunctionsave.html"
+      ata-targetdiv="aichatsearch"
+      data-channel="$!{channel.getId()}"
+      data-toplevelaifunctionid="smartcreator_welcome_${playbackentitymodule.id}"
+      data-functionname="smartcreator_play"
+      data-oemaxlevel="1"
+      data-context_playbackentityid="${playbackentity.id}"
+      data-context_playbacksection="${previndex}">
+      ${prevsection.name}
+    </a>
+    #end
+    #ifnotnull($nextsection)
+    <a class="next ajax"
+      href="$applink/views/modules/${agentcontext.entitymoduleid}/editors/entitychat/toplevelfunctionsave.html"
+      ata-targetdiv="aichatsearch"
+      data-channel="$!{channel.getId()}"
+      data-toplevelaifunctionid="smartcreator_welcome_${playbackentitymodule.id}"
+      data-functionname="smartcreator_play"
+      data-oemaxlevel="1"
+      data-context_playbackentityid="${playbackentity.id}"
+      data-context_playbacksection="${nextindex}">
+      ${nextsection.name}
+    </a>
+    #end
+  </div>
+</div>
