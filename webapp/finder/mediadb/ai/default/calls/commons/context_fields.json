@@ -6,8 +6,8 @@
 #end
 #foreach($field in $contextfields)
 	#if($foreach.count>1)
-	#set($description = "$description,")
-#end
+		#set($description = "$description,")
+	#end
 	#if($field.isList())
 		#set($description = "$description \n ${field.name}:")
 		#foreach( $option in $mediaarchive.getValueList($field, $data) )
@@ -26,17 +26,16 @@
 	#elseif($field.isDate())
 		## SKIP
 	#else
-    #set($value = $data.get($field.id))
-	#ifnull($value)
-		#ifnotnull($primaryasset)
-			#set($value = $primaryasset.get($field.id))
-		#end
+    	#set($value = $data.get($field.id))
+		#ifnotnull($value)
+      		#set($description = "$description \n ${field.name}: ${value}")
+    	#end
 	#end
+#end
+#ifnotnull($primaryasset)
+	#set($value = $primaryasset.get("longcaption"))
 	#ifnotnull($value)
-      #set($description = "$description \n ${field.name}: ${value}")
-    #end
-	
-	
+  		#set($description = "$description \n Primary Asset Description: ${value}")
 	#end
 #end
 #ifnotnull($aicommandpostfix)
