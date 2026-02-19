@@ -6,9 +6,30 @@ $raganswer
       <strong>[[Citations]]:</strong>
       <br>
       #foreach($source in $ragsources)
-        <a href="$siteroot$apphome/views/modules/${source.pageentityid}/index.html?entityid=${source.pageid}" target="_blank">
-          [[Page]] $source.pagelabel of $source.filename
-        </a>
+
+	  	#if ($source.pageentityid != $source.docentity)
+		  	#set($sourcelink = "$applink/views/modules/${source.pageentityid}/editors/default/tabs/index.html")
+	        <a href="$sourcelink" 
+				class="emdialog"
+			  	data-dialogid="entitydialog"
+			  	data-entityid="${source.pageid}"
+				data-parententityid="$!{source.docid}" 
+				data-parententitymoduleid="$!{source.docentity}"
+				>
+	          [[Page]] $source.pagelabel of $source.filename
+	        </a>
+		#else
+			#set($sourcelink = "$applink/views/modules/${source.docentity}/editors/listentities/tabs/index.html")
+			<a class="emdialog" 
+				data-dialogid="entitydialog"
+	  			data-entityid="${source.docid}"
+				data-renderfirstview="true"
+				##data-entitymoduleviewid="$!{source.docentity}${source.pageentityid}" 
+				href="$sourcelink">
+				$source.pagelabel
+			</a>
+		#end
+		
         <br>
       #end
     </div>
