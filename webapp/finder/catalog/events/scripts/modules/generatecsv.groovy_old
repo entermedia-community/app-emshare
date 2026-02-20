@@ -22,11 +22,14 @@ public void runExport(){
 	boolean friendly = Boolean.parseBoolean(context.getRequestParameter("friendly"));
 	String[] detaillist = context.getRequestParameters("detail");
 	
-	Collection details = searcher.getDetailsForView("${searchtype}/resultstable",context.getUserProfile());
+	Collection details = searcher.getDetailsForView("${searchtype}resultstable",context.getUserProfile());
+	log.info("1 ---------- " +  details);
     if(details == null) {
-		details = searcher.getDetailsForView("${searchtype}/${searchtype}resultstable",context.getUserProfile());
+		
+		details = searcher.getDetailsForView("resultstable",context.getUserProfile());
 	}
 	
+	log.info(details);
 	
 	if(details == null || !friendly){
 		details = searcher.getPropertyDetails();
@@ -69,17 +72,18 @@ public void runExport(){
 			if(detail.isList() && friendly){
 				//Collection valuelist = null;
 			
-				valuelist = tracker.getValues(detail.getId());	
+				Collection valuelist = tracker.getValues(detail.getId());	
 				
 				StringBuffer endval = new StringBuffer();
 				valuelist.each {
-					Data remote  = searcherManager.getData( detail.getListCatalogId(),detail.getListId(), it);
+					String id = it;
+					Data remote  = searcherManager.getData( detail.getListCatalogId(), detail.getListId(), id);
 					
 					if(remote != null){
 						
 						endval.append(remote.getName());
 					
-						if(it != valuelist.last()) {
+						if(id != valuelist.last()) {
 							endval.append(" | ");
 						}
 
@@ -104,3 +108,5 @@ public void runExport(){
 
 
 runExport();
+
+
