@@ -1,0 +1,26 @@
+#foreach($field in $contextfields)
+	#if($foreach.count>1)
+		
+	#end
+	#if($field.isList())
+		${field.name}:
+		#foreach( $option in $mediaarchive.getValueList($field, $data) )
+			#if($foreach.count>1)
+				,
+			#end
+			#text($option)
+		#end
+	#elseif($field.isBoolean())
+		${field.name}:
+		#if($data.getBoolean($field.id)) 
+			Yes
+		#else
+			No
+		#end
+	#else
+    	#set($value = $data.get($field.id))
+		#ifnotnull($value)
+      		${field.name}: ${value}
+    	#end
+	#end
+#end
