@@ -3,24 +3,27 @@
 		
 	#end
 	#if($field.isList())
-		${field.name}:
-		#foreach( $option in $mediaarchive.getValueList($field, $data) )
-			#if($foreach.count>1)
-				,
-			#end
-			#text($option)
+${field.name}:#foreach( $option in $mediaarchive.getValueList($field, $data) )
+			#if($foreach.count>1), #end #text($option)
 		#end
 	#elseif($field.isBoolean())
 		${field.name}:
 		#if($data.getBoolean($field.id)) 
-			Yes
+Yes
 		#else
-			No
+No
 		#end
 	#else
     	#set($value = $data.get($field.id))
 		#ifnotnull($value)
-      		${field.name}: ${value}
+${field.name}: ${value}
     	#end
 	#end
+#end
+#set( $clips = $assettimeline.getClips() )
+#ifnotnull($clips)
+Captions:
+#foreach($clip in $clips)
+($clip.getStartSecondsAndHours()) $!clip.getLabel()
+#end
 #end
