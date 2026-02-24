@@ -4,7 +4,6 @@
     data-dataid="${section.id}"
     data-ordering="${section.ordering}"
   #end>
-  $pages.include("$edithome/section/section-title.html", $context)
   <div class="creator-section-contents soft-scrollbar" id="creatorcontent-${section.id}">
     #set($componentcontents = $mediaarchive.query("componentcontent").exact("componentsectionid", $section.id).sort("ordering").search())
     #foreach($componentcontent in $componentcontents)
@@ -15,5 +14,10 @@
       $context.putPageValue("type", "paragraph")
       $pages.include("$edithome/section/section-content.html", $context)
     #end
+  </div>
+  <div class="action-btn-container title-actions" id="section-${section.id}">
+    <div class="action-btn-group light-dropdown">
+      $pages.include("$edithome/section/title-action.html", $context)
+    </div>
   </div>
 </div>

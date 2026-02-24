@@ -32,7 +32,27 @@
   #end>
   #ifnotnull($componentcontent.componenttype)
     #set($label = $mediaarchive.getCachedData("componenttype", $type))
-    <label class="component-label" for="component-$componentcontent.id">$label</label>
+    <div class="component-label">
+      <span>$label</span>
+      #set($role = $mediaarchive.getCachedData("contentrole", $componentcontent.contentrole))
+      
+      <a class="emdialog contentrole-btn"
+        href="$edithome/section/contentrole.html"
+        data-id="$componentcontent.id"
+        data-searchtype="componentcontent"
+        data-dialogid="contentrole"
+        data-hidefooter="true"
+        data-modalsize="sm"
+        title="[[Content Role]]">
+        #ifnotnull($role)
+          $role <i class="ms-1 bi bi-pencil"></i>
+        #end
+        #ifnull($role)
+          <i class="me-1 bi bi-plus-lg"></i> [[Set role]]
+        #end
+      </a>
+      
+    </div>
   #end
   <div class="editable-content"
     data-sectionid="${section.id}"
@@ -42,7 +62,7 @@
     #end
     data-componenttype="$type"
     data-ordering="$ordering"
-    data-savepath="$edithome/section/create-componentcontent.html"
+    data-savepath="$edithome/section/save-componentcontent.html"
     title="[[Click to edit]]">
     $pages.include("$edithome/section/types/${type}.html", $context)
   </div>

@@ -364,4 +364,50 @@ $(document).ready(function () {
 			},
 		});
 	}
+
+	lQuery(".creator-nav-link").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		$(".creator-nav-link").removeClass("active");
+		$(this).addClass("active");
+		var target = $(this).attr("href");
+		var targetEl = $(target);
+		var containerEl = $(".creator-canvas");
+		containerEl.animate(
+			{
+				scrollTop:
+					targetEl.offset().top -
+					containerEl.offset().top +
+					containerEl.scrollTop() -
+					8,
+			},
+			500,
+			function () {
+				targetEl.addClass("flash");
+				setTimeout(function () {
+					targetEl.removeClass("flash");
+				}, 1000);
+			},
+		);
+	});
+
+	var debounceTO = null;
+	lQuery(".creator-canvas").livequery("scroll", function () {
+		if (debounceTO) {
+			clearTimeout(debounceTO);
+		}
+		var cc = $(this);
+		debounceTO = setTimeout(function () {
+			// var scrollTop = cc.scrollTop();
+			$(".creator-section").each(function () {
+				var sectionTop = $(this).offset().top - cc.offset().top;
+				sectionTop;
+				if (sectionTop - 10 < 0) {
+					var id = $(this).attr("id");
+					$(".creator-nav-link").removeClass("active");
+					$('.creator-nav-link[href="#' + id + '"]').addClass("active");
+				}
+			});
+		}, 100);
+	});
 });
