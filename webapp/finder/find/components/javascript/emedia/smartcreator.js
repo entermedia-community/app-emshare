@@ -365,12 +365,12 @@ $(document).ready(function () {
 		});
 	}
 
-	lQuery(".creator-nav-link").livequery("click", function (e) {
+	lQuery(".creator-section-title").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
-		$(".creator-nav-link").removeClass("active");
+		$(".creator-section-title").removeClass("active");
 		$(this).addClass("active");
-		var target = $(this).attr("href");
+		var target = $(this).data("target");
 		var targetEl = $(target);
 		var containerEl = $(".creator-canvas");
 		containerEl.animate(
@@ -404,8 +404,8 @@ $(document).ready(function () {
 				sectionTop;
 				if (sectionTop - 10 < 0) {
 					var id = $(this).attr("id");
-					$(".creator-nav-link").removeClass("active");
-					$('.creator-nav-link[href="#' + id + '"]').addClass("active");
+					$(".creator-section-title").removeClass("active");
+					$('.creator-section-title[href="#' + id + '"]').addClass("active");
 				}
 			});
 		}, 100);
