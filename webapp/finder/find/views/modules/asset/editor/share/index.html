@@ -6,7 +6,7 @@
 <div id="asset-editor-container" class="h=100 d-flex flex-column">
   <div class="d-flex align-items-center share-tabs auto-active-container">
 
-		#if( $canviewcroppingtool)
+		#if( $canshareasset || $canviewcroppingtool)
 			<a class='ajax auto-active-link #if($activetab == "share")current #end' data-activetab="share" data-oemaxlevel="1" data-targetdivinner="shareContainer" href="$siteroot$apphome/views/modules/asset/editor/share/share.html?assetid=$asset.id&collectionid=$!collectionid">[[Share]]</a>
 		#else
 			#set( $activetab = "emblinks" )
@@ -32,7 +32,7 @@
     #end
   </div>
   <div id="shareContainer" class="flex-grow-1 h-100 overflow-auto px-2 pb-2">
-		#if( $canviewcroppingtool)
+	#if($canshareasset ||  $canviewcroppingtool)
 			$pages.include("/$applicationid/views/modules/asset/editor/share/share.html", $context)
     #elseif( $canembedasset)
       $pages.include("/$applicationid/components/share/links.html", $context)
