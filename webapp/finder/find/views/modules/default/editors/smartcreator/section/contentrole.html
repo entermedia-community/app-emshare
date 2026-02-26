@@ -1,4 +1,6 @@
 #set($id = $context.getRequestParameter("id"))
+#set($sectionid = $context.getRequestParameter("sectionid"))
+
 #set($searchtype = $context.getRequestParameter("searchtype"))
 
 #if($searchtype == "componentcontent")
@@ -12,17 +14,13 @@
 <div class="d-flex flex-column pb-2">
   #foreach($role in $contentroles)
     <a class="contentrole ajax"
-      #if($searchtype == "componentcontent")
-        data-targetdiv="component-$id"
-      #else
-        data-targetdiv="section-nav"
-      #end
       data-id="$id"
+      data-targetdiv="section-${sectionid}"
+      data-sectionid="$sectionid"
       data-contentrole="$role.id"
       data-closedialog="true"
-      data-playbackentityid="$!context.getRequestParameter("playbackentityid")"
-      data-playbackentitymoduleid="$!context.getRequestParameter("playbackentitymoduleid")"
       href="$edithome/section/save-contentrole.html"
+      data-oemaxlevel="1"
       data-searchtype="$searchtype">${role.name}</a>
   #end
 </div>

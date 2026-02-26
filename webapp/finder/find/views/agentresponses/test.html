@@ -1,0 +1,26 @@
+<div class="p-3">
+  <form method="post" action="$applink/views/agentresponses/test.html">
+    <textarea class="form-control" name="markdown" rows="15" class="mb-2">#ifnotnull($markdown)$markdown#{end}#ifnull($markdown)**Understanding Threats and Vulnerabilities in the Workplace**
+
+Threats and vulnerabilities in a workplace environment refer to risks that can compromise employee well-being, productivity, or organizational integrity. Threats often manifest as harmful behaviors or conditions, while vulnerabilities are gaps in policies, procedures, or safeguards that allow these threats to persist.
+
+**Breakdown of Threats:**
+ - **Harassment:** Includes actions like spreading rumors, derogatory comments about personal attributes, or unwanted advances, which create hostile environments and undermine trust. For example, ridiculing an employee in front of peers or assigning unrelated tasks (e.g., fetching coffee) against their will can erode morale and safety.
+ - **Workplace Violence:** Any intentional or unintentional act that threatens physical or psychological safety, such as sabotage or aggressive behavior, which can disrupt operations and harm relationships.
+
+**Breakdown of Vulnerabilities:**
+ - **Lack of Clear Boundaries:** Ambiguity in defining unacceptable behavior may allow harassment or misconduct to go unaddressed. For instance, if policies do not explicitly prohibit spreading rumors, employees may perceive such actions as harmless.
+ - **Inadequate Reporting Mechanisms:** If employees fear retaliation or lack confidence in reporting systems, vulnerabilities like harassment may persist unchecked.
+
+ **Examples from Context:**
+ The handbook emphasizes disciplinary actions for repeated policy violations, such as termination for sexual harassment or frequent breaches of conduct. This underscores the importance of addressing vulnerabilities through enforceable policies and fostering a culture of accountability.#end</textarea>
+    <button class="btn btn-primary mt-2" type="submit">Submit</button>
+  </form>
+  #foreach($m in $maps)
+  <div class="bg-light mb-3 p-2">
+    #foreach($key in $m.keySet())
+      <div class="d-flex align-items-center mb-2"><span class="d-block me-1" style="width: 100px;">${key}:</span> <textarea class="form-control" rows="#if($key=='type')1#{else}3#end">$m.get($key)</textarea></div>
+    #end
+  </div>
+  #end
+</div>

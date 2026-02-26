@@ -190,6 +190,10 @@ $(document).ready(function () {
 		var editorEl = component.find(".editable-content");
 		if (component.hasClass("paragraph")) {
 			if (!editorEl.hasClass("ck")) {
+				var collapse = bootstrap.Collapse.getOrCreateInstance(
+					$("#collapseSmartCreator").get(0),
+				);
+				collapse.hide();
 				editorEl.data("imagepickerhidden", true);
 				$(window).trigger("inlinehtmlstart", [editorEl]);
 				editorEl.one("ckeditordestroyed", function () {
