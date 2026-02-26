@@ -7,20 +7,7 @@
 - outline_section: instruction related to creating the outline sections.
 - section_content: instruction related to creating the content for each section.
 Use the similar sentence structure as user's query do not rephrase if nopt necessary. Instruction should be a short single sentence.
-Extract the topic as a noun phrase, excluding action verbs.
-
-Example:
-User input: 'Create an outline for How to make a cake. Make short and concise 2 or 3 paragraph for each section.'
-Output: {
-  'topic': 'How to Make a Cake',
-  'outline_section': {
-    'instruction': 'Create an outline for making a cake.'
-  },
-  'section_content': {
-    'instruction': 'Make content for section.',
-    'style': 'short and concise, 2 or 3 paragraphs'
-  }
-}")
+Extract the topic as a noun phrase, excluding action verbs.")
 		},
 		{
 			"role": "user",
@@ -59,18 +46,18 @@ Output: {
 						"properties": {
 							"instruction": {
 								"type": "string",
-								"description": "The instruction for creating the section content."
+								"description": "The instruction for creating the outline sections."
 							},
-							"style": {
+							"prepositional_phrase": {
 								"type": "string",
-								"description": "The formatting or length constraint for the section content (e.g., 'short paragraphs', 'detailed paragraphs', '<number> paragraphs')."
+								"description": "Prepositional phrase acting as an adverbial modifier"
 							}
 						},
-						"required": ["instruction"],
+						"required": ["instruction", "prepositional_phrase"],
 						"additionalProperties": false
 					}
 				},
-				"required": ["outline_section"],
+				"required": ["topic", "outline_section", "section_content"],
 				"additionalProperties": false
 			}
 		}
