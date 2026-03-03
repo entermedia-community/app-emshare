@@ -44,9 +44,17 @@ $context.putPageValue("asset", $asset)
 					#set ($previewlink = "${previewlink}?_=$mathutil.getRandomValue(9999)" )
 					#end
 					<div class="d-flex align-items-center justify-content-center flex-column flex-grow-1 py-1 my-auto">
-					    <img src="$previewlink" 
-					      style=" #if($width && $height) max-width: ${width}px; max-height: 300px; #else max-width: 300px; max-height: 200px; #end" 
-					      class=""  />
+						<img src="$previewlink" 
+						#if($width && $height)
+						  	#if($width > $height)
+						  		style=" max-width:300px; height:auto; max-height: 300px;"
+							#else
+								style=" max-height: 300px; width:auto; max-width:300px; "
+							#end
+						  #else
+						  style="max-width: 300px; max-height: 200px;"
+						#end
+				      class=""  />
 					</div>
 					#if($width && $height)
 					  <strong>$width &times; $height</strong>
