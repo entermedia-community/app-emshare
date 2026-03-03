@@ -44,22 +44,22 @@ $context.putPageValue("urlbarprefix", $urlbarprefix)
 <div id="categorywithtree" class="emgridcontainer">		
 	$context.putPageValue("selectednodes", $categoryid)
 
-	#set( $dialogtreename = "${module.id}dialogtreestatus")
-	#set($dialogtreestatus = $userprofile.get($dialogtreename))
-	#ifnull($dialogtreestatus)
-		#set($dialogtreestatus = "open")
-		$userprofile.setValue($dialogtreename, $dialogtreestatus)
+	#set( $treename = "${module.id}dialogtreestatus")
+	#set($treestatus = $userprofile.get($treename))
+	#ifnull($treestatus)
+		#set($treestatus = "open")
+		$userprofile.setValue($treename, $treestatus)
 	#end
-	$context.putPageValue("dialogtreestatus",$dialogtreestatus)
+	$context.putPageValue("dialogtreestatus",$treestatus)
 	<div class="embedmediacontainer">
-		#if($dialogtreestatus == "open")
-			<div class="embedmediacol embedmediacol-tree embedtreestatus$dialogtreestatus">
+		#if($canviewcategorytree && $treestatus=="open")
+			<div class="embedmediacol embedmediacol-tree embedtreestatus$treestatus">
 				<div class="embedmediacolactions d-flex align-items-center">						
 					<a href="$edithome/index.html" 
 						class="d-flex align-items-center ajax toggledialogtree toggledialogclose"
 						data-targetdiv="${edithomeid}"
 						data-oemaxlevel="1"
-						data-propertyfield="$dialogtreename"
+						data-propertyfield="$treename"
 						data-propertyvalue="close"
 						data-includeeditcontext="true"
 						data-includesearchcontext="true"
@@ -83,8 +83,8 @@ $context.putPageValue("urlbarprefix", $urlbarprefix)
 		#set($searchhome = "$apphome/views/modules/asset/results/category")
 		#set($searchhomeid = "assetcategory")
 		$context.putPageValue("searchhome", $searchhome)
-
-		#if($dialogtreestatus == "open")		
+		
+		#if($canviewcategorytree && $treestatus=="open")	
 				<div class="searchcategories-tree #if(!$canviewcategorysearch) h-100 #end overflow-y">
 					<div class="assetdropcategory searchcategories-treecontainer #if(!$canviewcategorysearch) h-100 #else searchcategories-treecontainer-max #end categorytreescrolllable" >
 						#set($emtreehome = "$apphome/views/modules/asset/components/emtree")
@@ -112,7 +112,13 @@ $context.putPageValue("urlbarprefix", $urlbarprefix)
 		#end 
 
 		<div class="embedmediacol embedmediacol-results overflow-x" 
-			#if($dialogtreestatus != "open")style="width:100%;"#end
+			#if(!$canviewcategorytree)
+				style="width:100%;"
+			#else
+				#if($treestatus != "open")
+					style="width:100%;"
+				#end
+			#end
 		>
 				$pages.include("${edithome}/resultarea.html?categoryid=$!{category.id}", $context)
 			
