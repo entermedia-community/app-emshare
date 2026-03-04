@@ -35,27 +35,37 @@ $context.putPageValue("asset", $asset)
 				#set($assetrendertype = $mediaarchive.getMediaRenderType($asset))
 				##if($assetrendertype =="audio")
 				#if($assetrendertype == "image" || $assetrendertype == "document" || $assetrendertype == "video")
-					#if ($assetrendertype == "video")
-						#set ($previewlink = $mediaarchive.asLinkToPreview($asset, null, "image1900x1080") )
+					#if( ($asset.previewstatus != "2" && $asset.previewstatus != "exif" && $asset.previewstatus != "mime" && $asset.previewstatus != "1" && $asset.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
+						#set ($previewlink = "") 
 					#else
-						#set ($previewlink = $mediaarchive.asLinkToPreview($asset, null, "image3000x3000") )
-					#end
-					#ifnotnull($saved)
-					#set ($previewlink = "${previewlink}?_=$mathutil.getRandomValue(9999)" )
-					#end
-					<div class="d-flex align-items-center justify-content-center flex-column flex-grow-1 py-1 my-auto">
-						<img src="$previewlink" 
-						#if($width && $height)
-						  	#if($width > $height)
-						  		style=" max-width:300px; height:auto; max-height: 300px;"
-							#else
-								style=" max-height: 300px; width:auto; max-width:300px; "
-							#end
-						  #else
-						  style="max-width: 300px; max-height: 200px;"
+						#if ($assetrendertype == "video")
+							#set ($previewlink = $mediaarchive.asLinkToPreview($asset, null, "image1900x1080") )
+						#else
+							#set ($previewlink = $mediaarchive.asLinkToPreview($asset, null, "image3000x3000") )
 						#end
-				      class=""  />
-					</div>
+						#ifnotnull($saved)
+							#set ($previewlink = "${previewlink}?_=$mathutil.getRandomValue(9999)" )
+						#end
+					#end
+					#if($previewlink)
+						<div class="d-flex align-items-center justify-content-center flex-column flex-grow-1 py-1 my-auto">
+							<img src="$previewlink" 
+							#if($width && $height)
+							  	#if($width > $height)
+							  		style=" max-width:300px; height:auto; max-height: 300px;"
+								#else
+									style=" max-height: 300px; width:auto; max-width:300px; "
+								#end
+							  #else
+							  style="max-width: 300px; max-height: 200px;"
+							#end
+					      class=""  />
+						</div>
+					#else
+						#if( $asset.previewstatus == "converting")
+							[[Converting]]
+						#end
+					#end
 					#if($width && $height)
 					  <strong>$width &times; $height</strong>
 					#end

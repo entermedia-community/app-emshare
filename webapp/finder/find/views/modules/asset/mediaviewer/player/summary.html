@@ -38,15 +38,11 @@ $context.putPageValue("assetheight",$assetheight)
 				#if( $asset.previewstatus == "mime" || $alwaysmime)
 					#set( $rendertype = "mime" )
 				#end
-						
 				#if( ($asset.previewstatus != "2" && $asset.previewstatus != "exif" && $asset.previewstatus != "mime" && $asset.previewstatus != "1" && $asset.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
-			    
 					$pages.include("$searchhome/convertqueue/previewstatus.html?assetid=$!{asset.id}",$context)
 					
 				#else   
-
 					#if($rendertype == "image")
-			
 						#if($asset.fileformat == "gif")
 							#set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
 							#if(!$cdnprefix )
@@ -55,7 +51,6 @@ $context.putPageValue("assetheight",$assetheight)
 							$context.putPageValue("cdnprefix", $cdnprefix)
 							$context.putPageValue("useoriginal", "true")
 						#end
-					
 					#end 						
 
 	 				$pages.include("$searchhome/thumbnails/${rendertype}.html", $context) 
