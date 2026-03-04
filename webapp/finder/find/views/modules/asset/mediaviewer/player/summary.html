@@ -81,7 +81,7 @@ $context.putPageValue("assetheight",$assetheight)
 								data-confirm="[[Are you sure to unlock the Asset?]]"
 								>
 								#if(!$asset.isLocked())
-									<i class="bi bi-lock me-1"></i>[[Lock]]
+									<i class="bi bi-lock me-2"></i>[[Lock]]
 								#else
 									#set($userlock = $asset.getLockOwner())
 									#if($userlock.id != $user.id)
@@ -98,7 +98,7 @@ $context.putPageValue("assetheight",$assetheight)
 				#else
 					#if($asset.isLocked())
 						
-						<a href="#" class="btn btn-cta">
+						<a href="#" class="btn btn-cta" title="[[Asset is locked]]">
 							#if(!$asset.isLocked())
 								<i class="bi bi-lock me-1"></i>[[Lock]]
 							#else
@@ -123,6 +123,13 @@ $context.putPageValue("assetheight",$assetheight)
 				<a href="#" 
 					class="btn btn-cta dropdown-toggle  me-2"
 					role="button" id="dropdownStatusAsset" data-toggle="dropdown" data-bs-toggle="dropdown"
+					#if($asset.editstatus =="rejected")
+						title="[[Rejected asset]]"
+					#elseif($asset.editstatus =="6")
+						title="[[Approved asset]]"
+					#else
+						title="[[Change status]]"
+					#end
 				>
 					#if($asset.editstatus =="rejected")
 					<i class="bi bi-slash-circle ns me-1"></i>
@@ -158,7 +165,8 @@ $context.putPageValue("assetheight",$assetheight)
 			<a href="$siteroot$apphome/views/modules/asset/editor/conversions/replaceoriginal/index.html" 
 				class="btn btn-primary emdialog me-2"
 				data-assetid="$asset.getId()"
-				data-dialogid="replaceoriginalasset">
+				data-dialogid="replaceoriginalasset"
+				title="[[Replace original file]]">
 				<i class="bi bi-files ns me-1"></i>
 				[[Replace Original File]]
 			</a>
@@ -166,14 +174,16 @@ $context.putPageValue("assetheight",$assetheight)
 			#if($caneditasset && $candeleteasset )
 				#if ( $ismulti )
 					#if($canmultidelete)  
-					<a class="btn btn-danger  emdialog" href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/delete/index.html?collectionid=$!collectionid&hitssessionid=$!hitssessionid">
+					<a class="btn btn-danger  emdialog" href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/delete/index.html?collectionid=$!collectionid&hitssessionid=$!hitssessionid"
+					title="[[Delete assets]]">
 						<i class="bi bi-trash me-1"></i> [[Delete Selected Assets]]
 					</a>
 					#end 
 				#else
 					<a class="btn btn-danger emdialog" 
 						data-maxwidth="600"
-						href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&collectionid=$!collectionid&hitssessionid=$!hitssessionidOriginal&hideOverlay=true">
+						href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&collectionid=$!collectionid&hitssessionid=$!hitssessionidOriginal&hideOverlay=true"
+						title="[[Delete asset]]">
 						<i class="bi bi-trash me-1"></i> [[Delete Asset]]
 					</a>
 				#end

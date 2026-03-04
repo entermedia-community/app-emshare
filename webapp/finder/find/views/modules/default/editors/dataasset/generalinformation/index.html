@@ -56,7 +56,7 @@
 				
 				#set($view = "assetreadmetadata")
 				#set($hitssessionid = $context.findValue("hitssessionid"))
-				<div class="asset-data-readwritemetadata">
+				<div class="asset-data-readwritemetadata d-flex">
 					#if($caneditasset)
 						<a class="ajax"
 							href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/read.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
@@ -64,7 +64,8 @@
 							data-toastmessage="[[Reading Metadata]]"
 							data-toastsuccess="[[Metadata read successfully]]"
 							data-toasterror="[[Failed to read Metadata]]"
-							data-confirm="[[Are you sure to read Original Metadata?]]" ><i class="fas fa-upload"></i> [[Read Metadata]]</a>
+							data-confirm="[[Are you sure to read Original Metadata?]]" 
+							title="[[Read metadata from original file]]"><i class="fas fa-upload"></i> [[Read Metadata]]</a>
 					#end
 					#if($caneditasset)	
 						<a class="ajax"
@@ -73,7 +74,8 @@
 								data-toastmessage="[[Rewrite Metadata]]"
 								data-toastsuccess="[[Metadata rewrite successfully]]"
 								data-toasterror="[[Failed to rewrite Metadata]]"
-								data-confirm="[[Are you sure to Rewrite Metadata to the Original file?]]" ><i class="fas fa-download"></i> [[Rewrite Metadata]]</a>
+								data-confirm="[[Are you sure to Rewrite Metadata to the Original file?]]"
+								title="[[Rewrite metadata to original file]]" ><i class="fas fa-download"></i> [[Rewrite Metadata]]</a>
 					#end
 					#if($caneditasset && $canrunaiinformatics)
 						<a class="ajax"	href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/rerunai.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
@@ -82,6 +84,7 @@
 							data-toastsuccess="[[AI Informatics Updated]]"
 							data-toasterror="[[Failed to run AI Informatics]]"
 							data-confirm="[[Are you sure to Re-run AI Informatics?]]"
+							title="Re-run AI Informatics in this Asset"
 							><i class="fas fa-magic"></i> [[Re-run AI Informatics]]</a>
 					#end
 						
