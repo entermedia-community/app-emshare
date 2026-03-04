@@ -106,8 +106,8 @@
 				<div class="dropdown-menu dropdown-menu-top" aria-labelledby="dropdownMenuLink">
 					#foreach ( $amodule in $userprofile.getEntities() )
 						#set($amoduleid = $amodule.getId())
-						#if($amodule.getBoolean("enableuploading"))
-							#if($permissions.canModule($amodule, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+						
+							#if($permissions.canModule($amodule, "assign_files") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
 								#set($entityrendertype = "entity")
 								#if ($amodule.modulerendertype)
 									#set($entityrendertype = $amodule.modulerendertype)
@@ -122,8 +122,8 @@
 					    			data-hidefooter="true"
 									data-assetid="$!{asset.id}"
 									>#text($amodule)</a>
-						#end
-					#end
+							#end
+					
 				#end
 				</div>
 			</div>
