@@ -369,6 +369,8 @@ $(document).ready(function () {
 		});
 	}
 
+	var trackScroll = true;
+
 	lQuery(".creator-section-title").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
@@ -377,6 +379,7 @@ $(document).ready(function () {
 		var target = $(this).data("target");
 		var targetEl = $(target);
 		var containerEl = $(".creator-canvas");
+		trackScroll = false;
 		containerEl.animate(
 			{
 				scrollTop:
@@ -390,6 +393,7 @@ $(document).ready(function () {
 				targetEl.addClass("flash");
 				setTimeout(function () {
 					targetEl.removeClass("flash");
+					trackScroll = true;
 				}, 1000);
 			},
 		);
@@ -397,19 +401,22 @@ $(document).ready(function () {
 
 	var debounceTO = null;
 	lQuery(".creator-canvas").livequery("scroll", function () {
-		if (debounceTO) {
+		if (debounceTO || !trackScroll) {
 			clearTimeout(debounceTO);
+		}
+		if (!trackScroll) {
+			return;
 		}
 		var cc = $(this);
 		debounceTO = setTimeout(function () {
-			// var scrollTop = cc.scrollTop();
 			$(".creator-section").each(function () {
 				var sectionTop = $(this).offset().top - cc.offset().top;
-				sectionTop;
-				if (sectionTop - 10 < 0) {
+				if (sectionTop - (window.innerHeight - screenTop) / 2 < 0) {
 					var id = $(this).attr("id");
 					$(".creator-section-title").removeClass("active");
-					$('.creator-section-title[href="#' + id + '"]').addClass("active");
+					$('.creator-section-title[data-target="#' + id + '"]').addClass(
+						"active",
+					);
 				}
 			});
 		}, 100);
