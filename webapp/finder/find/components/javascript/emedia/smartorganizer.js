@@ -1260,7 +1260,7 @@ $(document).ready(function () {
 			$("body").append(span);
 			var w = $(span).width();
 			var h = $(span).height();
-			while (w > 134 || h > 36) {
+			while ((w > 134 || h > 36) && fs > 12) {
 				fs--;
 				$(span).css("font-size", fs);
 				w = $(span).width();
@@ -1277,7 +1277,8 @@ $(document).ready(function () {
 			}
 			if (selectedLabel) {
 				var lines = getLines(newLabel);
-				selectedLabel.setText(lines.join("\n"));
+				console.log(lines);
+				selectedLabel.setText(lines.join(" "));
 				var fs = getFontSize(lines.join("<br>"));
 				selectedLabel.setFontSize(fs);
 			}
@@ -1286,10 +1287,8 @@ $(document).ready(function () {
 		$("#folderLabel").on("input", function (e) {
 			e.stopImmediatePropagation();
 			var labelText = $(this).val();
-			if (labelText.length > 32) {
-				labelText = labelText.substring(0, 32);
-				$(this).val(labelText);
-				return;
+			if (labelText.length > 25) {
+				labelText = labelText.substring(0, 22) + "...";
 			}
 			handleLabelChange(labelText);
 		});
