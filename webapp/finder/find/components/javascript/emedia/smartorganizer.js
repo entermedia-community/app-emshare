@@ -1228,7 +1228,16 @@ $(document).ready(function () {
 		function getLines(text) {
 			text = text.trim();
 			if (text.length <= 16) return [text];
-			var lines = text.match(/.{1,16}/g);
+			var lines = [];
+			while (text.length > 16) {
+				var idx = text.lastIndexOf(" ", 16);
+				if (idx === -1) {
+					idx = 16;
+				}
+				lines.push(text.substring(0, idx));
+				text = text.substring(idx).trim();
+			}
+			lines.push(text);
 			if (!lines) return [];
 			return lines.map((l) => l.trim());
 		}
@@ -1277,8 +1286,7 @@ $(document).ready(function () {
 			}
 			if (selectedLabel) {
 				var lines = getLines(newLabel);
-				console.log(lines);
-				selectedLabel.setText(lines.join(" "));
+				selectedLabel.setText(lines.join("\n"));
 				var fs = getFontSize(lines.join("<br>"));
 				selectedLabel.setFontSize(fs);
 			}
