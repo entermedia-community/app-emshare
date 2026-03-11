@@ -1244,6 +1244,10 @@ $(document).ready(function () {
 			}
 			lines.push(text);
 			if (!lines) return [];
+			if (lines.length > 2) {
+				lines = lines.slice(0, 2);
+				lines[1] = lines[1] + "...";
+			}
 			return lines.map((l) => l.trim());
 		}
 
@@ -1302,8 +1306,8 @@ $(document).ready(function () {
 			e.stopImmediatePropagation();
 			var labelText = $(this).val();
 			var fullLabel = labelText;
-			if (labelText.length > 25) {
-				labelText = labelText.substring(0, 22) + "...";
+			if (labelText.length > 32) {
+				labelText = labelText.substring(0, 29).trim() + "...";
 			}
 			handleLabelChange(labelText, fullLabel);
 		});
