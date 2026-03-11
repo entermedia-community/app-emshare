@@ -968,7 +968,12 @@ $(document).ready(function () {
 						selectedLabel.getUserData().moduleid = moduleid;
 					}
 					$("#folderId").val(moduleid);
-					$("#folderLabel").val(selectedLabel.getText() || "");
+					var labelText =
+						selectedLabel.getUserData()?.fullLabel ||
+						selectedLabel.getText() ||
+						"";
+					labelText = labelText.replace(/\n/g, " ");
+					$("#folderLabel").val(labelText);
 					$("#folderDesc").val(selectedLabel.getUserData()?.description || "");
 					var ordering = selectedLabel.getUserData()?.ordering || "-1";
 					$("#ordering").val(ordering).trigger("change");
@@ -1228,8 +1233,21 @@ $(document).ready(function () {
 		function getLines(text) {
 			text = text.trim();
 			if (text.length <= 16) return [text];
-			var lines = text.match(/.{1,16}/g);
+			var lines = [];
+			while (text.length > 16) {
+				var idx = text.lastIndexOf(" ", 16);
+				if (idx === -1) {
+					idx = 16;
+				}
+				lines.push(text.substring(0, idx));
+				text = text.substring(idx).trim();
+			}
+			lines.push(text);
 			if (!lines) return [];
+			if (lines.length > 2) {
+				lines = lines.slice(0, 2);
+				lines[1] = lines[1] + "...";
+			}
 			return lines.map((l) => l.trim());
 		}
 
@@ -1260,7 +1278,7 @@ $(document).ready(function () {
 			$("body").append(span);
 			var w = $(span).width();
 			var h = $(span).height();
-			while (w > 134 || h > 36) {
+			while ((w > 134 || h > 36) && fs > 12) {
 				fs--;
 				$(span).css("font-size", fs);
 				w = $(span).width();
@@ -1270,12 +1288,13 @@ $(document).ready(function () {
 			return fs;
 		}
 
-		function handleLabelChange(newLabel) {
-			if (newLabel.length === 0) {
-				selectedLabel.setText("");
-				return;
-			}
+		function handleLabelChange(newLabel, fullLabel) {
 			if (selectedLabel) {
+				selectedLabel.userData.fullLabel = fullLabel;
+				if (newLabel.length === 0) {
+					selectedLabel.setText("");
+					return;
+				}
 				var lines = getLines(newLabel);
 				selectedLabel.setText(lines.join("\n"));
 				var fs = getFontSize(lines.join("<br>"));
@@ -1286,12 +1305,11 @@ $(document).ready(function () {
 		$("#folderLabel").on("input", function (e) {
 			e.stopImmediatePropagation();
 			var labelText = $(this).val();
+			var fullLabel = labelText;
 			if (labelText.length > 32) {
-				labelText = labelText.substring(0, 32);
-				$(this).val(labelText);
-				return;
+				labelText = labelText.substring(0, 29).trim() + "...";
 			}
-			handleLabelChange(labelText);
+			handleLabelChange(labelText, fullLabel);
 		});
 
 		$("#folderLabel").on("blur", function () {
