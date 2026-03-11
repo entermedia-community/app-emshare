@@ -968,7 +968,12 @@ $(document).ready(function () {
 						selectedLabel.getUserData().moduleid = moduleid;
 					}
 					$("#folderId").val(moduleid);
-					$("#folderLabel").val(selectedLabel.getText() || "");
+					var labelText =
+						selectedLabel.getUserData()?.fullLabel ||
+						selectedLabel.getText() ||
+						"";
+					labelText = labelText.replace(/\n/g, " ");
+					$("#folderLabel").val(labelText);
 					$("#folderDesc").val(selectedLabel.getUserData()?.description || "");
 					var ordering = selectedLabel.getUserData()?.ordering || "-1";
 					$("#ordering").val(ordering).trigger("change");
@@ -1279,12 +1284,13 @@ $(document).ready(function () {
 			return fs;
 		}
 
-		function handleLabelChange(newLabel) {
-			if (newLabel.length === 0) {
-				selectedLabel.setText("");
-				return;
-			}
+		function handleLabelChange(newLabel, fullLabel) {
 			if (selectedLabel) {
+				selectedLabel.userData.fullLabel = fullLabel;
+				if (newLabel.length === 0) {
+					selectedLabel.setText("");
+					return;
+				}
 				var lines = getLines(newLabel);
 				selectedLabel.setText(lines.join("\n"));
 				var fs = getFontSize(lines.join("<br>"));
@@ -1295,10 +1301,11 @@ $(document).ready(function () {
 		$("#folderLabel").on("input", function (e) {
 			e.stopImmediatePropagation();
 			var labelText = $(this).val();
+			var fullLabel = labelText;
 			if (labelText.length > 25) {
 				labelText = labelText.substring(0, 22) + "...";
 			}
-			handleLabelChange(labelText);
+			handleLabelChange(labelText, fullLabel);
 		});
 
 		$("#folderLabel").on("blur", function () {
