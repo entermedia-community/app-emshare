@@ -1278,7 +1278,7 @@ $(document).ready(function () {
 			$("body").append(span);
 			var w = $(span).width();
 			var h = $(span).height();
-			while ((w > 134 || h > 36) && fs > 12) {
+			while ((w > 134 || h > 36) && fs > 16) {
 				fs--;
 				$(span).css("font-size", fs);
 				w = $(span).width();
