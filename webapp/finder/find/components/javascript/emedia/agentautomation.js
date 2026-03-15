@@ -29,7 +29,7 @@ var arrowDeco = new draw2d.decoration.connection.ArrowDecorator(16, 16);
 arrowDeco.setBackgroundColor("#4d5d80");
 
 function createConnection(sourcePort, targetPort) {
-	console.log({ sourcePort, targetPort });
+	// console.log({ sourcePort, targetPort });
 	var conn = new draw2d.Connection({
 		stroke: 2,
 		color: "#4d5d80",
@@ -688,6 +688,12 @@ $(document).ready(function () {
 		);
 
 		function recenterCanvas() {
+			$(".automation-canvas").animate(
+				{
+					scrollTop: 0,
+				},
+				"fast",
+			);
 			canvasContainer.css({
 				marginTop: 0,
 				marginLeft: -midX + canvasWidth / 2,
@@ -800,13 +806,12 @@ $(document).ready(function () {
 				success: function (res) {
 					if (res.status && res.status == "ok") {
 						var data = res.data;
-						console.log({ data });
+						// console.log({ data });
 						var scenario = data.scenario;
-						console.log({ scenario });
+						// console.log({ scenario });
 
 						var agents = data.agents;
 						var queue = groupByRunAfter(agents);
-						console.log({ queue });
 
 						renderQueue(queue);
 					} else {
@@ -826,15 +831,23 @@ $(document).ready(function () {
 			var levelSpacingX = 220;
 			var levelCursor = new Map();
 
+			// console.log(queue);
+
 			function renderNext(items, parentNode = null, level = 0) {
-				if (!items) return;
+				if (!items) {
+					for (let [key, value] of queue.entries()) {
+						if (!visited.has(key)) {
+							renderNext(value, parentNode, level);
+							break;
+						}
+					}
+					return;
+				}
 
 				var y = 50;
 				if (parentNode) {
 					y = parentNode.getY() + parentNode.getHeight() + 40;
 				}
-
-				console.log(items, y);
 
 				var count = items.length;
 				var startX = x;
@@ -879,13 +892,19 @@ $(document).ready(function () {
 						);
 						canvas.add(conn);
 					}
-					renderNext(queue.get(item.id), node, level + 1);
+					if (item.id == "informaticsClassifyAgent") {
+						debugger;
+					}
+					return renderNext(queue.get(item.id), node, level + 1);
 				});
 
 				levelCursor.set(level, startX + count * levelSpacingX);
 			}
 
 			renderNext(start, null, 0);
+
+			console.log(visited);
+
 			recenterCanvas();
 
 			// loadEvents();
@@ -1195,7 +1214,9 @@ $(document).ready(function () {
 			var figure = node.figure;
 			if (figure && figure.cssClass.startsWith("folder")) {
 				$("#mod-toggler").trigger("click");
+				return;
 			}
+			recenterCanvas();
 		});
 
 		function addNodeAt(type, x, y) {
@@ -2151,4 +2172,6 @@ $(document).ready(function () {
 		});
 		cancelBtn.click(hideInput);
 	});
+
+	$('.emdialog[data-sidebar="smartautomation"]').emDialog();
 });
