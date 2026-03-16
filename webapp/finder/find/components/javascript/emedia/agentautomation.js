@@ -111,6 +111,10 @@ var nodeJson = function (attr) {
 var logicJson = function (attr) {
 	return [
 		{
+			type: "draw2d.shape.composite.Group",
+			id: attr.id + "-group",
+		},
+		{
 			type: "draw2d.shape.basic.Diamond",
 			...attr,
 			padding: 20,
@@ -138,6 +142,19 @@ var logicJson = function (attr) {
 					},
 				},
 			],
+			composite: attr.id + "-group",
+		},
+		{
+			type: "draw2d.shape.note.PostIt",
+			id: attr.id + "-label",
+			x: attr.x + 30,
+			y: attr.y + 12,
+			text: attr.text,
+			selectable: false,
+			draggable: false,
+			composite: attr.id + "-group",
+			fontColor: "#444",
+			bgColor: "#ffde59",
 		},
 	];
 };
@@ -899,6 +916,7 @@ $(document).ready(function () {
 						x: startX,
 						y,
 						bgColor: "#c684ff",
+						text: node.automationagent.name,
 					};
 
 					let node_obj = null;
@@ -907,7 +925,6 @@ $(document).ready(function () {
 						attr.bgColor = "#ffde59";
 						node_obj = logicJson(attr);
 					} else {
-						attr.text = node.automationagent.name;
 						node_obj = nodeJson(attr);
 					}
 					if (!node_obj) return;
