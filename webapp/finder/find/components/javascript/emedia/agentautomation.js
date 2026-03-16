@@ -529,233 +529,27 @@ $(document).ready(function () {
 			// console.log({ queue });
 		}
 
-		function rearrangeLabel(groupNode) {
-			var groupWidth = groupNode.getWidth();
-			var groupHeight = groupNode.getHeight();
-			var groupX = groupNode.getX();
-			var groupY = groupNode.getY();
-
-			var figures = groupNode.getAssignedFigures();
-			var titleNode = figures.find((f) => f.cssClass === "titleLabel");
-			var imageNode = figures.find((f) => f.cssClass === "labelImage");
-			var captionNode = figures.find((f) => f.cssClass === "captionLabel");
-
-			var onlyTitle = titleNode && !captionNode && !imageNode;
-			var onlyCaption = captionNode && !titleNode && !imageNode;
-			var onlyImage = imageNode && !titleNode && !captionNode;
-			var titleAndCaption = titleNode && captionNode && !imageNode;
-			var titleAndImage = titleNode && imageNode && !captionNode;
-			var captionAndImage = captionNode && imageNode && !titleNode;
-			var allThree = titleNode && captionNode && imageNode;
-
-			var minHeight =
-				(imageNode ? imageNode.getHeight() : 0) +
-				(titleNode ? titleNode.getHeight() : 0) +
-				(captionNode ? captionNode.getHeight() : 0);
-
-			var minWidth =
-				Math.max(
-					titleNode ? titleNode.getWidth() : 0,
-					captionNode ? captionNode.getWidth() : 0,
-					imageNode ? imageNode.getWidth() : 0,
-				) + 10;
-
-			if (onlyTitle || onlyCaption || onlyImage) {
-				minHeight += 10;
+		function handleSelect(selectedNode = null) {
+			if (!selectedNode) {
+				selectedNode = canvas.getPrimarySelection();
 			}
-			if (titleAndCaption || titleAndImage || captionAndImage) {
-				minHeight += 15;
-			}
-			if (allThree) {
-				minHeight += 20;
-			}
+			if (selectedNode) {
+				if (selectedNode.cssClass === "node") {
+					updateModPosition(selectedNode);
 
-			if (groupWidth < minWidth) {
-				groupNode.setWidth(minWidth);
-				groupWidth = minWidth;
-			}
+					$("#edit-toggler").fadeIn();
 
-			if (groupHeight < minHeight) {
-				groupNode.setHeight(minHeight);
-				groupHeight = minHeight;
-			}
-
-			if (titleNode) {
-				titleNode.setPosition(groupX + groupWidth / 2, groupY + 5);
-			}
-
-			if (imageNode) {
-				var aspectRatio = imageNode.getWidth() / imageNode.getHeight();
-				var newWidth;
-				var newHeight;
-
-				if (groupWidth / groupHeight > 1) {
-					if (aspectRatio > 1) {
-						newWidth = groupHeight - 10;
-						newHeight = newWidth / aspectRatio;
-					} else {
-						newHeight = groupHeight - 10;
-						newWidth = newHeight * aspectRatio;
-					}
-				} else {
-					if (aspectRatio > 1) {
-						newWidth = groupWidth - 10;
-						newHeight = newWidth / aspectRatio;
-					} else {
-						newWidth = groupWidth - 10;
-						newHeight = newWidth * aspectRatio;
-					}
-				}
-
-				imageNode.setWidth(newWidth);
-				imageNode.setHeight(newHeight);
-
-				var x = groupX + (groupWidth - newWidth) / 2;
-				var y = groupY + (groupHeight - newHeight) / 2;
-				imageNode.setPosition(x, y);
-			}
-
-			if (captionNode) {
-				captionNode.setX(groupX + groupWidth / 2);
-				captionNode.setY(groupY + groupHeight - captionNode.getHeight() - 5);
-			}
-		}
-
-		function loadEvents(labelGroups = null) {
-			if (!labelGroups) {
-				labelGroups = canvas
-					.getFigures()
-					.data.filter((f) => f.cssClass === "labelGroup");
-			}
-			labelGroups.forEach(function (node) {
-				node.on("resize", rearrangeLabel);
-			});
-		}
-
-		function updateLabelConfigPosition(A) {
-			if (!A) {
-				A = $(".label-mod-toggler");
-			}
-			var selectedLabel = canvas.getPrimarySelection();
-			if (!selectedLabel || !selectedLabel.shape || !selectedLabel.shape[0]) {
-				return;
-			}
-			var shape = selectedLabel.shape[0].getBoundingClientRect();
-			var bb = {
-				x: shape.x + shape.width + 8,
-				y: shape.y - 20,
-			};
-			$(A).css({
-				color: "#60729e",
-				position: "fixed",
-				left: bb.x,
-				top: bb.y,
-				zIndex: 999,
-			});
-		}
-
-		function handleSelect(selectedGroup = null) {
-			if (!selectedGroup) {
-				selectedGroup = canvas.getPrimarySelection();
-			}
-			if (selectedGroup) {
-				if (selectedGroup.cssClass === "folderGroup") {
-					var selectedGroupId = selectedGroup.getId();
-					var selectedIcon = canvas.getFigure(selectedGroupId + "-icon");
-					if (selectedIcon) {
-						$("#folderThumbPickerBtn").html(
-							`<img src="${selectedIcon.getPath()}" />`,
-						);
-					} else {
-						$("#folderThumbPickerBtn").html("");
-					}
-					selectedLabel = canvas.getFigure(selectedGroupId + "-label");
-					if (!selectedLabel) return;
-
-					if (selectedIcon) {
-						selectedLabel.getUserData().moduleicon = selectedIcon.getPath();
-					}
-
-					var moduleid = selectedLabel.getUserData()?.moduleid;
-					if (moduleid === undefined || moduleid == "") {
-						moduleid = selectedLabel.getText().toLowerCase();
-						moduleid = "entity" + moduleid.replace(" ", "");
-						moduleid += "-" + draw2d.util.UUID.create().substring(0, 4);
-						selectedLabel.getUserData().moduleid = moduleid;
-					}
-					$("#folderId").val(moduleid);
-					$("#folderLabel").val(selectedLabel.getText() || "");
-					$("#folderDesc").val(selectedLabel.getUserData()?.description || "");
-					var ordering = selectedLabel.getUserData()?.ordering || "-1";
-					$("#ordering").val(ordering).trigger("change");
-
-					updateModPosition(selectedGroup);
-
-					$("#mod-toggler")
-						.find("i")
-						.removeClass("bi-gear-fill")
-						.addClass("bi-gear");
-					$("#mod-toggler").fadeIn();
-
-					selectedGroup.on("drag", function () {
-						updateModPosition(selectedGroup);
+					selectedNode.on("drag", function () {
+						updateModPosition(selectedNode);
 					});
-				} else if (selectedGroup.cssClass === "labelGroup") {
-					var figures = selectedGroup.getAssignedFigures();
-					var titleNode = figures.find((f) => f.cssClass === "titleLabel");
-					var imageNode = figures.find((f) => f.cssClass === "labelImage");
-					var captionNode = figures.find((f) => f.cssClass === "captionLabel");
-					var A = document.createElement("a");
-					A.className = "label-mod-toggler emdialog";
-					A.setAttribute(
-						"href",
-						applink + "/components/smartautomation/label.html",
-					);
-					A.setAttribute("role", "button");
-					A.dataset.dialogid = "addLabel";
-					A.dataset.oemaxlevel = "1";
-					A.dataset.id = selectedGroup.getId();
-					A.dataset.title = titleNode ? titleNode.getText() : "";
-					A.dataset.titleFS = titleNode ? titleNode.getFontSize() : "";
-					A.dataset.caption = captionNode ? captionNode.getText() : "";
-					A.dataset.captionFS = captionNode ? captionNode.getFontSize() : "";
-					A.dataset.image = imageNode ? imageNode.getPath() : "";
-					var bgColor = selectedGroup.getBackgroundColor();
-					A.dataset.bgColor = rgbToHex(
-						bgColor.red,
-						bgColor.green,
-						bgColor.blue,
-					);
-					var color = selectedGroup.getColor();
-					A.dataset.color = rgbToHex(color.red, color.green, color.blue);
-
-					A.innerHTML = "<i class='bi bi-gear-fill'></i>";
-					$(".org-row").append(A);
-					updateLabelConfigPosition(A);
-					selectedGroup.on("drag", function () {
-						updateLabelConfigPosition(A);
-					});
-					hideFolderConfig();
 				}
 			} else {
-				hideFolderConfig();
-				hideLabelConfig();
+				hideConfig();
 			}
 		}
 
-		function hideLabelConfig() {
-			$("#folderLabel").trigger("blur");
-			$(".label-mod-toggler").each(function () {
-				$(this).remove();
-			});
-		}
-
-		function hideFolderConfig() {
-			$("#folderId").trigger("blur");
-			$("#folderDesc").trigger("blur");
-			$("#modifySelection").hide();
-			$("#mod-toggler").fadeOut();
-			selectedLabel = null;
+		function hideConfig() {
+			$("#edit-toggler").fadeOut();
 		}
 
 		lQuery(".deploy-automation-finish").livequery("click", function (e) {
@@ -770,40 +564,24 @@ $(document).ready(function () {
 			});
 		});
 
-		function updateModPosition(selectedFolder) {
-			if (!selectedFolder) {
-				selectedFolder = canvas.getPrimarySelection();
+		function updateModPosition(selectedNode) {
+			console.log(selectedNode);
+			if (!selectedNode) {
+				selectedNode = canvas.getPrimarySelection();
 			}
-			if (
-				!selectedFolder ||
-				!selectedFolder.shape ||
-				!selectedFolder.shape[0]
-			) {
+			if (!selectedNode || !selectedNode.shape || !selectedNode.shape[0]) {
 				return;
 			}
-			var shape = selectedFolder.shape[0].getBoundingClientRect();
-			var bb = {
-				x: shape.x + shape.width + 8,
+			const shape = selectedNode.shape[0].getBoundingClientRect();
+			const bb = {
+				x: shape.x + shape.width,
 				y: shape.y - 20,
 			};
 
-			$("#mod-toggler").css({
+			$("#edit-toggler").css({
 				left: bb.x,
 				top: bb.y,
 			});
-
-			var modCss = {
-				left: bb.x + 24,
-				top: Math.max(bb.y, 100),
-			};
-			if (bb.x + 420 > window.innerWidth - 92) {
-				modCss.left = bb.x - 440 - shape.width;
-			}
-			var mH = $("#modifySelection").height() + 92;
-			if (bb.y + mH > window.innerHeight) {
-				modCss.top = window.innerHeight - mH;
-			}
-			$("#modifySelection").css(modCss);
 		}
 
 		canvas.on("select", function () {
@@ -811,25 +589,18 @@ $(document).ready(function () {
 		});
 
 		canvas.on("unselect", function () {
-			hideFolderConfig();
-			hideLabelConfig();
-			$("#folderThumbPickerBtn").html("");
+			hideConfig();
 		});
 
-		$("#mod-toggler").click(function (e) {
+		$("#edit-toggler").click(function (e) {
 			e.stopImmediatePropagation();
-			if ($("#modifySelection").is(":visible")) {
-				$(this).find("i").removeClass("bi-gear-fill").addClass("bi-gear");
-			} else {
-				$(this).find("i").removeClass("bi-gear").addClass("bi-gear-fill");
-			}
-			$("#modifySelection").fadeToggle();
+			// TODO
 		});
 
 		canvas.on("dblclick", function (_, node) {
 			var figure = node.figure;
-			if (figure && figure.cssClass.startsWith("folder")) {
-				$("#mod-toggler").trigger("click");
+			if (figure && figure.cssClass === "node") {
+				$("#edit-toggler").trigger("click");
 				return;
 			}
 			recenterCanvas();
@@ -906,10 +677,6 @@ $(document).ready(function () {
 			out: function () {
 				$(this).css("opacity", 1);
 			},
-		});
-
-		$("#modifySelection").draggable({
-			handle: "#dragHandle",
 		});
 
 		var saveBtn = $("#saveOrganizer");
