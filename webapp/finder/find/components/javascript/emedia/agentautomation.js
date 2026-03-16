@@ -856,23 +856,44 @@ $(document).ready(function () {
 		}
 
 		function renderQueue(queue) {
-			const LOGIC_WIDTH = 50;
-			var rootX = midX - $(".automation-canvas").width() / 2;
+			var rootX = midX - $(".automation-canvas").width() / 4;
 
+			const renderedRef = {};
+
+			let previousNode = null;
 			let parentNode = null;
-			queue.map((nodes, depth) => {
+
+			queue.map((nodes) => {
 				let y = 50;
-				if (parentNode) {
-					y = parentNode.getY() + parentNode.getHeight() + 40;
+				if (previousNode) {
+					y = previousNode.getY() + previousNode.getHeight() + 40;
 				}
 
 				nodes.map((node, i) => {
-					let startX;
-					if (parentNode) {
-						startX = parentNode.getX() + parentNode.getWidth() / 2;
-					} else {
-						startX = rootX;
+					let startX = rootX;
+					if (node.runafter) {
+						const parents = node.runafter.split("|");
+						if (parents.length === 1) {
+							parentNode = canvas.getFigure(parents[0]);
+							if (parentNode) {
+								startX = parentNode.getX() + parentNode.getWidth() / 2;
+							}
+						} else {
+							let minX = Infinity;
+							let maxX = -Infinity;
+							parents.forEach((parent) => {
+								const p = canvas.getFigure(parent);
+								if (p) {
+									minX = Math.min(minX, p.getX());
+									maxX = Math.max(maxX, p.getX() + p.getWidth());
+								}
+							});
+							if (minX !== Infinity && maxX !== -Infinity) {
+								startX = (minX + maxX) / 2;
+							}
+						}
 					}
+
 					var attr = {
 						id: node.id,
 						x: startX,
@@ -893,7 +914,24 @@ $(document).ready(function () {
 					readerUnmarshal(canvas, node_obj);
 
 					const renderedNode = canvas.getFigure(node.id);
-					renderedNode.setX(renderedNode.getX() - renderedNode.getWidth() / 2);
+					if (nodes.length === 1) {
+						renderedNode.setX(
+							renderedNode.getX() - renderedNode.getWidth() / 2,
+						);
+					} else {
+						if (i === 0) {
+							renderedNode.setX(
+								renderedNode.getX() - (renderedNode.getWidth() + 20),
+							);
+						} else {
+							renderedNode.setX(renderedNode.getX() + 20);
+						}
+					}
+
+					renderedRef[node.id] = {
+						w: renderedNode.getWidth(),
+						center: startX,
+					};
 
 					if (node.runafter) {
 						var runafter = node.runafter.split("|");
@@ -911,7 +949,7 @@ $(document).ready(function () {
 							canvas.add(conn);
 						});
 					}
-					parentNode = renderedNode;
+					previousNode = renderedNode;
 				});
 			});
 
