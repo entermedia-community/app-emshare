@@ -1,3 +1,5 @@
+"use strict";
+
 var colorSwatch = [
 	"#0000ff",
 	"#a52a2a",
@@ -82,6 +84,7 @@ var nodeJson = function (attr) {
 			...attr,
 			padding: 40,
 			fontSize: 18,
+			cssClass: "node",
 			ports: [
 				{
 					...nodePort,
@@ -114,6 +117,7 @@ var logicJson = function (attr) {
 			fontSize: 18,
 			height: 50,
 			width: 50,
+			cssClass: "node",
 			ports: [
 				{
 					...nodePort,
@@ -185,23 +189,53 @@ function fallbackCopyText(text) {
 	$temp.remove();
 }
 
-function groupByRunAfter(items) {
-	const nextMap = new Map(); // runafter -> item[]
-
-	for (const item of items) {
-		const keys = item.runafter;
-		if (keys == null) {
-			nextMap.set(null, [item]);
-			continue;
-		}
-
-		keys.split("|").forEach((key) => {
-			if (!nextMap.has(key)) nextMap.set(key, []);
-			nextMap.get(key).push(item);
-		});
+function bfsTopDown(nodes) {
+	const children = {};
+	const inDegree = {};
+	const hash = new Map();
+	for (const node of nodes) {
+		children[node.id] = [];
+		inDegree[node.id] = 0;
+		hash.set(node.id, node);
 	}
 
-	return nextMap;
+	for (const node of nodes) {
+		if (!node.runafter) continue;
+
+		const parents = node.runafter.split("|");
+		for (const parent of parents) {
+			children[parent].push(node.id);
+		}
+
+		inDegree[node.id] = parents.length;
+	}
+
+	const queue = [];
+	for (const node of nodes) {
+		if (!node.runafter) {
+			queue.push(node.id);
+		}
+	}
+
+	const result = [];
+	while (queue.length) {
+		const levelSize = queue.length;
+		const level = [];
+
+		for (let i = 0; i < levelSize; i++) {
+			const id = queue.shift();
+			level.push(hash.get(id));
+
+			for (const child of children[id]) {
+				inDegree[child]--;
+				if (inDegree[child] === 0) queue.push(child);
+			}
+		}
+
+		result.push(level);
+	}
+
+	return result;
 }
 
 $(document).ready(function () {
@@ -811,7 +845,7 @@ $(document).ready(function () {
 						// console.log({ scenario });
 
 						var agents = data.agents;
-						var queue = groupByRunAfter(agents);
+						var queue = bfsTopDown(agents);
 
 						renderQueue(queue);
 					} else {
@@ -822,93 +856,119 @@ $(document).ready(function () {
 		}
 
 		function renderQueue(queue) {
-			var start = queue.get(null);
-			if (!start) {
-				console.error("No starting point found in the scenario.");
-			}
-			var visited = new Set();
-			var x = midX - $(".automation-canvas").width() / 2;
-			var levelSpacingX = 220;
-			var levelCursor = new Map();
+			const LOGIC_WIDTH = 50;
+			var rootX = midX - $(".automation-canvas").width() / 2;
 
-			// console.log(queue);
-
-			function renderNext(items, parentNode = null, level = 0) {
-				if (!items) {
-					for (let [key, value] of queue.entries()) {
-						if (!visited.has(key)) {
-							renderNext(value, parentNode, level);
-							break;
-						}
-					}
-					return;
-				}
-
-				var y = 50;
+			let parentNode = null;
+			queue.map((nodes, depth) => {
+				let y = 50;
 				if (parentNode) {
 					y = parentNode.getY() + parentNode.getHeight() + 40;
 				}
 
-				var count = items.length;
-				var startX = x;
-				if (parentNode) {
-					var parentCenterX = parentNode.getX() + parentNode.getWidth() / 2;
-					startX = parentCenterX - ((count - 1) * levelSpacingX) / 2;
-				}
-
-				var nextX = levelCursor.has(level) ? levelCursor.get(level) : x;
-				if (startX < nextX) {
-					startX = nextX;
-				}
-
-				items.forEach((item, index) => {
-					if (visited.has(item.id)) {
-						console.warn(`Skipping already visited item with id ${item.id}`);
-						return;
+				nodes.map((node, i) => {
+					let startX;
+					if (parentNode) {
+						startX = parentNode.getX() + parentNode.getWidth() / 2;
+					} else {
+						startX = rootX;
 					}
-					visited.add(item.id);
-					var nodeX = startX + index * levelSpacingX;
 					var attr = {
-						id: item.id,
-						x: nodeX,
+						id: node.id,
+						x: startX,
 						y,
 						bgColor: "#c684ff",
 					};
-					var node = null;
-					if (item.automationagent.id == "javaifcheck") {
+
+					let node_obj = null;
+
+					if (node.automationagent.id == "javaifcheck") {
 						attr.bgColor = "#ffde59";
-						node = logicJson(attr);
+						node_obj = logicJson(attr);
 					} else {
-						attr.text = item.automationagent.name;
-						node = nodeJson(attr);
+						attr.text = node.automationagent.name;
+						node_obj = nodeJson(attr);
 					}
-					readerUnmarshal(canvas, node);
-					node = canvas.getFigure(item.id);
+					if (!node_obj) return;
+					readerUnmarshal(canvas, node_obj);
 
-					if (parentNode) {
-						var conn = createConnection(
-							parentNode.getPort("bottomPort"),
-							node.getPort("topPort"),
-						);
-						canvas.add(conn);
+					const renderedNode = canvas.getFigure(node.id);
+					renderedNode.setX(renderedNode.getX() - renderedNode.getWidth() / 2);
+
+					if (node.runafter) {
+						var runafter = node.runafter.split("|");
+						var connectedTo = canvas
+							.getFigures()
+							.data.filter(
+								(f) => f.cssClass === "node" && runafter.includes(f.id),
+							);
+
+						connectedTo.forEach((connectedNode) => {
+							var conn = createConnection(
+								connectedNode.getPort("bottomPort"),
+								renderedNode.getPort("topPort"),
+							);
+							canvas.add(conn);
+						});
 					}
-					if (item.id == "informaticsClassifyAgent") {
-						debugger;
-					}
-					return renderNext(queue.get(item.id), node, level + 1);
+					parentNode = renderedNode;
 				});
+			});
 
-				levelCursor.set(level, startX + count * levelSpacingX);
-			}
+			// var visited = new Set();
+			// var x = midX - $(".automation-canvas").width() / 2;
+			// var levelSpacingX = 220;
+			// var levelCursor = new Map();
 
-			renderNext(start, null, 0);
+			// var parentNode = null;
 
-			console.log(visited);
+			// queue.forEach((items, level) => {
+			// 	if (!items) {
+			// 		return;
+			// 	}
+
+			// 	var y = 50;
+			// 	var parentCenterX = 0;
+			// 	if (parentNode) {
+			// 		y = parentNode.getY() + parentNode.getHeight() + 40;
+			// 		var parentCenterX = parentNode.getX() + parentNode.getWidth() / 2;
+			// 	}
+
+			// 	items.forEach((item) => {
+			// 		if (visited.has(item.id)) {
+			// 			console.warn(`Skipping already visited item with id ${item.id}`);
+			// 			return;
+			// 		}
+			// 		visited.add(item.id);
+
+			// var attr = {
+			// 	id: item.id,
+			// 	x: parentCenterX,
+			// 	y,
+			// 	bgColor: "#c684ff",
+			// };
+			// var node = null;
+			// if (item.automationagent.id == "javaifcheck") {
+			// 	attr.bgColor = "#ffde59";
+			// 	node = logicJson(attr);
+			// } else {
+			// 	attr.text = item.automationagent.name;
+			// 	node = nodeJson(attr);
+			// }
+			// readerUnmarshal(canvas, node);
+			// 		node = canvas.getFigure(item.id);
+
+			// 		parentNode = node;
+
+			// 	});
+			// });
+
+			// console.log(visited);
 
 			recenterCanvas();
 
 			// loadEvents();
-			customToast("Scenario loaded successfully.");
+			// customToast("Scenario loaded successfully.");
 			// console.log({ scenario });
 			// console.log({ queue });
 		}
