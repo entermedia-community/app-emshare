@@ -50,7 +50,7 @@ const nodePort = {
 	locator: "draw2d.layout.locator.XYRelPortLocator",
 };
 
-const nodeJson = (attr) => [
+const agentJson = (attr) => [
 	{
 		type: "draw2d.shape.note.PostIt",
 		...attr,
@@ -426,7 +426,7 @@ $(document).ready(function () {
 						attr.bgColor = "#ffde59";
 						node_obj = logicJson(attr);
 					} else {
-						node_obj = nodeJson(attr);
+						node_obj = agentJson(attr);
 					}
 					if (!node_obj) return;
 					readerUnmarshal(canvas, node_obj);
@@ -471,62 +471,7 @@ $(document).ready(function () {
 				});
 			});
 
-			// var visited = new Set();
-			// var x = midX - $(".automation-canvas").width() / 2;
-			// var levelSpacingX = 220;
-			// var levelCursor = new Map();
-
-			// var parentNode = null;
-
-			// queue.forEach((items, level) => {
-			// 	if (!items) {
-			// 		return;
-			// 	}
-
-			// 	var y = 50;
-			// 	var parentCenterX = 0;
-			// 	if (parentNode) {
-			// 		y = parentNode.getY() + parentNode.getHeight() + 40;
-			// 		var parentCenterX = parentNode.getX() + parentNode.getWidth() / 2;
-			// 	}
-
-			// 	items.forEach((item) => {
-			// 		if (visited.has(item.id)) {
-			// 			console.warn(`Skipping already visited item with id ${item.id}`);
-			// 			return;
-			// 		}
-			// 		visited.add(item.id);
-
-			// var attr = {
-			// 	id: item.id,
-			// 	x: parentCenterX,
-			// 	y,
-			// 	bgColor: "#c684ff",
-			// };
-			// var node = null;
-			// if (item.automationagent.id == "javaifcheck") {
-			// 	attr.bgColor = "#ffde59";
-			// 	node = logicJson(attr);
-			// } else {
-			// 	attr.text = item.automationagent.name;
-			// 	node = nodeJson(attr);
-			// }
-			// readerUnmarshal(canvas, node);
-			// 		node = canvas.getFigure(item.id);
-
-			// 		parentNode = node;
-
-			// 	});
-			// });
-
-			// console.log(visited);
-
 			recenterCanvas();
-
-			// loadEvents();
-			// customToast("Scenario loaded successfully.");
-			// console.log({ scenario });
-			// console.log({ queue });
 		}
 
 		function handleSelect(selectedNode = null) {
@@ -607,9 +552,20 @@ $(document).ready(function () {
 		});
 
 		function addNodeAt(type, x, y) {
-			const node = nodeJson(attr);
+			let node = null;
+			if (type === "agent") {
+				const node_obj = agentJson({
+					id: draw2d.util.UUID.create(),
+					x,
+					y,
+					bgColor: "#c684ff",
+					text: "New Agent",
+				});
+				readerUnmarshal(canvas, node_obj);
+				node = canvas.getFigure(node_obj[0].id);
+			}
 
-			canvas.add(node);
+			if (!node) return;
 
 			// readerUnmarshal(canvas, newFolder);
 			var prevSelections = canvas.getSelection();
@@ -620,18 +576,9 @@ $(document).ready(function () {
 			$(canvas.html).trigger("focusin");
 			node.select();
 			handleSelect(node);
-			return node;
 		}
 
 		var compDragging = false;
-		$(".addComp").on("mouseup", function () {
-			if (compDragging) {
-				compDragging = false;
-				return;
-			}
-			// addNodeAt();
-			// TODO
-		});
 
 		$(".addComp").draggable({
 			scope: "automationOrg",
@@ -657,19 +604,12 @@ $(document).ready(function () {
 				$(this).css("opacity", 1);
 				compDragging = false;
 				labelDragging = false;
-				if ($(ui.draggable).attr("id") === "addFolderBtn") {
-					addNodeAt(
-						(offsetLeft + ui.position.left) * zoom - 120 * zoom,
-						(offsetTop + ui.position.top) * zoom - 30 * zoom,
-					);
-					return;
-				}
-				if ($(ui.draggable).attr("id") === "addLabelBtn") {
-					addLabelAt({
-						x: (offsetLeft + ui.position.left) * zoom - 120 * zoom,
-						y: (offsetTop + ui.position.top) * zoom - 30 * zoom,
-					});
-				}
+				const type = $(ui.draggable).data("type");
+				addNodeAt(
+					type,
+					(offsetLeft + ui.position.left) * zoom - 120 * zoom,
+					(offsetTop + ui.position.top) * zoom - 30 * zoom,
+				);
 			},
 			over: function () {
 				$(this).css("opacity", 0.2);
