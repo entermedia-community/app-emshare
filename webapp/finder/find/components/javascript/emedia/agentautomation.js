@@ -1,38 +1,11 @@
 "use strict";
 
-var colorSwatch = [
-	"#0000ff",
-	"#a52a2a",
-	"#00008b",
-	"#006400",
-	"#8b008b",
-	"#556b2f",
-	"#ff8c00",
-	"#9932cc",
-	"#8b0000",
-	"#e9967a",
-	"#9400d3",
-	"#ff00ff",
-	"#ffd700",
-	"#008000",
-	"#4b0082",
-	"#f0e68c",
-	"#00ff00",
-	"#800000",
-	"#000080",
-	"#808000",
-	"#800080",
-	"#ff0000",
-];
-var NODE_WIDTH = 150;
-var NODE_HEIGHT = 100;
-
-var arrowDeco = new draw2d.decoration.connection.ArrowDecorator(16, 16);
+const arrowDeco = new draw2d.decoration.connection.ArrowDecorator(16, 16);
 arrowDeco.setBackgroundColor("#4d5d80");
 
 function createConnection(sourcePort, targetPort) {
 	// console.log({ sourcePort, targetPort });
-	var conn = new draw2d.Connection({
+	const conn = new draw2d.Connection({
 		stroke: 2,
 		color: "#4d5d80",
 		radius: 20,
@@ -44,8 +17,8 @@ function createConnection(sourcePort, targetPort) {
 		targetDecorator: arrowDeco,
 	});
 	conn.on("connect", function () {
-		var sourcePort = conn.sourcePort?.name?.includes("mainInput");
-		var targetPort = conn.targetPort?.name?.includes("mainInput");
+		let sourcePort = conn.sourcePort?.name?.includes("mainInput");
+		let targetPort = conn.targetPort?.name?.includes("mainInput");
 		if (sourcePort || targetPort) {
 			conn.setColor(strokeColor);
 			return;
@@ -63,7 +36,7 @@ function createConnection(sourcePort, targetPort) {
 	return conn;
 }
 
-var nodePort = {
+const nodePort = {
 	type: "draw2d.HybridPort",
 	width: 8,
 	height: 8,
@@ -77,97 +50,83 @@ var nodePort = {
 	locator: "draw2d.layout.locator.XYRelPortLocator",
 };
 
-var nodeJson = function (attr) {
-	return [
-		{
-			type: "draw2d.shape.note.PostIt",
-			...attr,
-			padding: 40,
-			fontSize: 18,
-			cssClass: "node",
-			ports: [
-				{
-					...nodePort,
-					id: draw2d.util.UUID.create(),
-					name: "topPort",
-					locatorAttr: {
-						x: 50,
-						y: 0,
-					},
+const nodeJson = (attr) => [
+	{
+		type: "draw2d.shape.note.PostIt",
+		...attr,
+		padding: 40,
+		fontSize: 18,
+		cssClass: "node",
+		ports: [
+			{
+				...nodePort,
+				id: draw2d.util.UUID.create(),
+				name: "topPort",
+				locatorAttr: {
+					x: 50,
+					y: 0,
 				},
-				{
-					...nodePort,
-					id: draw2d.util.UUID.create(),
-					name: "bottomPort",
-					locatorAttr: {
-						x: 50,
-						y: 100,
-					},
+			},
+			{
+				...nodePort,
+				id: draw2d.util.UUID.create(),
+				name: "bottomPort",
+				locatorAttr: {
+					x: 50,
+					y: 100,
 				},
-			],
-		},
-	];
-};
-var logicJson = function (attr) {
-	return [
-		{
-			type: "draw2d.shape.composite.Group",
-			id: attr.id + "-group",
-		},
-		{
-			type: "draw2d.shape.basic.Diamond",
-			...attr,
-			padding: 20,
-			fontSize: 18,
-			height: 50,
-			width: 50,
-			cssClass: "node",
-			ports: [
-				{
-					...nodePort,
-					id: draw2d.util.UUID.create(),
-					name: "topPort",
-					locatorAttr: {
-						x: 50,
-						y: 0,
-					},
+			},
+		],
+	},
+];
+const logicJson = (attr) => [
+	{
+		type: "draw2d.shape.composite.Group",
+		id: attr.id + "-group",
+	},
+	{
+		type: "draw2d.shape.basic.Diamond",
+		...attr,
+		padding: 20,
+		fontSize: 18,
+		height: 50,
+		width: 50,
+		cssClass: "node",
+		ports: [
+			{
+				...nodePort,
+				id: draw2d.util.UUID.create(),
+				name: "topPort",
+				locatorAttr: {
+					x: 50,
+					y: 0,
 				},
-				{
-					...nodePort,
-					id: draw2d.util.UUID.create(),
-					name: "bottomPort",
-					locatorAttr: {
-						x: 50,
-						y: 100,
-					},
+			},
+			{
+				...nodePort,
+				id: draw2d.util.UUID.create(),
+				name: "bottomPort",
+				locatorAttr: {
+					x: 50,
+					y: 100,
 				},
-			],
-			composite: attr.id + "-group",
-		},
-		{
-			type: "draw2d.shape.note.PostIt",
-			id: attr.id + "-label",
-			x: attr.x + 30,
-			y: attr.y + 12,
-			text: attr.text,
-			selectable: false,
-			draggable: false,
-			composite: attr.id + "-group",
-			fontColor: "#444",
-			bgColor: "#ffde59",
-		},
-	];
-};
-
-var lastRandomColor = null;
-function getRandomColor() {
-	var randomColor = colorSwatch[Math.floor(Math.random() * colorSwatch.length)];
-	if (lastRandomColor === randomColor) {
-		return "#4d5d80";
-	}
-	lastRandomColor = randomColor;
-	return randomColor;
-}
+			},
+		],
+		composite: attr.id + "-group",
+	},
+	{
+		type: "draw2d.shape.note.PostIt",
+		id: attr.id + "-label",
+		x: attr.x + 30,
+		y: attr.y + 12,
+		text: attr.text,
+		selectable: false,
+		draggable: false,
+		composite: attr.id + "-group",
+		fontColor: "#444",
+		bgColor: "#ffde59",
+	},
+];
 
 function hexToRgb(hex) {
 	if (hex.length == 4) {
@@ -271,311 +230,16 @@ $(document).ready(function () {
 	var fullCanvasHeight = canvasHeight + 1000;
 	var midX = fullCanvasWidth / 2;
 	var midY = fullCanvasHeight / 2;
-	var folderPort = {
-		type: "draw2d.HybridPort",
-		width: 16,
-		height: 16,
-		selectable: true,
-		draggable: true,
-		bgColor: "#60729e",
-		color: "#4d5d80",
-		stroke: 2,
-		port: "draw2d.HybridPort",
-		locator: "draw2d.layout.locator.XYAbsPortLocator",
-	};
-	var rootPort = {
-		...folderPort,
-		width: 14,
-		height: 14,
-		stroke: 4,
-		bgColor: "#43a343",
-		color: "#378637",
-	};
-	var folderJson = function ({ x, y }) {
-		var groupId = draw2d.util.UUID.create();
-		return [
-			{
-				type: "draw2d.shape.composite.Group",
-				id: groupId,
-				x: x,
-				y: y,
-				width: 150,
-				height: 125,
-				bgColor: "none",
-				color: "none",
-				stroke: 0,
-				alpha: 1,
-				cssClass: "folderGroup",
-				ports: [
-					{
-						...folderPort,
-						id: draw2d.util.UUID.create(),
-						name: "leftPort",
-						locatorAttr: {
-							x: 0,
-							y: 62,
-						},
-					},
-					{
-						...folderPort,
-						id: draw2d.util.UUID.create(),
-						name: "rightPort",
-						locatorAttr: {
-							x: 150,
-							y: 64,
-						},
-					},
-				],
-			},
-			{
-				type: "draw2d.shape.basic.Label",
-				id: groupId + "-label",
-				x: x + 72,
-				y: y + 88,
-				width: 150,
-				text: "New Folder",
-				textAnchor: "middle",
-				stroke: 0,
-				fontSize: 20,
-				fontWeight: "bold",
-				fontColor: "#ffffff",
-				bgColor: "none",
-				selectable: false,
-				draggable: false,
-				cssClass: "folderLabel",
-				userData: {
-					description: "",
-					moduleid: "",
-				},
-				composite: groupId,
-			},
-			{
-				type: "draw2d.shape.basic.Image",
-				id: groupId + "-icon",
-				x: x + (150 - 50) / 2,
-				y: y + 30,
-				width: 50,
-				height: 50,
-				draggable: false,
-				selectable: false,
-				composite: groupId,
-				cssClass: "folderIcon",
-				path: applink + "/theme/icons/bootstrap/folder.svg",
-			},
-		];
-	};
-	var labelPort = {
-		type: "draw2d.HybridPort",
-		bgColor: "#60729e",
-		color: "#4d5d80",
-		port: "draw2d.HybridPort",
-		locator: "draw2d.layout.locator.XYRelPortLocator",
-		width: 16,
-		height: 16,
-	};
-	var labelJson = function (attr, callback) {
-		var groupId = draw2d.util.UUID.create();
-		var w = attr.width;
-		var h = attr.titleHeight + attr.captionHeight + (attr.image ? 110 : 0);
-		var data = [
-			{
-				type: "draw2d.shape.composite.Group",
-				id: groupId,
-				x: attr.x,
-				y: attr.y,
-				width: w,
-				height: h,
-				bgColor: attr.bgColor,
-				color: attr.color,
-				stroke: 1,
-				cssClass: "labelGroup",
-				radius: 4,
-				ports: [
-					{
-						id: draw2d.util.UUID.create(),
-						name: "labelPortLeft",
-						...labelPort,
-						locatorAttr: {
-							x: 0,
-							y: 50,
-						},
-					},
-					{
-						id: draw2d.util.UUID.create(),
-						name: "labelPortTop",
-						...labelPort,
-						locatorAttr: {
-							x: 50,
-							y: 100,
-						},
-					},
-					{
-						id: draw2d.util.UUID.create(),
-						name: "labelPortRight",
-						...labelPort,
-						locatorAttr: {
-							x: 100,
-							y: 50,
-						},
-					},
-					{
-						id: draw2d.util.UUID.create(),
-						name: "labelPortBottom",
-						...labelPort,
-						locatorAttr: {
-							x: 50,
-							y: 0,
-						},
-					},
-				],
-			},
-		];
-		if (attr.title && attr.title.length > 0) {
-			data.push({
-				type: "draw2d.shape.basic.Label",
-				id: groupId + "-title",
-				x: attr.x + w / 2 - 5,
-				y: attr.y + 10,
-				text: attr.title,
-				textAnchor: "middle",
-				stroke: 0,
-				fontSize: attr.titleFS,
-				fontColor: setContrast(attr.bgColor),
-				bgColor: "none",
-				selectable: false,
-				draggable: false,
-				cssClass: "titleLabel",
-				composite: groupId,
-			});
-		}
-		if (attr.caption && attr.caption.length > 0) {
-			data.push({
-				type: "draw2d.shape.basic.Label",
-				id: groupId + "-caption",
-				x: attr.x + w / 2 - 5,
-				y: attr.y + attr.titleHeight + (attr.image ? 110 : 10),
-				text: attr.caption,
-				textAnchor: "middle",
-				stroke: 0,
-				fontSize: attr.captionFS,
-				fontColor: setContrast(attr.bgColor),
-				selectable: false,
-				draggable: false,
-				cssClass: "captionLabel",
-				composite: groupId,
-			});
-		}
-		if (attr.image) {
-			var img = new Image();
-			img.onload = function () {
-				var naturalWidth = img.naturalWidth;
-				var naturalHeight = img.naturalHeight;
-				var aspectRatio = naturalWidth / naturalHeight;
-
-				var width = 100;
-				var height = 100;
-				if (aspectRatio > 1) {
-					width = 100;
-					height = 100 / aspectRatio;
-				} else {
-					height = 100;
-					width = 100 * aspectRatio;
-				}
-				data.push({
-					type: "draw2d.shape.basic.Image",
-					id: groupId + "-image",
-					x: attr.x + w / 2 - width / 2,
-					y:
-						attr.y +
-						(h / 2 - height / 2) +
-						(attr.titleHeight ? attr.titleHeight + 5 : 0),
-					width: width,
-					height: height,
-					draggable: false,
-					selectable: false,
-					cssClass: "labelImage",
-					path: attr.image,
-					composite: groupId,
-				});
-				callback(data);
-			};
-			img.src = attr.image;
-		} else {
-			callback(data);
-		}
-	};
-	var placeholderJSON = [
-		{
-			type: "draw2d.shape.node.End",
-			id: "main",
-			x: midX - 110,
-			y: midY - 50,
-			width: 220,
-			height: 100,
-			radius: 16,
-			userData: {},
-			bgColor: "#333e55",
-			color: "#202835",
-			stroke: 4,
-			alpha: 1,
-			draggable: false,
-			selectable: false,
-			ports: [
-				{
-					...rootPort,
-					id: draw2d.util.UUID.create(),
-					name: "mainInputTop",
-					locatorAttr: {
-						x: 110,
-						y: 0,
-					},
-				},
-				{
-					...rootPort,
-					id: draw2d.util.UUID.create(),
-					name: "mainInputBottom",
-					locatorAttr: {
-						x: 110,
-						y: 100,
-					},
-				},
-				{
-					...rootPort,
-					id: draw2d.util.UUID.create(),
-					name: "mainInputLeft",
-					locatorAttr: {
-						x: 0,
-						y: 50,
-					},
-				},
-				{
-					...rootPort,
-					id: draw2d.util.UUID.create(),
-					name: "mainInputRight",
-					locatorAttr: {
-						x: 220,
-						y: 50,
-					},
-				},
-			],
-		},
-	];
 
 	lQuery("#automation_canvas").livequery(function () {
 		var canvasContainer = $(this);
 		canvasContainer.data("uiloaded", true);
 		canvasContainer.data("changed", false);
 		canvasContainer.data("initializing", true);
-
-		var logo = $("#logoPicker").val();
-		var bgColor = $("#logoPicker").data("bg");
-		var strokeColor = $("#logoPicker").data("stroke");
 		if (canvas) {
 			canvas.clear();
 			canvas = null;
 		}
-		//Boostrap does not use liveajax
-		$(".dropdown-toggle").dropdown();
 
 		canvasContainer.css({
 			width: fullCanvasWidth,
@@ -646,10 +310,7 @@ $(document).ready(function () {
 						canvas.getCommandStack().startTransaction("batch_delete");
 						selections.each(function (_, figure) {
 							var cmd = null;
-							if (
-								figure.cssClass === "folderGroup" ||
-								figure.cssClass === "labelGroup"
-							) {
+							if (figure.cssClass === "node") {
 								cmd = new draw2d.command.CommandDeleteGroup(figure);
 								var connections = figure.getConnections();
 								connections.each(function (_, conn) {
@@ -663,76 +324,6 @@ $(document).ready(function () {
 						});
 						canvas.getCommandStack().commitTransaction();
 						hideLabelConfig();
-					}
-					if (ctrlOrMeta && 68 === keyCode) {
-						selections.each(function (_, figure) {
-							var assignedFigures = figure.getAssignedFigures();
-							if (figure.cssClass === "folderGroup") {
-								var label = assignedFigures.find(
-									(f) => f.cssClass === "folderLabel",
-								);
-								var icon = assignedFigures.find(
-									(f) => f.cssClass === "folderIcon",
-								);
-								var dupFolder = folderJson({
-									x: figure.getX() + 20,
-									y: figure.getY() + 20,
-								});
-								dupFolder[2].text = label.getText();
-								dupFolder[2].fontSize = label.getFontSize();
-								dupFolder[2].userData.moduleid =
-									label.getUserData().moduleid + "-copy";
-								dupFolder[2].userData.description =
-									label.getUserData().description;
-								dupFolder[3].path = icon.getPath();
-								readerUnmarshal(canvas, dupFolder);
-							} else if (figure.cssClass === "labelGroup") {
-								var title = assignedFigures.find(
-									(f) => f.cssClass === "titleLabel",
-								);
-								var caption = assignedFigures.find(
-									(f) => f.cssClass === "captionLabel",
-								);
-								var image = assignedFigures.find(
-									(f) => f.cssClass === "labelImage",
-								);
-								var titleText = title ? title.getText() : "";
-								var titleFS = title ? title.getFontSize() : 16;
-								var captionText = caption ? caption.getText() : "";
-								var captionFS = caption ? caption.getFontSize() : 16;
-								var image = image ? image.getPath() : "";
-								var bgColor = figure.getBackgroundColor();
-								bgColor = bgColor
-									? rgbToHex(bgColor.red, bgColor.green, bgColor.blue)
-									: getRandomColor();
-								var color = figure.getColor();
-								color = color
-									? rgbToHex(color.red, color.green, color.blue)
-									: lightenHex(bgColor, -5);
-
-								var { width: tW, height: tH } = measureText(titleText, titleFS);
-								var { width: cW, height: cH } = measureText(
-									captionText,
-									captionFS,
-								);
-								var width = Math.max(tW, cW, 110);
-
-								addLabelAt({
-									x: figure.getX() + 20,
-									y: figure.getY() + 20,
-									titleText,
-									titleFS,
-									captionText,
-									captionFS,
-									image,
-									color,
-									bgColor,
-									width,
-									titleHeight: tH,
-									captionHeight: cH,
-								});
-							}
-						});
 					}
 				},
 			}),
@@ -749,96 +340,6 @@ $(document).ready(function () {
 				marginTop: 0,
 				marginLeft: -midX + canvasWidth / 2,
 			});
-		}
-
-		function localizeJSON(jsonText) {
-			var json;
-			try {
-				json = JSON.parse(jsonText);
-				if (!json || typeof json !== "object") {
-					throw new Error();
-				}
-			} catch (error) {
-				customToast("Invalid JSON structure.", {
-					positive: false,
-				});
-				throw new Error("Invalid JSON structure.");
-			}
-
-			if (!Array.isArray(json)) {
-				json.json = localizeJSON(json.json);
-				return JSON.stringify(json);
-			} else {
-				function restoreAppHomeRecursive(obj) {
-					if (!obj || typeof obj !== "object") {
-						return;
-					}
-					Object.entries(obj).forEach(([key, value]) => {
-						if (typeof value === "object") {
-							restoreAppHomeRecursive(value);
-						} else if (typeof value === "string") {
-							if (key !== "path" && key !== "moduleicon") return;
-							var apphomeIdx = value.indexOf("${apphome}");
-							if (apphomeIdx === -1) return;
-							obj[key] = apphome + value.substring(apphomeIdx + 10);
-						}
-					});
-				}
-
-				json.forEach(restoreAppHomeRecursive);
-
-				return JSON.stringify(json);
-			}
-		}
-
-		function getDynamicPath(path) {
-			if (path.startsWith("//")) {
-				path = path.substring(1);
-			} else if (!path.startsWith("/")) {
-				path = "/" + path;
-			}
-			if (path.startsWith(apphome)) {
-				path = "${apphome}" + path.substring(apphome.length);
-			}
-			return path;
-		}
-
-		function globalizeJSON(json) {
-			if (!json || typeof json !== "object") {
-				customToast("Invalid JSON structure.", {
-					positive: false,
-				});
-				throw new Error("Invalid JSON structure.");
-			}
-
-			if (!Array.isArray(json)) {
-				var jsonObj = JSON.parse(json.json);
-				json.json = globalizeJSON(jsonObj);
-				return JSON.stringify(json);
-			} else {
-				function addAppHomeRecursive(obj) {
-					if (!obj || typeof obj !== "object") {
-						return;
-					}
-					Object.entries(obj).forEach(([key, value]) => {
-						if (typeof value === "object") {
-							addAppHomeRecursive(value);
-						} else if (typeof value === "string") {
-							if (key !== "path" && key !== "moduleicon") return;
-							try {
-								var url = new URL(value);
-								obj[key] = getDynamicPath(url.pathname);
-							} catch {
-								obj[key] = getDynamicPath(value);
-							}
-						}
-					});
-				}
-
-				json.forEach(addAppHomeRecursive);
-
-				return JSON.stringify(json);
-			}
 		}
 
 		function loadJSON() {
@@ -1351,56 +852,30 @@ $(document).ready(function () {
 			return node;
 		}
 
-		var folderDragging = false;
-		$("#addFolderBtn").on("mouseup", function () {
-			if (folderDragging) {
-				folderDragging = false;
+		var compDragging = false;
+		$(".addComp").on("mouseup", function () {
+			if (compDragging) {
+				compDragging = false;
 				return;
 			}
-			addNodeAt();
+			// addNodeAt();
+			// TODO
 		});
 
-		$("#addFolderBtn").draggable({
-			scope: "smartOrg",
+		$(".addComp").draggable({
+			scope: "automationOrg",
 			helper: "clone",
 			revert: "invalid",
 			start: function () {
-				folderDragging = true;
+				compDragging = true;
 			},
 			end: function () {
-				folderDragging = false;
+				compDragging = false;
 			},
 		});
 
-		var labelDragging = false;
-		$("#addLabelBtn").on("mouseup", function () {
-			if (labelDragging) {
-				labelDragging = false;
-				return;
-			}
-			var centerX = 110;
-			var centerY = 50;
-			var dirX = Math.random() > 0.5 ? 150 : -300;
-			var dirY = Math.random() > 0.5 ? 150 : -300;
-			addLabelAt({
-				x: centerX + dirX + Math.random() * 50,
-				y: centerY + dirY + Math.random() * 50,
-			});
-		});
-		$("#addLabelBtn").draggable({
-			scope: "smartOrg",
-			helper: "clone",
-			revert: "invalid",
-			start: function () {
-				labelDragging = true;
-			},
-			end: function () {
-				labelDragging = false;
-			},
-		});
-
-		$(".org-canvas").droppable({
-			scope: "smartOrg",
+		$(".automation-canvas").droppable({
+			scope: "automationOrg",
 			tolerance: "pointer",
 			drop: function (_, ui) {
 				var zoom = canvas.getZoom();
@@ -1409,7 +884,7 @@ $(document).ready(function () {
 				offsetTop = parseInt(offsetTop) * -1;
 				offsetLeft = parseInt(offsetLeft) * -1;
 				$(this).css("opacity", 1);
-				folderDragging = false;
+				compDragging = false;
 				labelDragging = false;
 				if ($(ui.draggable).attr("id") === "addFolderBtn") {
 					addNodeAt(
@@ -1431,142 +906,6 @@ $(document).ready(function () {
 			out: function () {
 				$(this).css("opacity", 1);
 			},
-		});
-
-		function getLines(text) {
-			text = text.trim();
-			if (text.length <= 16) return [text];
-			var lines = text.match(/.{1,16}/g);
-			if (!lines) return [];
-			return lines.map((l) => l.trim());
-		}
-
-		function measureText(text, fontSize) {
-			if (text.length === 0) return { width: 0, height: 0 };
-			var SPAN = document.createElement("span");
-			SPAN.style.cssText =
-				"display:inine-block;line-height:1;font-family:Arial;font-size:" +
-				fontSize +
-				"px";
-			SPAN.innerHTML = text;
-			var span = $(SPAN);
-			$("body").append(span);
-			var w = $(span).width();
-			var h = $(span).height();
-			span.remove();
-			return { width: Math.ceil(w), height: Math.ceil(h) };
-		}
-
-		function getFontSize(txt, fs = 20) {
-			var SPAN = document.createElement("span");
-			SPAN.style.cssText =
-				"display:inine-block;line-height:1;font-family:Arial;font-size:" +
-				fs +
-				"px";
-			SPAN.innerHTML = txt;
-			var span = $(SPAN);
-			$("body").append(span);
-			var w = $(span).width();
-			var h = $(span).height();
-			while (w > 134 || h > 36) {
-				fs--;
-				$(span).css("font-size", fs);
-				w = $(span).width();
-				h = $(span).height();
-			}
-			span.remove();
-			return fs;
-		}
-
-		function handleLabelChange(newLabel) {
-			if (newLabel.length === 0) {
-				selectedLabel.setText("");
-				return;
-			}
-			if (selectedLabel) {
-				var lines = getLines(newLabel);
-				selectedLabel.setText(lines.join("\n"));
-				var fs = getFontSize(lines.join("<br>"));
-				selectedLabel.setFontSize(fs);
-			}
-		}
-
-		$("#folderLabel").on("input", function (e) {
-			e.stopImmediatePropagation();
-			var labelText = $(this).val();
-			if (labelText.length > 32) {
-				labelText = labelText.substring(0, 32);
-				$(this).val(labelText);
-				return;
-			}
-			handleLabelChange(labelText);
-		});
-
-		$("#folderLabel").on("blur", function () {
-			if (!selectedLabel) return;
-			var currentdata = selectedLabel.getUserData();
-			if (currentdata !== undefined && currentdata.moduleid == "") {
-				var labelText = $(this).val();
-				var newid = labelText.toLowerCase();
-				newid = newid.replace(" ", "-");
-
-				var moduleid = selectedLabel.getUserData()?.moduleid;
-				if (moduleid === undefined || moduleid == "") {
-					$("#folderId").val(newid);
-					selectedLabel.getUserData().moduleid = newid;
-				}
-			}
-		});
-
-		$("#folderDesc").on("blur", function () {
-			if (selectedLabel) {
-				selectedLabel.getUserData().description = $(this).val();
-			}
-		});
-
-		$("#folderId").on("blur", function () {
-			if (selectedLabel) {
-				selectedLabel.getUserData().moduleid = $(this).val();
-			}
-		});
-
-		$("#ordering").on("change", function () {
-			var value = $(this).val();
-			if (selectedLabel) {
-				selectedLabel.getUserData().ordering = value;
-			}
-		});
-
-		lQuery("#icons-list").livequery(function () {
-			$(this).on("click", "button", function (e) {
-				e.stopImmediatePropagation();
-				var iconPath =
-					apphome +
-					"/theme/icons/bootstrap/" +
-					$(this).parent().attr("title") +
-					".svg";
-				var selectedFolder = canvas.getPrimarySelection();
-				if (!selectedFolder) {
-					var allSelected = canvas.getSelection().getAll().data;
-					if (allSelected.length == 0) {
-						closeemdialog($(this).closest(".modal"));
-						return;
-					} else {
-						selectedFolder = allSelected[0];
-					}
-				}
-
-				var selectedFolderId = selectedFolder.getId();
-				var prevIcon = canvas.getFigure(selectedFolderId + "-icon");
-				if (!prevIcon) {
-					closeemdialog($(this).closest(".modal"));
-					return;
-				}
-				prevIcon.setPath(iconPath);
-				$("#folderThumbPickerBtn").html(`<img src="${iconPath}" />`);
-				selectedLabel.getUserData().moduleicon = iconPath;
-				closeemdialog($(this).closest(".modal"));
-			});
 		});
 
 		$("#modifySelection").draggable({
@@ -1605,67 +944,8 @@ $(document).ready(function () {
 					data.name = "New";
 				}
 
-				function clearChildParentRelation(childId) {
-					var childNode = json.find(
-						(node) =>
-							node.composite === childId && node.cssClass === "folderLabel",
-					);
-					if (childNode) {
-						childNode.userData.parents = [];
-					}
-				}
-				function createChildParentRelation(parentId, childId) {
-					var parentNode = json.find(
-						(node) =>
-							node.composite === parentId && node.cssClass === "folderLabel",
-					);
-					if (parentNode && parentNode.userData.moduleid) {
-						var childNode = json.find(
-							(node) =>
-								node.composite === childId && node.cssClass === "folderLabel",
-						);
-
-						//var childNode = json.find((node) => node.composite + "-label" === childId); //Hard to read
-						//groupId + "-label",
-						if (childNode) {
-							let parents = childNode.userData.parents;
-							if (parents.indexOf(parentNode.userData.moduleid) === -1) {
-								childNode.userData.parents = [
-									...parents,
-									parentNode.userData.moduleid,
-								];
-							}
-						}
-					}
-				}
-
 				if (usersaved) {
-					json.forEach((item) => {
-						if (item.type === "draw2d.Connection") {
-							if (item.source.port === "leftPort") {
-								var childId = item.source.node;
-								clearChildParentRelation(childId);
-							}
-							if (item.target.port === "leftPort") {
-								var childId = item.target.node;
-								clearChildParentRelation(childId);
-							}
-						}
-					});
-					json.forEach((item) => {
-						if (item.type === "draw2d.Connection") {
-							if (item.source.port === "leftPort") {
-								var childId = item.source.node;
-								var parentId = item.target.node;
-								createChildParentRelation(parentId, childId);
-							}
-							if (item.target.port === "leftPort") {
-								var childId = item.target.node;
-								var parentId = item.source.node;
-								createChildParentRelation(parentId, childId);
-							}
-						}
-					});
+					// TODO
 				}
 
 				data.json = JSON.stringify(json);
@@ -1677,105 +957,10 @@ $(document).ready(function () {
 				data.canvaszoom = canvas.getZoom();
 				data.canvastop = canvasContainer.css("margin-top");
 				data.canvasleft = canvasContainer.css("margin-left");
-
-				var url = "";
-				var submitmethod = "";
-				if (usersaved) {
-					url =
-						siteroot +
-						"/" +
-						mediadb +
-						"/services/module/smartautomation/data/" +
-						id;
-					submitmethod = "PUT";
-
-					saveBtn.addClass("saving");
-					saveBtn.find("span").text("Saving...");
-				} else {
-					url =
-						siteroot +
-						"/" +
-						mediadb +
-						"/services/module/smartautomationversions/create";
-					data.id = "";
-					submitmethod = "POST";
-				}
-
-				var updateddata = globalizeJSON(data);
-
-				jQuery.ajax({
-					dataType: "json",
-					method: submitmethod,
-					contentType: "application/json; charset=utf-8",
-					url: url,
-					async: false, //Dont go forward until done
-					data: updateddata,
-					success: function (json) {
-						if (json.response.status == "ok" && !id) {
-							$("#automationId").val(json.response.id);
-						}
-						if (usersaved) {
-							saveBtn.removeClass("saving");
-							saveBtn.addClass("saved");
-							saveBtn.find("span").text("Saved");
-						}
-					},
-					complete: function () {
-						if (usersaved) {
-							setTimeout(() => {
-								saveBtn.find("span").text("");
-								saveBtn.removeClass("saved");
-								saveBtn.removeClass("saving");
-							}, 1000);
-						}
-					},
-				});
 			});
 		}
 
 		var maxLeft = Math.floor(canvasWidth / 2 + 100);
-		canvas.installEditPolicy(
-			new draw2d.policy.canvas.CanvasPolicy({
-				onMouseWheel: function (delta, _, _, shiftKey, ctrlKey) {
-					delta *= 0.5;
-					if (ctrlKey && !shiftKey) {
-						var pos = parseInt(canvasContainer.css("margin-top")) + delta;
-						if (pos > 0) {
-							$("#vToTop").prop("disabled", true);
-							$("#vToBottom").prop("disabled", false);
-							canvasContainer.css("margin-top", 0);
-							return;
-						}
-						if (Math.abs(pos) > canvasHeight - 80) {
-							$("#vToBottom").prop("disabled", true);
-							$("#vToTop").prop("disabled", false);
-							canvasContainer.css("margin-top", -canvasHeight + 120);
-							return;
-						}
-						$("#vToTop").prop("disabled", false);
-						$("#vToBottom").prop("disabled", false);
-						canvasContainer.css("margin-top", pos);
-					} else if (ctrlKey && shiftKey) {
-						var pos = parseInt(canvasContainer.css("margin-left")) + delta;
-						if (pos > 0) {
-							$("#vToLeft").prop("disabled", true);
-							$("#vToRight").prop("disabled", false);
-							canvasContainer.css("margin-left", 0);
-							return;
-						}
-						if (Math.abs(pos) > maxLeft) {
-							$("#vToRight").prop("disabled", true);
-							$("#vToLeft").prop("disabled", false);
-							canvasContainer.css("margin-left", -maxLeft);
-							return;
-						}
-						$("#vToLeft").prop("disabled", false);
-						$("#vToRight").prop("disabled", false);
-						canvasContainer.css("margin-left", pos);
-					}
-				},
-			}),
-		);
 
 		$("#vToTop").click(function (e) {
 			e.stopImmediatePropagation();
@@ -1869,213 +1054,6 @@ $(document).ready(function () {
 			updateLabelConfigPosition();
 		});
 
-		lQuery("#labelForm").livequery("submit", function (e) {
-			e.preventDefault();
-			e.stopImmediatePropagation();
-
-			var id = $(this).data("id");
-
-			var titleText = $(this).find("input[name='title']").val();
-			var titleFS = $(this).find("input[name='fst']").val();
-			var captionText = $(this).find("input[name='caption']").val();
-			var captionFS = $(this).find("input[name='fsc']").val();
-			var image = $(this).find("input[name='image']").val();
-			var color = $(this).find("input[name='stroke']").val();
-			var bgColor = $(this).find("input[name='fill']").val();
-
-			var { width: tW, height: tH } = measureText(titleText, titleFS);
-			var { width: cW, height: cH } = measureText(captionText, captionFS);
-			var width = Math.max(tW, cW, 110);
-
-			addLabelAt({
-				id,
-				titleText,
-				titleFS,
-				captionText,
-				captionFS,
-				image,
-				color,
-				bgColor,
-				width,
-				titleHeight: tH,
-				captionHeight: cH,
-			});
-		});
-
-		function addLabelAt({
-			x = midX,
-			y = midY + 200,
-			id = null,
-			titleText = "Label",
-			titleFS = 16,
-			captionText = "",
-			captionFS = 16,
-			image = "",
-			color = "#ffffff",
-			bgColor = null,
-			width = 100,
-			titleHeight = 22,
-			captionHeight = 0,
-		}) {
-			if (!bgColor) {
-				bgColor = getRandomColor();
-				color = lightenHex(bgColor, -5);
-			}
-			labelJson(
-				{
-					x,
-					y,
-					width: width,
-					title: titleText,
-					titleFS: parseInt(titleFS) || 16,
-					titleHeight: titleHeight,
-					caption: captionText,
-					captionFS: parseInt(captionFS) || 16,
-					captionHeight: captionHeight,
-					image: image,
-					bgColor: bgColor || "#60729e",
-					color: color || "#4d5d80",
-				},
-				function (json) {
-					var groupId = json[0].id;
-					readerUnmarshal(canvas, json);
-					var labelGroup = canvas.getFigure(groupId);
-					loadEvents([labelGroup]);
-					if (id) {
-						var previousGroup = canvas.getFigure(id);
-						var figures = previousGroup.getAssignedFigures();
-						var ports = previousGroup.getPorts();
-						var prevX = previousGroup.getX();
-						var prevY = previousGroup.getY();
-						var prevWidth = previousGroup.getWidth();
-						var prevHeight = previousGroup.getHeight();
-						figures.each(function (_, figure) {
-							canvas.remove(figure);
-						});
-						canvas.remove(previousGroup);
-						labelGroup.setId(id);
-						ports.each(function (_, port) {
-							labelGroup.addPort(port);
-							var connections = port.getConnections();
-							connections.each(function (_, conn) {
-								conn.setColor(labelGroup.getColor());
-							});
-						});
-						labelGroup.setX(prevX);
-						labelGroup.setY(prevY);
-						labelGroup.setWidth(prevWidth);
-						labelGroup.setHeight(prevHeight);
-					}
-					labelGroup.fireEvent("resize");
-					closeemdialog($("#addLabel"));
-				},
-			);
-		}
-
-		$("#exportSmartNodes").on("click", function () {
-			getSelectedJson(function (json) {
-				if (!Array.isArray(json) || json.length == 0) {
-					customToast("Invalid JSON structure.", {
-						positive: false,
-					});
-					return;
-				}
-				var moduleids = [];
-				for (var i = 0; i < json.length; i++) {
-					var moduleid = json[i].userData.moduleid;
-					if (moduleid) {
-						moduleids.push(moduleid);
-					}
-				}
-
-				var copyJson = globalizeJSON(json);
-
-				$.ajax({
-					url:
-						apphome +
-						"/views/settings/customizations/export/customizations.zip",
-					data: {
-						moduleid: moduleids,
-					},
-					method: "GET",
-					xhrFields: { responseType: "arraybuffer" },
-					success: function (data) {
-						var exBlob = new Blob([data], { type: "octet/stream" });
-						var zip = new JSZip();
-						zip.file("export.json", copyJson);
-						zip.file("export.zip", exBlob);
-						zip.generateAsync({ type: "blob" }).then(function (blob) {
-							saveAs(blob, moduleids.join(",") + ".zip");
-						});
-					},
-					error: function (error) {
-						customToast("Error exporting!", {
-							positive: false,
-							log: error,
-						});
-					},
-				});
-			});
-		});
-
-		$("#importSmartNodes").on("click", function (e) {
-			e.stopPropagation();
-			e.preventDefault();
-			$("#importSmartNodesFile").trigger("click");
-		});
-
-		$("#importSmartNodesFile").on("change", function () {
-			var file = this.files[0];
-			if (file) {
-				JSZip.loadAsync(file).then(function (zip) {
-					zip
-						.file("export.json")
-						.async("string")
-						.then(function (data) {
-							var json = JSON.parse(localizeJSON(data));
-							if (!Array.isArray(json) || json.length == 0) {
-								customToast("Invalid JSON structure.", {
-									positive: false,
-								});
-								return false;
-							}
-							readerUnmarshal(canvas, json);
-							return true;
-						})
-						.then(function (result) {
-							if (!result) {
-								return false;
-							}
-							zip
-								.file("export.zip")
-								.async("blob")
-								.then(function (blob) {
-									var data = new FormData();
-									data.append("file", blob);
-									$.ajax({
-										url: apphome + "/views/settings/customizations/import.html",
-										method: "POST",
-										data: data,
-										contentType: false,
-										processData: false,
-									});
-								});
-						})
-						.catch((error) => {
-							customToast("Error importing!", {
-								positive: false,
-								log: error,
-							});
-						})
-						.finally(() => {
-							$("#importSmartNodesFile").val("");
-						});
-				});
-			} else {
-				$("#importSmartNodesFile").val("");
-			}
-		});
-
 		$("#closeorgnizer").on("click", function () {
 			var changed = $("#automation_canvas").data("changed");
 			if (!changed) {
@@ -2088,145 +1066,6 @@ $(document).ready(function () {
 				$("#automation_canvas").data("changed", false);
 				closeemdialog($(this).closest(".modal"));
 			}
-		});
-
-		function downloadJson(jsonString) {
-			var exportName = $("#automationName").val() + "-" + Date.now();
-			var dataStr =
-				"data:text/json;charset=utf-8," + encodeURIComponent(jsonString);
-			var dlAnchor = document.createElement("a");
-			dlAnchor.setAttribute("href", dataStr);
-			dlAnchor.setAttribute("download", exportName + ".json");
-			document.body.appendChild(dlAnchor);
-			dlAnchor.click();
-			dlAnchor.remove();
-		}
-
-		lQuery("#exportForm").livequery("submit", function (e) {
-			e.preventDefault();
-			e.stopImmediatePropagation();
-
-			var exportType = $(this).find("select[name='exportType']").val();
-			if (exportType === "all") {
-				writerMarshal(canvas, function (json) {
-					var expJson = globalizeJSON(json);
-					downloadJson(expJson);
-				});
-				return;
-			}
-			if (exportType === "selected") {
-				getSelectedJson(function (json, index) {
-					json.forEach(function (d) {
-						if (d.id === "main" || d.id === "logo") {
-							json.splice(index, 1);
-						}
-					});
-					var expJson = globalizeJSON(json);
-					downloadJson(expJson);
-				});
-			}
-		});
-
-		function getSelectedJson(callback) {
-			var figures = canvas.getSelection().getAll();
-			if (figures.data && figures.data.length == 0) {
-				customToast("No nodes selected.", {
-					positive: false,
-				});
-				return;
-			}
-			var ids = [];
-			function fetchIds({ data }) {
-				data.forEach(function (d) {
-					if (d.assignedFigures) {
-						fetchIds(d.getAssignedFigures());
-					}
-					ids.push(d.getId());
-				});
-			}
-			fetchIds(figures);
-			var idReplacement = {};
-			ids.forEach((id) => {
-				if (
-					id !== "main" &&
-					!id.endsWith("-label") &&
-					!id.endsWith("-image") &&
-					!id.endsWith("-icon") &&
-					!id.endsWith("-title") &&
-					!id.endsWith("-caption")
-				) {
-					idReplacement[id] = draw2d.util.UUID.create();
-				}
-			});
-			const parentIds = Object.keys(idReplacement);
-			ids.forEach((id) => {
-				if (id !== "main" && !idReplacement[id]) {
-					var parentId = id
-						.replace("-label", "")
-						.replace("-image", "")
-						.replace("-icon", "")
-						.replace("-title", "")
-						.replace("-caption", "");
-					if (parentIds.includes(parentId)) {
-						idReplacement[id] = id.replace(parentId, idReplacement[parentId]);
-					}
-				}
-			});
-			var selectedJson = [];
-			writerMarshal(canvas, function (json) {
-				json.forEach(function (jso) {
-					if (jso.id == "main" || jso.id == "logo") {
-						return;
-					}
-					if (ids.includes(jso.id)) {
-						if (jso.id && idReplacement[jso.id]) {
-							jso.id = idReplacement[jso.id];
-						}
-						if (jso.composite && idReplacement[jso.composite]) {
-							jso.composite = idReplacement[jso.composite];
-						}
-						if (jso.type === "draw2d.Connection") {
-							if (jso.source && idReplacement[jso.source.node]) {
-								jso.source.node = idReplacement[jso.source.node];
-							}
-							if (jso.target && idReplacement[jso.target.node]) {
-								jso.target.node = idReplacement[jso.target.node];
-							}
-						}
-						selectedJson.push(jso);
-					}
-				});
-				callback(selectedJson);
-			});
-		}
-
-		lQuery("#importForm").livequery("submit", function (e) {
-			e.preventDefault();
-			e.stopImmediatePropagation();
-
-			var file = $("#importFile")[0].files[0];
-			if (!file) {
-				alert("No file selected.");
-				return;
-			}
-
-			var thisModal = $(this).closest(".modal");
-
-			var fileReader = new FileReader();
-			fileReader.onload = function () {
-				try {
-					var impJson = localizeJSON(fileReader.result);
-					readerUnmarshal(canvas, JSON.parse(impJson));
-					loadEvents();
-					closeemdialog(thisModal);
-				} catch (error) {
-					customToast("Error parsing JSON!", {
-						positive: false,
-						log: error,
-					});
-				}
-			};
-			fileReader.readAsText(file);
 		});
 
 		loadJSON();
@@ -2288,5 +1127,5 @@ $(document).ready(function () {
 		cancelBtn.click(hideInput);
 	});
 
-	$('.emdialog[data-sidebar="smartautomation"]').emDialog();
+	// $('.emdialog[data-sidebar="smartautomation"]').emDialog();
 });
