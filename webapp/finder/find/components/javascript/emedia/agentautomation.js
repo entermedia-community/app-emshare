@@ -343,13 +343,8 @@ $(document).ready(function () {
 		}
 
 		function loadJSON() {
-			var id = $("#automationId").val();
-			var url =
-				siteroot +
-				"/" +
-				mediadb +
-				"/services/automation/scenario.json?scenarioid=" +
-				id;
+			const id = $("#automationId").val();
+			const url = `${siteroot}/${mediadb}/services/automation/scenario.json?scenarioid=${id}`;
 
 			jQuery.ajax({
 				dataType: "json",
@@ -357,12 +352,12 @@ $(document).ready(function () {
 				method: "GET",
 				success: function (res) {
 					if (res.status && res.status == "ok") {
-						var data = res.data;
+						const data = res.data;
 						// console.log({ data });
-						var scenario = data.scenario;
+						// const scenario = data.scenario;
 						// console.log({ scenario });
 
-						var agents = data.agents;
+						const agents = data.agents;
 						var queue = bfsTopDown(agents);
 
 						renderQueue(queue);
@@ -781,4 +776,60 @@ $(document).ready(function () {
 			return "You have unsaved changes. Are you sure you want to leave?";
 		}
 	};
+
+	lQuery("#importScenario").livequery("click", function (e) {
+		e.stopPropagation();
+		e.preventDefault();
+		$("#importScenarioFile").trigger("click");
+	});
+
+	lQuery("#importScenarioFile").livequery("change", function (e) {
+		const file = e.target.files[0];
+		if (!file) return;
+		const reader = new FileReader();
+		reader.onload = function (event) {
+			const content = event.target.result;
+			try {
+				const json = JSON.parse(content);
+				if (json && json.agents && json.scenario) {
+					const url = `${siteroot}/${mediadb}/services/automation/import-scenario.json`;
+					$.ajax({
+						url,
+						method: "POST",
+						contentType: "application/json",
+						data: JSON.stringify(json),
+						success: function (res) {
+							if (res.status && res.status === "ok") {
+								const anchor = $("<a>").attr(
+									"href",
+									`${applink}/components/smartautomation/editor.html`,
+								);
+								anchor.data("scenarioid", res.data.id);
+								anchor.data("targetdivinner", "smartautomation");
+								anchor.data("hidefooter", true);
+								anchor.runAjax(function () {
+									customToast("Scenario imported successfully");
+								});
+							} else {
+								customToast("Failed to import scenario", { positive: false });
+							}
+						},
+						error: function (err) {
+							customToast("Error importing scenario: " + err.message, {
+								positive: false,
+							});
+						},
+					});
+				} else {
+					customToast("Invalid scenario file", { positive: false });
+				}
+			} catch (err) {
+				customToast("Error reading scenario file: " + err.message, {
+					positive: false,
+				});
+			}
+		};
+		reader.readAsText(file);
+		$(this).val("");
+	});
 });
