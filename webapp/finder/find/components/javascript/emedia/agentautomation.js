@@ -827,5 +827,5 @@ $(document).ready(function () {
 		cancelBtn.click(hideInput);
 	});
 
-	$('.emdialog[data-sidebar="smartautomation"]').emDialog();
+	// $('.emdialog[data-sidebar="smartautomation"]').emDialog();
 });
