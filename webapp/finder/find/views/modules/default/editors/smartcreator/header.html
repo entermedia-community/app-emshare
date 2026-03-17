@@ -8,13 +8,7 @@
   </a> 
 
   <div class="d-flex align-items-center">
-    <a class="btn text-primary rounded ms-4 me-2">
-      <i class="bi bi-clock-history"></i>
-      <span class="ms-2">
-        [[Versions]]
-      </span>
-    </a>
-
+    
     <a class="btn  btn-light me-2">
       <i class="bi bi-arrow-90deg-left"></i>
       <span class="ms-2">
@@ -29,67 +23,60 @@
       </span>
     </a>
 	
-		#set($newedithome= "$apphome/views/modules/componentrenderversion/editors/dataentity")
-		#set($addnew = "${newedithome}/addnew.html")
+	#set($newedithome= "$apphome/views/modules/componentrenderversion/editors/dataentity")
+	#set($addnew = "${newedithome}/addnew.html")
 
-		<a class="btn btn-light dropdown-toggle me-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-			<span class="mbl-hidden"><i class="bi bi-copy me-1"></i> [[Export]]</span>
-		</a>
-		<div class="dropdown-menu">
-			#set($rendertypes = $mediaarchive.getList("componentrenderversiontype"))
-			#foreach($type in $rendertypes)
-			<a class="dropdown-item emdialog me-2" 
-				href="$apphome/views/modules/componentrenderversion/editors/smartcreator/exports/${type.id}.html"
-				data-dialogid="smartcreatorexport"
-				data-dialogwidth="800"
-				data-hidefooter="true"
-				data-entityid="${entity.id}"
-				data-entitymoduleid="${entitymodule.id}">
-				<i class="bi bi-${function.icon} me-1"></i>
-				<span>#text($type)</span>
-			</a>
-			#end
-		</div>
-		
-		<a class="btn  btn-light rounded me-2">
-			<i class="bi bi-box-arrow-in-right me-1"></i>
-			[[Import]]
-		</a>
+	<a class="btn  btn-light rounded me-2">
+		<i class="bi bi-box-arrow-in-right me-1"></i>
+		[[Import]]
+	</a>
 
-		<a class="btn btn-primary me-2" href="#" role="button">
-			<span class="mbl-hidden"><i class="bi bi-copy me-1"></i> [[Make a copy]]</span>
-		</a>
-		<div class="dropdown-menu dropdown-menu-end">
-			#foreach ( $amodule in $userprofile.getEntities() )
-				#set($creationmethod = $amodule.get("aicreationmethod"))
-				#if($creationmethod && $creationmethod == "smartcreator")
-					<a class="dropdown-item  emdialog me-2" 
-						href="#" 
-						data-dialogid="entitypickeraddnew"
-						data-dialogwidth="1400"
-						data-hidefooter="true"
-						data-entityid="${entity.id}"
-						data-entitymoduleid="${entitymodule.id}"
-						data-fieldexternalid="entityid"
-						data-fieldexternalvalue="${entity.id}"
-						data-fieldexternalid2="entitymoduleid"
-						data-fieldexternalvalue2="${entitymodule.id}"
-						data-autosetformtargetdiv="editdiv"
-						title="[[Create a new]] #singular($amodule)">
-						<span>[[Create a]] #singular($amodule)</span>
-					</a>
-				#end
+	<a class="btn btn-primary me-2" href="#" role="button">
+		<span class="mbl-hidden"><i class="bi bi-copy me-1"></i> [[Make a copy]]</span>
+	</a>
+	<div class="dropdown-menu dropdown-menu-end">
+		#foreach ( $amodule in $userprofile.getEntities() )
+			#set($creationmethod = $amodule.get("aicreationmethod"))
+			#if($creationmethod && $creationmethod == "smartcreator")
+				<a class="dropdown-item  emdialog me-2" 
+					href="#" 
+					data-dialogid="entitypickeraddnew"
+					data-dialogwidth="1400"
+					data-hidefooter="true"
+					data-entityid="${entity.id}"
+					data-entitymoduleid="${entitymodule.id}"
+					data-fieldexternalid="entityid"
+					data-fieldexternalvalue="${entity.id}"
+					data-fieldexternalid2="entitymoduleid"
+					data-fieldexternalvalue2="${entitymodule.id}"
+					data-autosetformtargetdiv="editdiv"
+					title="[[Create a new]] #singular($amodule)">
+					<span>[[Create a]] #singular($amodule)</span>
+				</a>
 			#end
-		</div>
+		#end
+	</div>
 	
-		<a href="#"
-			class="resultsnavlink emdialog btn btn-cta"
-			data-dialogid="entitypickeraddnew"
-			data-dialogwidth="1400"
-			data-hidefooter="true"
-			data-autosetformtargetdiv="editdiv"
-			title="[[Share]]">
-			<span class="mbl-hidden"><i class="bi bi-share me-1"></i> [[Share]]</span>
+	<a href="#"
+		class="resultsnavlink emdialog btn btn-primary me-2"
+		data-dialogid="entitypickeraddnew"
+		data-dialogwidth="1400"
+		data-hidefooter="true"
+		data-autosetformtargetdiv="editdiv"
+		title="[[Share]]">
+		<span class="mbl-hidden"><i class="bi bi-share me-1"></i> [[Share]]</span>
+	</a>
+
+	#ifnotnull($publishtab)
+		<a href="$apphome/views/modules/${module.id}/editors/listentities/tabs/index.html"
+			class="resultsnavlink ajax btn btn-cta"
+			 data-oemaxlevel="1" data-targetdiv="entitydialog"
+			 data-entityid="${entity.id}" 
+			 data-entitymoduleid="${module.id}" 
+			 data-entitymoduleviewid="${publishtab.id}"
+			title="[[Publish]]">
+			<span class="mbl-hidden"><i class="bi bi-file-earmark-richtext me-1"></i> [[Publish]]</span>
 		</a>
+	#end
   </div> 
 </div>
