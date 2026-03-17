@@ -503,18 +503,6 @@ $(document).ready(function () {
 			$("#edit-toggler").fadeOut();
 		}
 
-		lQuery(".deploy-automation-finish").livequery("click", function (e) {
-			e.stopPropagation();
-			e.preventDefault();
-			saveJSON(true);
-
-			var url = $(this).data("url");
-			var id = $("#automationId").val();
-			$("#deployOrganizer").load(url + "?oemaxlevel=1&id=" + id, function () {
-				window.location = apphome;
-			});
-		});
-
 		function updateModPosition(selectedNode) {
 			console.log(selectedNode);
 			if (!selectedNode) {
@@ -633,53 +621,55 @@ $(document).ready(function () {
 			},
 		});
 
-		var saveBtn = $("#saveOrganizer");
-
-		saveBtn.on("click", function () {
-			saveJSON();
-			saveJSON(true);
-		});
-
-		//var autoSaveTimeout;
-
-		function saveJSON(usersaved = false) {
+		$("#exportScenario").on("click", function () {
 			if (!canvas) {
 				return;
 			}
-			if (usersaved) {
-				canvasContainer.data("changed", false); //User Save
-			} else {
-				canvasContainer.data("changed", true); //Version save
+			const _this = $(this);
+			const data = {
+				scenario: {
+					name: _this.data("name") || "Untitled Scenario",
+					description: _this
+						.closest(".automation-header")
+						.find("p.scenario-description")
+						.text(),
+				},
+				agents: [],
+			};
+			writerMarshal(canvas, function (json) {
+				data.agents = json;
+				const dataStr =
+					"data:text/json;charset=utf-8," +
+					encodeURIComponent(JSON.stringify(data));
+				const downloadAnchorNode = document.createElement("a");
+				downloadAnchorNode.setAttribute("href", dataStr);
+				const id = $("#automationId").val();
+				downloadAnchorNode.setAttribute(
+					"download",
+					`scenario-${id || "untitled"}.json`,
+				);
+				document.body.appendChild(downloadAnchorNode); // required for firefox
+				downloadAnchorNode.click();
+				downloadAnchorNode.remove();
+			});
+		});
+
+		$("#saveScenarioLayout").on("click", function (e) {
+			e.preventDefault();
+			if (!canvas) {
+				return;
 			}
+			canvasContainer.data("changed", false); //User Save
 
 			writerMarshal(canvas, function (json) {
 				if (json.length === 0) return;
-				var data = {};
 
-				var id = $("#automationId").val();
+				const id = $("#automationId").val();
 
+				const data = {};
 				data.id = id;
-				data.name = $("#automationName").val();
-
-				if (data.name === undefined || data.name == "") {
-					data.name = "New";
-				}
-
-				if (usersaved) {
-					// TODO
-				}
-
-				data.json = JSON.stringify(json);
-				data.updatedby = userid;
-				const date2 = new Date();
-				data.updatedon = date2.toJSON();
-
-				data.iscurrent = "true";
-				data.canvaszoom = canvas.getZoom();
-				data.canvastop = canvasContainer.css("margin-top");
-				data.canvasleft = canvasContainer.css("margin-left");
 			});
-		}
+		});
 
 		var maxLeft = Math.floor(canvasWidth / 2 + 100);
 
@@ -768,7 +758,7 @@ $(document).ready(function () {
 			updateModPosition();
 		});
 
-		$("#closeorgnizer").on("click", function () {
+		$("#closeautomation").on("click", function () {
 			var changed = $("#automation_canvas").data("changed");
 			if (!changed) {
 				closeemdialog($(this).closest(".modal"));
@@ -791,55 +781,4 @@ $(document).ready(function () {
 			return "You have unsaved changes. Are you sure you want to leave?";
 		}
 	};
-
-	lQuery(".restoreversion").livequery("click", function (e) {
-		e.stopImmediatePropagation();
-		e.preventDefault();
-		$(this).runAjax();
-		closeemdialog($(this).closest(".modal"));
-	});
-
-	lQuery(".rename-version").livequery("click", function () {
-		$(this).siblings(".version-name").hide();
-		$(this).siblings(".version-input").show();
-		$(this).hide();
-	});
-
-	lQuery(".version-input").livequery(function () {
-		var _this = $(this);
-		var nameInput = $(this).find(".name");
-		var vsaveBtn = $(this).find(".rename");
-		var cancelBtn = $(this).find(".cancel");
-
-		function hideInput() {
-			_this.hide();
-			_this.siblings(".version-name").show();
-			_this.siblings(".rename-version").show();
-		}
-
-		vsaveBtn.click(function (e) {
-			e.stopPropagation();
-
-			//save
-			var newName = nameInput.val();
-			_this.siblings(".version-name").text(newName);
-
-			//smartOrganizerRename
-			var url = $("#templateVersionsInner").data("renameurl");
-
-			var versionrow = vsaveBtn.closest(".version-row");
-			$("#templateVersionsInner")
-				.parent()
-				.load(
-					url +
-						"?oemaxlevel=1&id=" +
-						versionrow.data("versionid") +
-						"&newname=" +
-						encodeURI(newName),
-				);
-		});
-		cancelBtn.click(hideInput);
-	});
-
-	// $('.emdialog[data-sidebar="smartautomation"]').emDialog();
 });
