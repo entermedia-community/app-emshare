@@ -427,9 +427,11 @@ $(document).ready(function () {
 						node_obj = logicJson(attr);
 					} else {
 						node_obj = agentJson(attr, {
-							nodeId: node.id,
-							// agentId: node.automationagent.id,
-							// scenarioId: node.automationscenario.id,
+							id: node.id,
+							enabled: node.enabled,
+							automationagent: node.automationagent.id,
+							automationscenario: node.automationscenario.id,
+							skilloverview: node.skilloverview,
 						});
 					}
 					if (!node_obj) return;
@@ -545,7 +547,7 @@ $(document).ready(function () {
 			e.stopImmediatePropagation();
 			const selectedNode = canvas.getPrimarySelection();
 			if (!selectedNode) return;
-			const nodeId = selectedNode.getUserData().nodeId;
+			const nodeId = selectedNode.getUserData().id;
 			const formPath = `${applink}/components/smartautomation/agent-form.html`;
 			const anchor = $("<a>").attr("href", formPath).appendTo("body");
 			anchor.data("agentid", nodeId);
