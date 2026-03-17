@@ -1,0 +1,33 @@
+#set( $agentid = $context.getRequestParameter("agentid"))
+
+#ifnotnull($agentid)
+  $context.putPageValue("agentid", $agentid)
+  $context.putPageValue("searcher", "automationagentenabled")
+  #set( $scenario = $mediaarchive.getData("automationagentenabled", $agentid) )
+  $context.putPageValue("data", $scenario)
+  #set( $action = "edit" )
+#end
+#ifnull($agentid)
+  #set( $action = "create" )
+#end
+
+<form class="pb-2 ajaxform autocloseform" data-targetdivinner="smartautomation" data-oemaxlevel="1" action="$applink/components/smartautomation/agent-${action}.html">
+  <input name="save" type="hidden" value="true" />
+  <input name="searchtype" type="hidden" value="automationagentenabled" />
+  
+  #ifnotnull($agentid)
+    <input type="hidden" name="id" value="$agentid"/>
+  #end
+
+  $context.putPageValue("viewid", "automationagentenablededit") 
+  $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+
+  <button type="submit" class="btn btn-primary">
+    #ifnull($agentid)
+      [[Create]]
+    #end
+    #ifnotnull($agentid)
+      [[Save Changes]]
+    #end
+  </button>
+</form>

@@ -50,13 +50,14 @@ const nodePort = {
 	locator: "draw2d.layout.locator.XYRelPortLocator",
 };
 
-const agentJson = (attr) => [
+const agentJson = (attr, userdata = {}) => [
 	{
 		type: "draw2d.shape.note.PostIt",
 		...attr,
 		padding: 40,
 		fontSize: 18,
 		cssClass: "node",
+		userData: userdata,
 		ports: [
 			{
 				...nodePort,
@@ -223,13 +224,12 @@ $(document).ready(function () {
 	var userid = $("#application").data("user");
 
 	var canvas = null;
-	var selectedLabel = null;
 	var canvasWidth = 1920 * window.devicePixelRatio;
 	var canvasHeight = 1920 * window.devicePixelRatio;
 	var fullCanvasWidth = canvasWidth + 1000;
 	var fullCanvasHeight = canvasHeight + 1000;
 	var midX = fullCanvasWidth / 2;
-	var midY = fullCanvasHeight / 2;
+	// var midY = fullCanvasHeight / 2;
 
 	lQuery("#automation_canvas").livequery(function () {
 		var canvasContainer = $(this);
@@ -416,8 +416,8 @@ $(document).ready(function () {
 						id: node.id,
 						x: startX,
 						y,
-						bgColor: "#c684ff",
-						text: node.automationagent.name,
+						bgColor: node.enabled ? "#c684ff" : "#ff849f80",
+						text: node.name || node.automationagent.name,
 					};
 
 					let node_obj = null;
@@ -426,7 +426,11 @@ $(document).ready(function () {
 						attr.bgColor = "#ffde59";
 						node_obj = logicJson(attr);
 					} else {
-						node_obj = agentJson(attr);
+						node_obj = agentJson(attr, {
+							nodeId: node.id,
+							// agentId: node.automationagent.id,
+							// scenarioId: node.automationscenario.id,
+						});
 					}
 					if (!node_obj) return;
 					readerUnmarshal(canvas, node_obj);
@@ -539,7 +543,15 @@ $(document).ready(function () {
 
 		$("#edit-toggler").click(function (e) {
 			e.stopImmediatePropagation();
-			// TODO
+			const selectedNode = canvas.getPrimarySelection();
+			if (!selectedNode) return;
+			const nodeId = selectedNode.getUserData().nodeId;
+			const formPath = `${applink}/components/smartautomation/agent-form.html`;
+			const anchor = $("<a>").attr("href", formPath).appendTo("body");
+			anchor.data("agentid", nodeId);
+			anchor.data("hidefooter", true);
+			anchor.emDialog();
+			anchor.remove();
 		});
 
 		canvas.on("dblclick", function (_, node) {
@@ -827,5 +839,5 @@ $(document).ready(function () {
 		cancelBtn.click(hideInput);
 	});
 
-	$('.emdialog[data-sidebar="smartautomation"]').emDialog();
+	// $('.emdialog[data-sidebar="smartautomation"]').emDialog();
 });
