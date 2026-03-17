@@ -343,7 +343,7 @@ $(document).ready(function () {
 		}
 
 		function loadJSON() {
-			var id = "informatics";
+			var id = $("#automationId").val();
 			var url =
 				siteroot +
 				"/" +
@@ -679,7 +679,6 @@ $(document).ready(function () {
 			$("#vToBottom").prop("disabled", false);
 			canvasContainer.css("margin-top", pos);
 			updateModPosition();
-			updateLabelConfigPosition();
 		});
 		$("#vToBottom").click(function (e) {
 			e.stopImmediatePropagation();
@@ -691,7 +690,6 @@ $(document).ready(function () {
 			$("#vToTop").prop("disabled", false);
 			canvasContainer.css("margin-top", pos);
 			updateModPosition();
-			updateLabelConfigPosition();
 		});
 		$("#vToLeft").click(function (e) {
 			e.stopImmediatePropagation();
@@ -703,7 +701,6 @@ $(document).ready(function () {
 			$("#vToRight").prop("disabled", false);
 			canvasContainer.css("margin-left", pos);
 			updateModPosition();
-			updateLabelConfigPosition();
 		});
 		$("#vToRight").click(function (e) {
 			e.stopImmediatePropagation();
@@ -715,7 +712,6 @@ $(document).ready(function () {
 			$("#vToLeft").prop("disabled", false);
 			canvasContainer.css("margin-left", pos);
 			updateModPosition();
-			updateLabelConfigPosition();
 		});
 		$("#zoomInBtn").click(function (e) {
 			e.stopImmediatePropagation();
@@ -732,7 +728,6 @@ $(document).ready(function () {
 			var newtop = parseInt(canvasContainer.css("margin-top")) + change;
 			canvasContainer.css("margin-top", newtop);
 			updateModPosition();
-			updateLabelConfigPosition();
 		});
 
 		$("#zoomOutBtn").click(function (e) {
@@ -750,7 +745,6 @@ $(document).ready(function () {
 			var newtop = parseInt(canvasContainer.css("margin-top")) + change;
 			canvasContainer.css("margin-top", newtop);
 			updateModPosition();
-			updateLabelConfigPosition();
 		});
 
 		$("#zoomResetBtn").click(function (e) {
@@ -758,7 +752,6 @@ $(document).ready(function () {
 			canvas.setZoom(1.0);
 			recenterCanvas();
 			updateModPosition();
-			updateLabelConfigPosition();
 		});
 
 		$("#closeorgnizer").on("click", function () {
