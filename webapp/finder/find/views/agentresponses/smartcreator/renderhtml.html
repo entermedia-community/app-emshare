@@ -1,0 +1,33 @@
+
+#set($edithome = "$apphome/views/agentresponses/smartcreator")
+$context.putPageValue("edithome", $edithome)
+<div class="creator-preview"
+  #ifnotnull($playbacksection)
+    data-playbacksection="${playbacksection}"
+    data-playbackentityid="${playbackentity.id}"
+    data-playbackentitymoduleid="${playbackentitymodule.id}"
+  #end
+>
+
+  #foreach($componentsection in $componentsections)
+  <section class="creator-section-preview $!{componentsection.contentrole}" title="${componentsection.name}">
+    <div class="creator-content-preview">
+      #set($componentcontents = $mediaarchive.query("componentcontent").exact("componentsectionid", $componentsection.id).sort("ordering").search())
+    
+      #foreach($componentcontent in $componentcontents)
+        #set($type = $componentcontent.componenttype)
+        $context.putPageValue("componentcontent", $componentcontent)
+        <div class="$!{componentcontent.contentrole}">
+          $pages.include("$edithome/types/${type}.html", $context)
+        </div>
+        #if($componentcontent.contentrole != "imageleft" && $componentcontent.contentrole != "imageright")
+          <div class="float-clear"></div>
+        #end
+      #end
+      #if($componentcontents.size() == 0)
+        <p class="text-muted">No content added in this section.</p>
+      #end
+    </div>
+  </section>
+  #end
+</div>
