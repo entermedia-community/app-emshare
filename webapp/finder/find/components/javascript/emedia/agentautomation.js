@@ -86,7 +86,7 @@ const agentJson = (attr, userdata = {}) => [
 		],
 	},
 ];
-const logicJson = (attr) => [
+const logicJson = (attr, userdata = {}) => [
 	{
 		type: "draw2d.shape.composite.Group",
 		id: attr.id + "-group",
@@ -99,6 +99,7 @@ const logicJson = (attr) => [
 		height: 50,
 		width: 50,
 		cssClass: "node",
+		userData: userdata,
 		ports: [
 			{
 				...nodePort,
@@ -421,7 +422,7 @@ $(document).ready(function () {
 						}
 					}
 
-					var attr = {
+					const attr = {
 						id: node.id,
 						x: startX,
 						y: startY,
@@ -431,20 +432,24 @@ $(document).ready(function () {
 							: "#ff849f80",
 					};
 
+					const userData = {
+						id: node.id,
+						enabled: node.enabled,
+						automationagent: node.automationagent.id,
+						automationscenario: node.automationscenario.id,
+						skilloverview: node.skilloverview,
+					};
+
 					let node_obj = null;
 
-					if (node.automationagent.id == "javaifcheck") {
-						node_obj = logicJson(attr);
+					if (node.agenttype.id == "logicagent") {
+						node_obj = logicJson(attr, userData);
 					} else {
-						node_obj = agentJson(attr, {
-							id: node.id,
-							enabled: node.enabled,
-							automationagent: node.automationagent.id,
-							automationscenario: node.automationscenario.id,
-							skilloverview: node.skilloverview,
-						});
+						node_obj = agentJson(attr, userData);
 					}
+
 					if (!node_obj) return;
+
 					readerUnmarshal(canvas, node_obj);
 
 					const renderedNode = canvas.getFigure(node.id);
@@ -706,10 +711,32 @@ $(document).ready(function () {
 			writerMarshal(canvas, function (json) {
 				if (json.length === 0) return;
 
-				const id = $("#automationId").val();
+				const data = [];
+				const runAfters = {};
+				json.forEach((element) => {
+					if (element.type && element.type.endsWith(".Connection")) {
+						const sourceNode = element.source?.node;
+						const targetNode = element.target?.node;
+						if (sourceNode && targetNode) {
+							runAfters[targetNode] = sourceNode;
+						}
+					}
+				});
+				json.forEach((element) => {
+					if (element.userData && element.userData.id) {
+						const node = {
+							id: element.userData.id,
+							offsetx: element.x,
+							offsety: element.y,
+						};
+						if (runAfters[element.id]) {
+							node.runafter = runAfters[element.id];
+						}
+						data.push(node);
+					}
+				});
 
-				const data = {};
-				data.id = id;
+				console.log(data);
 			});
 		});
 
@@ -839,7 +866,7 @@ $(document).ready(function () {
 			try {
 				const json = JSON.parse(content);
 				if (json && json.agents && json.scenario) {
-					const url = `${siteroot}/${mediadb}/services/automation/import-scenario.json`;
+					const url = `${siteroot}/${mediadb}/components/smartautomation/import.html`;
 					$.ajax({
 						url,
 						method: "POST",
