@@ -1,5 +1,11 @@
 "use strict";
 
+const agentSwatch = {
+	eventagent: "#44acff",
+	taskagent: "#c684ff",
+	logicagent: "#ffde59",
+};
+
 const arrowDeco = new draw2d.decoration.connection.ArrowDecorator(16, 16);
 arrowDeco.setBackgroundColor("#4d5d80");
 
@@ -80,7 +86,7 @@ const agentJson = (attr, userdata = {}) => [
 		],
 	},
 ];
-const logicJson = (attr) => [
+const logicJson = (attr, userdata = {}) => [
 	{
 		type: "draw2d.shape.composite.Group",
 		id: attr.id + "-group",
@@ -93,6 +99,7 @@ const logicJson = (attr) => [
 		height: 50,
 		width: 50,
 		cssClass: "node",
+		userData: userdata,
 		ports: [
 			{
 				...nodePort,
@@ -415,29 +422,34 @@ $(document).ready(function () {
 						}
 					}
 
-					var attr = {
+					const attr = {
 						id: node.id,
 						x: startX,
 						y: startY,
-						bgColor: node.enabled ? "#c684ff" : "#ff849f80",
 						text: node.name || node.automationagent.name,
+						bgColor: node.enabled
+							? agentSwatch[node.agenttype.id] || "#888888"
+							: "#ff849f80",
+					};
+
+					const userData = {
+						id: node.id,
+						enabled: node.enabled,
+						automationagent: node.automationagent.id,
+						automationscenario: node.automationscenario.id,
+						skilloverview: node.skilloverview,
 					};
 
 					let node_obj = null;
 
-					if (node.automationagent.id == "javaifcheck") {
-						attr.bgColor = "#ffde59";
-						node_obj = logicJson(attr);
+					if (node.agenttype.id == "logicagent") {
+						node_obj = logicJson(attr, userData);
 					} else {
-						node_obj = agentJson(attr, {
-							id: node.id,
-							enabled: node.enabled,
-							automationagent: node.automationagent.id,
-							automationscenario: node.automationscenario.id,
-							skilloverview: node.skilloverview,
-						});
+						node_obj = agentJson(attr, userData);
 					}
+
 					if (!node_obj) return;
+
 					readerUnmarshal(canvas, node_obj);
 
 					const renderedNode = canvas.getFigure(node.id);
@@ -611,10 +623,55 @@ $(document).ready(function () {
 			},
 		});
 
-		$("#exportScenario").on("click", function () {
+		function updatePreview() {
 			if (!canvas) {
 				return;
 			}
+			var xCoords = [];
+			var yCoords = [];
+			canvas.getFigures().each(function (i, f) {
+				var b = f.getBoundingBox();
+				xCoords.push(b.x, b.x + b.w);
+				yCoords.push(b.y, b.y + b.h);
+			});
+			var minX = Math.min.apply(Math, xCoords);
+			var minY = Math.min.apply(Math, yCoords);
+			var width = Math.max.apply(Math, xCoords) - minX;
+			var height = Math.max.apply(Math, yCoords) - minY;
+
+			// make square & centered
+			if (width > height) {
+				minY = minY - (width - height) / 2;
+				height = width;
+			} else {
+				minX = minX - (height - width) / 2;
+				width = height;
+			}
+
+			var writer = new draw2d.io.png.Writer();
+			writer.marshal(
+				canvas,
+				function (png) {
+					const id = $("#automationId").val();
+					const link = document.createElement("a");
+					link.download = `scenario-${id || "untitled"}-preview.png`;
+					link.href = png;
+					document.body.appendChild(link);
+					link.click();
+					document.body.removeChild(link);
+					//open in new tab
+					// window.open(png, "_blank");
+				},
+				new draw2d.geo.Rectangle(minX, minY, width, height),
+			);
+		}
+
+		$("#exportScenario").on("click", function () {
+			updatePreview();
+			if (!canvas) {
+				return;
+			}
+
 			const _this = $(this);
 			const data = {
 				scenario: {
@@ -654,10 +711,32 @@ $(document).ready(function () {
 			writerMarshal(canvas, function (json) {
 				if (json.length === 0) return;
 
-				const id = $("#automationId").val();
+				const data = [];
+				const runAfters = {};
+				json.forEach((element) => {
+					if (element.type && element.type.endsWith(".Connection")) {
+						const sourceNode = element.source?.node;
+						const targetNode = element.target?.node;
+						if (sourceNode && targetNode) {
+							runAfters[targetNode] = sourceNode;
+						}
+					}
+				});
+				json.forEach((element) => {
+					if (element.userData && element.userData.id) {
+						const node = {
+							id: element.userData.id,
+							offsetx: element.x,
+							offsety: element.y,
+						};
+						if (runAfters[element.id]) {
+							node.runafter = runAfters[element.id];
+						}
+						data.push(node);
+					}
+				});
 
-				const data = {};
-				data.id = id;
+				console.log(data);
 			});
 		});
 
@@ -787,7 +866,7 @@ $(document).ready(function () {
 			try {
 				const json = JSON.parse(content);
 				if (json && json.agents && json.scenario) {
-					const url = `${siteroot}/${mediadb}/services/automation/import-scenario.json`;
+					const url = `${siteroot}/${mediadb}/components/smartautomation/import.html`;
 					$.ajax({
 						url,
 						method: "POST",
@@ -826,5 +905,12 @@ $(document).ready(function () {
 		};
 		reader.readAsText(file);
 		$(this).val("");
+	});
+
+	lQuery(".scenario-card").livequery("click", function (e) {
+		if (e.target.tagName.toLowerCase() === "a") {
+			return;
+		}
+		$(this).find(".edit-btn").trigger("click");
 	});
 });
