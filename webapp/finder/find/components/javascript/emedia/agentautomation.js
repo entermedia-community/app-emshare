@@ -378,8 +378,6 @@ $(document).ready(function () {
 		function renderQueue(queue) {
 			var rootX = midX - $(".automation-canvas").width() / 4;
 
-			const renderedRef = {};
-
 			let previousNode = null;
 			let parentNode = null;
 
@@ -453,24 +451,22 @@ $(document).ready(function () {
 					readerUnmarshal(canvas, node_obj);
 
 					const renderedNode = canvas.getFigure(node.id);
-					if (nodes.length === 1) {
-						renderedNode.setX(
-							renderedNode.getX() - renderedNode.getWidth() / 2,
-						);
-					} else {
-						if (i === 0) {
+
+					if (!skipover) {
+						if (nodes.length === 1) {
 							renderedNode.setX(
-								renderedNode.getX() - (renderedNode.getWidth() + 20),
+								renderedNode.getX() - renderedNode.getWidth() / 2,
 							);
 						} else {
-							renderedNode.setX(renderedNode.getX() + 20);
+							if (i === 0) {
+								renderedNode.setX(
+									renderedNode.getX() - (renderedNode.getWidth() + 20),
+								);
+							} else {
+								renderedNode.setX(renderedNode.getX() + 20);
+							}
 						}
 					}
-
-					renderedRef[node.id] = {
-						w: renderedNode.getWidth(),
-						center: startX,
-					};
 
 					if (node.runafter) {
 						var runafter = node.runafter.split("|");
