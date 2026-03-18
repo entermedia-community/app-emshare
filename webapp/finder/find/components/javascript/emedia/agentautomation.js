@@ -581,18 +581,10 @@ $(document).ready(function () {
 			anchor.remove();
 		}
 
-		var compDragging = false;
-
 		$(".addComp").draggable({
 			scope: "automationOrg",
 			helper: "clone",
 			revert: "invalid",
-			start: function () {
-				compDragging = true;
-			},
-			end: function () {
-				compDragging = false;
-			},
 		});
 
 		$(".automation-canvas").droppable({
@@ -605,8 +597,7 @@ $(document).ready(function () {
 				offsetTop = parseInt(offsetTop) * -1;
 				offsetLeft = parseInt(offsetLeft) * -1;
 				$(this).css("opacity", 1);
-				compDragging = false;
-				labelDragging = false;
+
 				const type = $(ui.draggable).data("type");
 				addNodeAt(
 					type,
@@ -622,51 +613,7 @@ $(document).ready(function () {
 			},
 		});
 
-		function updatePreview() {
-			if (!canvas) {
-				return;
-			}
-			var xCoords = [];
-			var yCoords = [];
-			canvas.getFigures().each(function (i, f) {
-				var b = f.getBoundingBox();
-				xCoords.push(b.x, b.x + b.w);
-				yCoords.push(b.y, b.y + b.h);
-			});
-			var minX = Math.min.apply(Math, xCoords);
-			var minY = Math.min.apply(Math, yCoords);
-			var width = Math.max.apply(Math, xCoords) - minX;
-			var height = Math.max.apply(Math, yCoords) - minY;
-
-			// make square & centered
-			if (width > height) {
-				minY = minY - (width - height) / 2;
-				height = width;
-			} else {
-				minX = minX - (height - width) / 2;
-				width = height;
-			}
-
-			var writer = new draw2d.io.png.Writer();
-			writer.marshal(
-				canvas,
-				function (png) {
-					const id = $("#automationId").val();
-					const link = document.createElement("a");
-					link.download = `scenario-${id || "untitled"}-preview.png`;
-					link.href = png;
-					document.body.appendChild(link);
-					link.click();
-					document.body.removeChild(link);
-					//open in new tab
-					// window.open(png, "_blank");
-				},
-				new draw2d.geo.Rectangle(minX, minY, width, height),
-			);
-		}
-
 		$("#exportScenario").on("click", function () {
-			updatePreview();
 			if (!canvas) {
 				return;
 			}
@@ -699,6 +646,41 @@ $(document).ready(function () {
 				downloadAnchorNode.remove();
 			});
 		});
+
+		function getPngPreview(cb) {
+			if (!canvas) {
+				return;
+			}
+			var xCoords = [];
+			var yCoords = [];
+			canvas.getFigures().each(function (i, f) {
+				var b = f.getBoundingBox();
+				xCoords.push(b.x, b.x + b.w);
+				yCoords.push(b.y, b.y + b.h);
+			});
+			var minX = Math.min.apply(Math, xCoords);
+			var minY = Math.min.apply(Math, yCoords);
+			var width = Math.max.apply(Math, xCoords) - minX;
+			var height = Math.max.apply(Math, yCoords) - minY;
+
+			// make square & centered
+			if (width > height) {
+				minY = minY - (width - height) / 2;
+				height = width;
+			} else {
+				minX = minX - (height - width) / 2;
+				width = height;
+			}
+
+			var pngWriter = new draw2d.io.png.Writer();
+			pngWriter.marshal(
+				canvas,
+				function (png) {
+					cb(png);
+				},
+				new draw2d.geo.Rectangle(minX, minY, width, height),
+			);
+		}
 
 		$("#saveScenarioLayout").on("click", function (e) {
 			e.preventDefault();
@@ -738,13 +720,20 @@ $(document).ready(function () {
 					}
 				});
 				console.log(data);
-				return;
-				const url = `${siteroot}/${mediadb}/services/automation/savelayout.json`;
-				$.ajax({
-					url,
-					method: "POST",
-					contentType: "application/json",
-					data: JSON.stringify({ data }),
+
+				getPngPreview(function (png) {
+					const url = `${siteroot}/${mediadb}/services/automation/savelayout.json`;
+					const payload = {
+						thumbnail: png,
+						data,
+						scenarioid: $("#automationId").val(),
+					};
+					$.ajax({
+						url,
+						method: "POST",
+						contentType: "application/json",
+						data: JSON.stringify(payload),
+					});
 				});
 			});
 		});
