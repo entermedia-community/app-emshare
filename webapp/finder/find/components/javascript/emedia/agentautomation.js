@@ -1,5 +1,11 @@
 "use strict";
 
+const agentSwatch = {
+	eventagent: "#44acff",
+	taskagent: "#c684ff",
+	logicagent: "#ffde59",
+};
+
 const arrowDeco = new draw2d.decoration.connection.ArrowDecorator(16, 16);
 arrowDeco.setBackgroundColor("#4d5d80");
 
@@ -419,14 +425,15 @@ $(document).ready(function () {
 						id: node.id,
 						x: startX,
 						y: startY,
-						bgColor: node.enabled ? "#c684ff" : "#ff849f80",
 						text: node.name || node.automationagent.name,
+						bgColor: node.enabled
+							? agentSwatch[node.agenttype.id] || "#888888"
+							: "#ff849f80",
 					};
 
 					let node_obj = null;
 
 					if (node.automationagent.id == "javaifcheck") {
-						attr.bgColor = "#ffde59";
 						node_obj = logicJson(attr);
 					} else {
 						node_obj = agentJson(attr, {
@@ -611,10 +618,55 @@ $(document).ready(function () {
 			},
 		});
 
-		$("#exportScenario").on("click", function () {
+		function updatePreview() {
 			if (!canvas) {
 				return;
 			}
+			var xCoords = [];
+			var yCoords = [];
+			canvas.getFigures().each(function (i, f) {
+				var b = f.getBoundingBox();
+				xCoords.push(b.x, b.x + b.w);
+				yCoords.push(b.y, b.y + b.h);
+			});
+			var minX = Math.min.apply(Math, xCoords);
+			var minY = Math.min.apply(Math, yCoords);
+			var width = Math.max.apply(Math, xCoords) - minX;
+			var height = Math.max.apply(Math, yCoords) - minY;
+
+			// make square & centered
+			if (width > height) {
+				minY = minY - (width - height) / 2;
+				height = width;
+			} else {
+				minX = minX - (height - width) / 2;
+				width = height;
+			}
+
+			var writer = new draw2d.io.png.Writer();
+			writer.marshal(
+				canvas,
+				function (png) {
+					const id = $("#automationId").val();
+					const link = document.createElement("a");
+					link.download = `scenario-${id || "untitled"}-preview.png`;
+					link.href = png;
+					document.body.appendChild(link);
+					link.click();
+					document.body.removeChild(link);
+					//open in new tab
+					// window.open(png, "_blank");
+				},
+				new draw2d.geo.Rectangle(minX, minY, width, height),
+			);
+		}
+
+		$("#exportScenario").on("click", function () {
+			updatePreview();
+			if (!canvas) {
+				return;
+			}
+
 			const _this = $(this);
 			const data = {
 				scenario: {
@@ -826,5 +878,12 @@ $(document).ready(function () {
 		};
 		reader.readAsText(file);
 		$(this).val("");
+	});
+
+	lQuery(".scenario-card").livequery("click", function (e) {
+		if (e.target.tagName.toLowerCase() === "a") {
+			return;
+		}
+		$(this).find(".edit-btn").trigger("click");
 	});
 });
