@@ -1,3 +1,7 @@
+#set($offsetx = $context.getRequestParameter("offsetx"))
+#set($offsety = $context.getRequestParameter("offsety"))
+#set($scenarioid = $context.getRequestParameter("scenarioid"))
+
 #set( $agentid = $context.getRequestParameter("agentid"))
 
 #ifnotnull($agentid)
@@ -5,18 +9,29 @@
   $context.putPageValue("searcher", "automationagentenabled")
   #set( $scenario = $mediaarchive.getData("automationagentenabled", $agentid) )
   $context.putPageValue("data", $scenario)
-  #set( $action = "edit" )
-#end
-#ifnull($agentid)
-  #set( $action = "create" )
 #end
 
-<form class="pb-2 ajaxform autocloseform" data-targetdivinner="smartautomation" data-oemaxlevel="1" action="$applink/components/smartautomation/agent-${action}.html">
+
+<form class="pb-2 ajaxform autocloseform" data-targetdivinner="smartautomation" data-oemaxlevel="1" action="$applink/components/smartautomation/agent-edit.html">
   <input name="save" type="hidden" value="true" />
   <input name="searchtype" type="hidden" value="automationagentenabled" />
   
   #ifnotnull($agentid)
     <input type="hidden" name="id" value="$agentid"/>
+  #end
+
+  #ifnotnull($scenarioid)
+    <input type="hidden" name="field" value="automationscenario"/>
+    <input type="hidden" name="automationscenario.value" value="$scenarioid"/>
+  #end
+
+  #ifnotnull($offsetx)
+    <input type="hidden" name="field" value="offsetx"/>
+    <input type="hidden" name="offsetx.value" value="$offsetx"/>
+  #end
+  #ifnotnull($offsety)
+    <input type="hidden" name="field" value="offsety"/>
+    <input type="hidden" name="offsety.value" value="$offsety"/>
   #end
 
   $context.putPageValue("viewid", "automationagentenablededit") 

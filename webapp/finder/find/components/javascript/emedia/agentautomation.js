@@ -384,25 +384,33 @@ $(document).ready(function () {
 
 				nodes.map((node, i) => {
 					let startX = rootX;
-					if (node.runafter) {
-						const parents = node.runafter.split("|");
-						if (parents.length === 1) {
-							parentNode = canvas.getFigure(parents[0]);
-							if (parentNode) {
-								startX = parentNode.getX() + parentNode.getWidth() / 2;
-							}
-						} else {
-							let minX = Infinity;
-							let maxX = -Infinity;
-							parents.forEach((parent) => {
-								const p = canvas.getFigure(parent);
-								if (p) {
-									minX = Math.min(minX, p.getX());
-									maxX = Math.max(maxX, p.getX() + p.getWidth());
+					let startY = y;
+					let skipover = false;
+					if (node.offsetx && node.offsety) {
+						startX = parseInt(node.offsetx);
+						startY = parseInt(node.offsety);
+						skipover = true;
+					} else {
+						if (node.runafter) {
+							const parents = node.runafter.split("|");
+							if (parents.length === 1) {
+								parentNode = canvas.getFigure(parents[0]);
+								if (parentNode) {
+									startX = parentNode.getX() + parentNode.getWidth() / 2;
 								}
-							});
-							if (minX !== Infinity && maxX !== -Infinity) {
-								startX = (minX + maxX) / 2;
+							} else {
+								let minX = Infinity;
+								let maxX = -Infinity;
+								parents.forEach((parent) => {
+									const p = canvas.getFigure(parent);
+									if (p) {
+										minX = Math.min(minX, p.getX());
+										maxX = Math.max(maxX, p.getX() + p.getWidth());
+									}
+								});
+								if (minX !== Infinity && maxX !== -Infinity) {
+									startX = (minX + maxX) / 2;
+								}
 							}
 						}
 					}
@@ -410,7 +418,7 @@ $(document).ready(function () {
 					var attr = {
 						id: node.id,
 						x: startX,
-						y,
+						y: startY,
 						bgColor: node.enabled ? "#c684ff" : "#ff849f80",
 						text: node.name || node.automationagent.name,
 					};
@@ -468,7 +476,9 @@ $(document).ready(function () {
 							canvas.add(conn);
 						});
 					}
-					previousNode = renderedNode;
+					if (!skipover) {
+						previousNode = renderedNode;
+					}
 				});
 			});
 
@@ -549,30 +559,15 @@ $(document).ready(function () {
 		});
 
 		function addNodeAt(type, x, y) {
-			let node = null;
-			if (type === "agent") {
-				const node_obj = agentJson({
-					id: draw2d.util.UUID.create(),
-					x,
-					y,
-					bgColor: "#c684ff",
-					text: "New Agent",
-				});
-				readerUnmarshal(canvas, node_obj);
-				node = canvas.getFigure(node_obj[0].id);
-			}
-
-			if (!node) return;
-
-			// readerUnmarshal(canvas, newFolder);
-			var prevSelections = canvas.getSelection();
-			if (prevSelections) {
-				var selections = prevSelections.getAll();
-				selections.each((_, selection) => selection.unselect());
-			}
-			$(canvas.html).trigger("focusin");
-			node.select();
-			handleSelect(node);
+			const formPath = `${applink}/components/smartautomation/agent-form.html`;
+			const anchor = $("<a>").attr("href", formPath).appendTo("body");
+			const scenarioid = $("#automationId").val();
+			anchor.data("scenarioid", scenarioid);
+			anchor.data("offsetx", x);
+			anchor.data("offsety", y);
+			anchor.data("hidefooter", true);
+			anchor.emDialog();
+			anchor.remove();
 		}
 
 		var compDragging = false;
