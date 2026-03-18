@@ -48,7 +48,7 @@ $context.putPageValue("searchhome", $searchhome)
 		</div>
 	#else	
 		#if($useoriginal)
-			#set($imagepath = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
+			#set($imagepath = "$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
 		#else
 			#set($imagepath = $mediaarchive.asLinkToGenerated($hit, $imagesize))
 		#end
@@ -78,7 +78,7 @@ $context.putPageValue("searchhome", $searchhome)
 						alt="#if($title)#esc($title)#else$!{hit.name}#end"
 						draggable="true"  
 						data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
-						src="${imagepath}$!{urlparams}"
+						src="$!{cdnprefix}${imagepath}$!{urlparams}"
 				/>		
 				#if($rendertype =="video")<div class="videoplay-button"><span class="videoplay-icon"></span></div>#end
 			</div>
