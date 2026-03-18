@@ -168,7 +168,7 @@ $(document).ready(function () {
 			{
 				type: "draw2d.shape.basic.Label",
 				id: groupId + "-label",
-				x: x + 72,
+				x: x,
 				y: y + 88,
 				width: 150,
 				text: "New Folder",
@@ -272,7 +272,7 @@ $(document).ready(function () {
 			data.push({
 				type: "draw2d.shape.basic.Label",
 				id: groupId + "-title",
-				x: attr.x + w / 2 - 5,
+				x: attr.x,
 				y: attr.y + 10,
 				text: attr.title,
 				textAnchor: "middle",
@@ -290,7 +290,7 @@ $(document).ready(function () {
 			data.push({
 				type: "draw2d.shape.basic.Label",
 				id: groupId + "-caption",
-				x: attr.x + w / 2 - 5,
+				x: attr.x,
 				y: attr.y + attr.titleHeight + (attr.image ? 110 : 10),
 				text: attr.caption,
 				textAnchor: "middle",
@@ -451,6 +451,24 @@ $(document).ready(function () {
 		function readerUnmarshal(canvas, json) {
 			removeDuplicates(json);
 			reader.unmarshal(canvas, json);
+
+			setTimeout(function () {
+				var figures = canvas.getFigures();
+				figures.each(function (_, figure) {
+					if (
+						["label", "title", "caption"].some((t) =>
+							figure.id.endsWith("-" + t),
+						)
+					) {
+						var w = figure.getWidth();
+						var gw = Math.max(w, figure.cssClass === "folderLabel" ? 150 : 100);
+						var group = figure.composite;
+						group.setWidth(gw);
+						var midX = group.getX() + gw / 2;
+						figure.setX(midX - w / 2);
+					}
+				});
+			});
 		}
 
 		function writerMarshal(canvas, callback) {
@@ -737,6 +755,14 @@ $(document).ready(function () {
 				},
 				complete: function () {
 					readerUnmarshal(canvas, insertjson);
+					canvas.getFigures().each(function (id, figure) {
+						if (figure.cssClass === "folderLabel") {
+							var x = figure.composite.getX();
+							x += 75;
+							var figureWidth = figure.getWidth();
+							figure.setX(x - figureWidth / 2);
+						}
+					});
 					loadEvents();
 
 					recenterCanvas();
@@ -1129,6 +1155,7 @@ $(document).ready(function () {
 			});
 			readerUnmarshal(canvas, newFolder);
 			var folderGroup = canvas.getFigure(newFolder[0].id);
+
 			var prevSelections = canvas.getSelection();
 			if (prevSelections) {
 				var selections = prevSelections.getAll();
