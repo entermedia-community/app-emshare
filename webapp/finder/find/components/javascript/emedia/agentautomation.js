@@ -428,7 +428,7 @@ $(document).ready(function () {
 						y: startY,
 						text: node.name || node.automationagent.name,
 						bgColor: node.enabled
-							? agentSwatch[node.agenttype.id] || "#888888"
+							? agentSwatch[node.agenttype?.id] || "#888888"
 							: "#ff849f80",
 					};
 
@@ -442,7 +442,7 @@ $(document).ready(function () {
 
 					let node_obj = null;
 
-					if (node.agenttype.id == "logicagent") {
+					if (node.agenttype?.id == "logicagent") {
 						node_obj = logicJson(attr, userData);
 					} else {
 						node_obj = agentJson(attr, userData);
@@ -521,7 +521,6 @@ $(document).ready(function () {
 		}
 
 		function updateModPosition(selectedNode) {
-			console.log(selectedNode);
 			if (!selectedNode) {
 				selectedNode = canvas.getPrimarySelection();
 			}
@@ -709,7 +708,10 @@ $(document).ready(function () {
 			canvasContainer.data("changed", false); //User Save
 
 			writerMarshal(canvas, function (json) {
-				if (json.length === 0) return;
+				if (json.length === 0) {
+					customToast("Nothing to save", { positive: false });
+					return;
+				}
 
 				const data = [];
 				const runAfters = {};
@@ -725,7 +727,7 @@ $(document).ready(function () {
 				json.forEach((element) => {
 					if (element.userData && element.userData.id) {
 						const node = {
-							id: element.userData.id,
+							...element.userData,
 							offsetx: element.x,
 							offsety: element.y,
 						};
@@ -735,8 +737,15 @@ $(document).ready(function () {
 						data.push(node);
 					}
 				});
-
 				console.log(data);
+				return;
+				const url = `${siteroot}/${mediadb}/services/automation/savelayout.json`;
+				$.ajax({
+					url,
+					method: "POST",
+					contentType: "application/json",
+					data: JSON.stringify({ data }),
+				});
 			});
 		});
 
