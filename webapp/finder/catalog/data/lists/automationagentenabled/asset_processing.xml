@@ -1,23 +1,23 @@
 <records>
 
- <data id="asset_processing_start_event" automationagent="startEventAgent" automationscenario="asset_processing" enabled="true" agenttype="eventagent">
+ <data id="ap_asset_processing_start_event" automationagent="startEventAgent" automationscenario="asset_processing" enabled="true" agenttype="eventagent">
  </data>
- <data id="AssetImportModule_importAssets" automationagent="runModuleAgent" automationscenario="asset_processing" runafter="asset_processing_start_event" enabled="true" >
+ <data id="ap_AssetImportModule_importAssets" automationagent="AssetImportModule_importAssets" automationscenario="asset_processing" runafter="ap_asset_processing_start_event" enabled="true">
  </data>
 
- <data id="importing_assetsreadmetadata" automationagent="runEventAgent" automationscenario="asset_processing" runafter="AssetImportModule_importAssets" enabled="true" >
+ <data id="ap_importing_assetsreadmetadata" automationagent="importing_assetsreadmetadata" automationscenario="asset_processing" runafter="ap_AssetImportModule_importAssets" enabled="true" >
  </data>
 	
- <data id="importing_assetsimportedcustom" automationagent="runEventAgent" automationscenario="asset_processing" runafter="importing_assetsreadmetadata" enabled="true" >
+ <data id="ap_importing_assetsimportedcustom" automationagent="importing_assetsimportedcustom" automationscenario="asset_processing" runafter="ap_importing_assetsreadmetadata" enabled="true" >
  </data>
 
- <data id="EntityModule_handleAssetsImported" automationagent="runModuleAgent" automationscenario="asset_processing" runafter="importing_assetsimportedcustom" enabled="true" >
+ <data id="ap_EntityModule_handleAssetsImported" automationagent="EntityModule_handleAssetsImported" automationscenario="asset_processing" runafter="ap_importing_assetsimportedcustom" enabled="true" >
  </data>
 
- <data id="importing_queueconversions" automationagent="runEventAgent" automationscenario="asset_processing" runafter="EntityModule_handleAssetsImported" enabled="true" >
+ <data id="ap_importing_queueconversions" automationagent="importing_queueconversions" automationscenario="asset_processing" runafter="ap_EntityModule_handleAssetsImported" enabled="true" >
  </data>
 	
- <data id="importing_runconversions" automationagent="runSharedEventAgent" automationscenario="asset_processing" runafter="importing_queueconversions" enabled="true" >
+ <data id="ap_importing_runconversions" automationagent="conversions_runconversions" automationscenario="asset_processing" runafter="ap_importing_queueconversions" enabled="true" >
  </data>
 
 
