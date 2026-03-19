@@ -1,16 +1,26 @@
 <records>
 
 
- <data id="asset_processing_event_handler" automationagent="automationEventHandler" automationscenario="asset_processing" enabled="true" agenttype="eventagent">
+ <data id="asset_processing_event_handler" automationagent="runEventAgent" automationscenario="asset_processing" enabled="true" agenttype="eventagent">
       <skilloverview>
          <language id="en"><![CDATA[This is a custom skill that does cool things]]></language>
       </skilloverview>
    </data>
-    <data id="asset_processing" automationagent="newasset_processing" automationscenario="asset_processing" runafter="asset_processing_event_handler" enabled="true" >
+    <data id="importing_importassets" automationagent="newasset_processing" automationscenario="asset_processing" runafter="asset_processing_event_handler" enabled="true" >
       <skilloverview>
          <language id="en"><![CDATA[This is a custom skill that does cool things]]></language>
       </skilloverview>
    </data>
+
+	<path-action name="AssetImportModule.importAssets" />
+	
+	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/importing/assetsreadmetadata.html"  allowduplicates="true"/>
+	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/importing/assetsimportedcustom.html"  allowduplicates="true"/>
+	
+	<path-action name="EntityModule.handleAssetsImported" alltypes="true"  />
+	
+	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/importing/queueconversions.html"  allowduplicates="true"/>
+	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/conversions/runconversions.html"  allowduplicates="true"/>	
 
 
 </records>
