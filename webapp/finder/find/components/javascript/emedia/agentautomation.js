@@ -188,7 +188,15 @@ function bfsTopDown(nodes) {
 
 		const parents = node.runafter.split("|");
 		for (const parent of parents) {
-			children[parent].push(node.id);
+			var parentnode = children[parent];
+			if( parentnode === undefined)
+			{
+				console.log("Could not find parent ",children, parent)
+			}
+			else
+			{
+				parentnode.push(node.id);
+			}
 		}
 
 		inDegree[node.id] = parents.length;
@@ -364,10 +372,20 @@ $(document).ready(function () {
 						// const scenario = data.scenario;
 						// console.log({ scenario });
 
-						const agents = data.agents;
-						var queue = bfsTopDown(agents);
-
-						renderQueue(queue);
+						try
+						{
+							const agents = data.agents;
+							var queue = bfsTopDown(agents);
+	
+							renderQueue(queue);
+						} 
+						catch (err)
+						{
+							console.log(err);
+							customToast("Error loading: " + err.message, {
+											positive: false,
+							});
+						}
 					} else {
 						console.log("Invalid response", res);
 					}
