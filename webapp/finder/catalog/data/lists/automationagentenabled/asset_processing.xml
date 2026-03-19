@@ -1,26 +1,24 @@
 <records>
 
+ <data id="asset_processing_start_event" automationagent="startEventAgent" automationscenario="asset_processing" enabled="true" agenttype="eventagent">
+ </data>
+ <data id="AssetImportModule_importAssets" automationagent="runModuleAgent" automationscenario="asset_processing" runafter="asset_processing_start_event" enabled="true" >
+ </data>
 
- <data id="asset_processing_event_handler" automationagent="startEventAgent" automationscenario="asset_processing" enabled="true" agenttype="eventagent">
-      <skilloverview>
-         <language id="en"><![CDATA[This is a custom skill that does cool things]]></language>
-      </skilloverview>
-   </data>
-    <data id="importing_importassets" automationagent="runEventAgent" automationscenario="asset_processing" runafter="asset_processing_event_handler" enabled="true" >
-      <skilloverview>
-         <language id="en"><![CDATA[This is a custom skill that does cool things]]></language>
-      </skilloverview>
-   </data>
+ <data id="importing_assetsreadmetadata" automationagent="runEventAgent" automationscenario="asset_processing" runafter="AssetImportModule_importAssets" enabled="true" >
+ </data>
+	
+ <data id="importing_assetsimportedcustom" automationagent="runEventAgent" automationscenario="asset_processing" runafter="importing_assetsreadmetadata" enabled="true" >
+ </data>
 
-	<path-action name="AssetImportModule.importAssets" />
+ <data id="EntityModule_handleAssetsImported" automationagent="runModuleAgent" automationscenario="asset_processing" runafter="importing_assetsimportedcustom" enabled="true" >
+ </data>
+
+ <data id="importing_queueconversions" automationagent="runEventAgent" automationscenario="asset_processing" runafter="EntityModule_handleAssetsImported" enabled="true" >
+ </data>
 	
-	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/importing/assetsreadmetadata.html"  allowduplicates="true"/>
-	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/importing/assetsimportedcustom.html"  allowduplicates="true"/>
-	
-	<path-action name="EntityModule.handleAssetsImported" alltypes="true"  />
-	
-	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/importing/queueconversions.html"  allowduplicates="true"/>
-	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/conversions/runconversions.html"  allowduplicates="true"/>	
+ <data id="importing_runconversions" automationagent="runSharedEventAgent" automationscenario="asset_processing" runafter="importing_queueconversions" enabled="true" >
+ </data>
 
 
 </records>
