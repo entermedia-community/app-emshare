@@ -839,22 +839,27 @@ $(document).ready(function () {
 			updateModPosition();
 		});
 
-		$("#closeautomation").on("click", function () {
-			var changed = $("#automation_canvas").data("changed");
-			if (!changed) {
-				closeemdialog($(this).closest(".modal"));
-				return;
-			}
-			if (
-				confirm("You have unsaved changes. Are you sure you want to close?")
-			) {
-				$("#automation_canvas").data("changed", false);
-				closeemdialog($(this).closest(".modal"));
-			}
-		});
+		
 
 		loadJSON();
 	});
+	
+	
+	
+	
+	lQuery("#closeautomation").livequery("click", function (e) {
+				var changed = $("#automation_canvas").data("changed");
+				if (!changed) {
+					closeemdialog($(this).closest(".modal"));
+					return;
+				}
+				if (
+					confirm("You have unsaved changes. Are you sure you want to close?")
+				) {
+					$("#automation_canvas").data("changed", false);
+					closeemdialog($(this).closest(".modal"));
+				}
+			});
 
 	window.onbeforeunload = function () {
 		var changed = $("#automation_canvas").data("changed");
