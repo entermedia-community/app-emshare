@@ -543,7 +543,7 @@ $(document).ready(function () {
 			hideConfig();
 		});
 
-		$("#edit-toggler").click(function (e) {
+		$("#edit-toggler").on("click", function (e) {
 			e.stopImmediatePropagation();
 			const selectedNode = canvas.getPrimarySelection();
 			if (!selectedNode) return;
@@ -736,7 +736,7 @@ $(document).ready(function () {
 
 		var maxLeft = Math.floor(canvasWidth / 2 + 100);
 
-		$("#vToTop").click(function (e) {
+		$("#vToTop").on("click", function (e) {
 			e.stopImmediatePropagation();
 			var pos = parseInt(canvasContainer.css("margin-top")) + 50;
 			if (pos > 0) {
@@ -747,7 +747,7 @@ $(document).ready(function () {
 			canvasContainer.css("margin-top", pos);
 			updateModPosition();
 		});
-		$("#vToBottom").click(function (e) {
+		$("#vToBottom").on("click", function (e) {
 			e.stopImmediatePropagation();
 			var pos = parseInt(canvasContainer.css("margin-top")) - 50;
 			if (Math.abs(pos) > canvasHeight - 80) {
@@ -758,7 +758,7 @@ $(document).ready(function () {
 			canvasContainer.css("margin-top", pos);
 			updateModPosition();
 		});
-		$("#vToLeft").click(function (e) {
+		$("#vToLeft").on("click", function (e) {
 			e.stopImmediatePropagation();
 			var pos = parseInt(canvasContainer.css("margin-left")) + 50;
 			if (pos > 0) {
@@ -769,7 +769,7 @@ $(document).ready(function () {
 			canvasContainer.css("margin-left", pos);
 			updateModPosition();
 		});
-		$("#vToRight").click(function (e) {
+		$("#vToRight").on("click", function (e) {
 			e.stopImmediatePropagation();
 			var pos = parseInt(canvasContainer.css("margin-left")) - 50;
 			if (Math.abs(pos) > maxLeft) {
@@ -780,7 +780,7 @@ $(document).ready(function () {
 			canvasContainer.css("margin-left", pos);
 			updateModPosition();
 		});
-		$("#zoomInBtn").click(function (e) {
+		$("#zoomInBtn").on("click", function (e) {
 			e.stopImmediatePropagation();
 			var zoom = canvas.getZoom();
 			if (zoom < 0.5) return;
@@ -797,7 +797,7 @@ $(document).ready(function () {
 			updateModPosition();
 		});
 
-		$("#zoomOutBtn").click(function (e) {
+		$("#zoomOutBtn").on("click", function (e) {
 			e.stopImmediatePropagation();
 			var zoom = canvas.getZoom();
 			if (zoom > 2) return;
@@ -814,7 +814,7 @@ $(document).ready(function () {
 			updateModPosition();
 		});
 
-		$("#zoomResetBtn").click(function (e) {
+		$("#zoomResetBtn").on("click", function (e) {
 			e.stopImmediatePropagation();
 			canvas.setZoom(1.0);
 			recenterCanvas();
