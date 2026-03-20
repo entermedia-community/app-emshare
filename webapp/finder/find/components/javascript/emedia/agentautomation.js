@@ -191,7 +191,7 @@ function bfsTopDown(nodes) {
 			var parentnode = children[parent];
 			if( parentnode === undefined)
 			{
-				console.log("Could not find parent ",children, parent)
+				console.log("Invalid parent tree ",parent,children);
 			}
 			else
 			{
@@ -372,20 +372,10 @@ $(document).ready(function () {
 						// const scenario = data.scenario;
 						// console.log({ scenario });
 
-						try
-						{
-							const agents = data.agents;
-							var queue = bfsTopDown(agents);
-	
-							renderQueue(queue);
-						} 
-						catch (err)
-						{
-							console.log(err);
-							customToast("Error loading: " + err.message, {
-											positive: false,
-							});
-						}
+						const agents = data.agents;
+						var queue = bfsTopDown(agents);
+
+						renderQueue(queue);
 					} else {
 						console.log("Invalid response", res);
 					}
@@ -409,7 +399,7 @@ $(document).ready(function () {
 					let startX = rootX;
 					let startY = y;
 					let skipover = false;
-					if (node.offsetx && node.offsety) {
+					if (node.offsetx > 0 && node.offsety > 0) {
 						startX = parseInt(node.offsetx);
 						startY = parseInt(node.offsety);
 						skipover = true;
@@ -839,27 +829,22 @@ $(document).ready(function () {
 			updateModPosition();
 		});
 
-		
+		$("#closeautomation").on("click", function () {
+			var changed = $("#automation_canvas").data("changed");
+			if (!changed) {
+				closeemdialog($(this).closest(".modal"));
+				return;
+			}
+			if (
+				confirm("You have unsaved changes. Are you sure you want to close?")
+			) {
+				$("#automation_canvas").data("changed", false);
+				closeemdialog($(this).closest(".modal"));
+			}
+		});
 
 		loadJSON();
 	});
-	
-	
-	
-	
-	lQuery("#closeautomation").livequery("click", function (e) {
-				var changed = $("#automation_canvas").data("changed");
-				if (!changed) {
-					closeemdialog($(this).closest(".modal"));
-					return;
-				}
-				if (
-					confirm("You have unsaved changes. Are you sure you want to close?")
-				) {
-					$("#automation_canvas").data("changed", false);
-					closeemdialog($(this).closest(".modal"));
-				}
-			});
 
 	window.onbeforeunload = function () {
 		var changed = $("#automation_canvas").data("changed");
