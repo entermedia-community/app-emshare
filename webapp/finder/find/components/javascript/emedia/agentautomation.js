@@ -186,9 +186,9 @@ function bfsTopDown(nodes) {
 	for (const node of nodes) {
 		if (!node.runafter) continue;
 
-		const parents = node.runafter.split("|");
+		const parents = node.runafter;//.split("|");
 		for (const parent of parents) {
-			var parentnode = children[parent];
+			var parentnode = children[parent.id];
 			if( parentnode === undefined)
 			{
 				console.log("Invalid parent tree ",parent,children);
@@ -415,9 +415,9 @@ $(document).ready(function () {
 						skipover = true;
 					} else {
 						if (node.runafter) {
-							const parents = node.runafter.split("|");
+							const parents = node.runafter;//.split("|");
 							if (parents.length === 1) {
-								parentNode = canvas.getFigure(parents[0]);
+								parentNode = canvas.getFigure(parents[0].id);
 								if (parentNode) {
 									startX = parentNode.getX() + parentNode.getWidth() / 2;
 								}
@@ -425,7 +425,7 @@ $(document).ready(function () {
 								let minX = Infinity;
 								let maxX = -Infinity;
 								parents.forEach((parent) => {
-									const p = canvas.getFigure(parent);
+									const p = canvas.getFigure(parent.id);
 									if (p) {
 										minX = Math.min(minX, p.getX());
 										maxX = Math.max(maxX, p.getX() + p.getWidth());
@@ -487,12 +487,13 @@ $(document).ready(function () {
 					}
 
 					if (node.runafter) {
-						var runafter = node.runafter.split("|");
+						var runafter = node.runafter;//.split("|");
+						
 						var connectedTo = canvas
 							.getFigures()
 							.data.filter(
-								(f) => f.cssClass === "node" && runafter.includes(f.id),
-							);
+								// //runafter.includes(f.id),
+								(f) => f.cssClass === "node" && runafter.some(item => item.id === f.id));
 
 						connectedTo.forEach((connectedNode) => {
 							var conn = createConnection(
