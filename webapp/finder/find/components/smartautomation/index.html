@@ -27,12 +27,23 @@
       #foreach($scenario in $scenarios)
       <div class="col">
         <div class="card">
-          <h5 class="card-title">$scenario.name</h5>
+			#set($icon = $scenario.scenarioicon)
+			#ifnull($icon)
+				#set($icon = "robot")
+			#end
+          <h5 class="card-title"><i class="bi bi-${icon} me-2"></i> $scenario.name</h5>
           <div class="card-body">
-            <img src="/${mediadbappid}/views/automations/${scenario.id}.png" class="card-img-top p-1" alt="$scenario.name Thumbnail">
+			#set($scenarioimage = "/${mediadbappid}/views/automations/${scenario.id}.png")
+			#set($imageexists = $mediaarchive.getPageManager().getPage( $scenarioimage).exists())
+			#if(!$imageexists)
+				#set($scenarioimage = "/${mediadbappid}/views/automations/default.png")
+				
+			#end
+			<img src="$scenarioimage" class="card-img-top p-1" alt="$scenario.name" />
             <p class="card-text">$!scenario.longdescription</p>
             <div class="active-automation">
-              <span>TranslationAgent</span>
+              <div>Status: Not running</div>
+			  <div>Last run: 00:15m ago</div>
             </div>
             <div class="actions">
               <a class="btn btn-primary btn-sm edit-btn ajax" data-scenarioid="$scenario.id" href="$applink/components/smartautomation/editor.html" data-targetdivinner="smartautomation" data-oemaxlevel="1">
