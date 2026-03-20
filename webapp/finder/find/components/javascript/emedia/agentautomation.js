@@ -366,18 +366,28 @@ $(document).ready(function () {
 				url: url,
 				method: "GET",
 				success: function (res) {
-					if (res.status && res.status == "ok") {
-						const data = res.data;
-						// console.log({ data });
-						// const scenario = data.scenario;
-						// console.log({ scenario });
-
-						const agents = data.agents;
-						var queue = bfsTopDown(agents);
-
-						renderQueue(queue);
-					} else {
-						console.log("Invalid response", res);
+					try
+					{
+						if (res.status && res.status == "ok") {
+							const data = res.data;
+							// console.log({ data });
+							// const scenario = data.scenario;
+							// console.log({ scenario });
+	
+							const agents = data.agents;
+							var queue = bfsTopDown(agents);
+	
+							renderQueue(queue);
+						} else {
+							console.log("Invalid response", res);
+						}
+					}			
+					catch (err)
+					{
+						console.log(err);
+						customToast("Error loading: " + err.message, {
+										positive: false,
+						});
 					}
 				},
 			});
@@ -667,6 +677,17 @@ $(document).ready(function () {
 			var width = Math.max.apply(Math, xCoords) - minX;
 			var height = Math.max.apply(Math, yCoords) - minY;
 
+			if( width < 300)
+			{
+				width = width + 200;
+				minX = minX - 100;
+			} 
+			if( height < 300)
+			{
+				height = height + 200;
+				minY = minY - 100;
+			} 
+			
 			// make square & centered
 			if (width > height) {
 				minY = minY - (width - height) / 2;
