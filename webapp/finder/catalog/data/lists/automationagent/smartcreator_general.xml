@@ -1,0 +1,63 @@
+<records>
+
+<!-- using more descriptive ids for easier debugging -->
+
+<!--Creates content from a table to output an image or a tutorial etc.
+
+1. Press Run Have the user create a contentcreator record. THey pick the searchcategories and edit a prompt
+2. SharedEvent is triggered from saved event
+3. Drop in the TutorialAgent that makes tutorial content
+4. Drop in the render tutorial to edit it nicely in a certain way based on prompt
+5. Drop in the SocialMediaAgent to post it 
+
+TODO: Add another workflow for the SearchCategory population? How many small ones do we need?
+
+-->
+
+  <!-- Use the the starting part of the id for module -->
+ 	<data id="smartcreator_startEvent" bean="sharedPathEvent" 
+  	 agenttype="eventagent" ordering="10">
+      <name>
+         <language id="en"><![CDATA[Smart Creator: Trigger Smart Creation]]></language>
+      </name>
+	</data>
+
+   <data id="smartcreator_findrecords" bean="smartCreatorFindPending" agenttype="taskagent" ordering="20">
+      <name>
+         <language id="en"><![CDATA[Smart Creator: Find Pending Record to Process]]></language>
+      </name>
+   </data>
+
+   <data id="smartcreator_findmemory" bean="smartCreatorFindMemoryFiles" agenttype="taskagent" ordering="20">
+      <name>
+         <language id="en"><![CDATA[Smart Creator: Find Embedded Search Categories Content]]></language>
+      </name>
+   </data>
+
+   
+	<data id="smartcreator_createoutline" bean="smartCreatorMakeOutlineAgent"  
+	 enabled="true" agenttype="taskagent" ordering="10">
+	      <name>
+	         <language id="en"><![CDATA[Smart Creator: Create Outline]]></language>
+	      </name>
+	      <llmprompt>
+	         <language id="en"><![CDATA[Create a brief outline for a Tutorial about ${data.longcaption}. 
+	         For each outline topic, create a summary with a header, and paragraphs + lists (where necessary). 
+	         Provide examples if applicable.]]></language>
+	      </llmprompt>
+	</data>
+
+	<data id="smartcreator_createsections" bean="smartCreatorMakeSectionsAgent"  
+	 enabled="true" agenttype="taskagent" ordering="10">
+	      <name>
+	         <language id="en"><![CDATA[Smart Creator: Create Sections]]></language>
+	      </name>
+	</data>
+   
+   <data id="smartcreator_renderasset" bean="smartCreatorRenderAssetAgent" enabled="true" agenttype="taskagent" ordering="10">
+      <name>
+         <language id="en"><![CDATA[Smart Creator: Render Html]]></language>
+      </name>
+   </data>
+
+</records>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- using more descriptive ids for easier debugging -->
+
+<!--Creates content from a table to output an image or a tutorial etc.
+
+1. Press Run Have the user create a contentcreator record. THey pick the searchcategories and edit a prompt
+2. SharedEvent is triggered from saved event
+3. Drop in the TutorialAgent that makes tutorial content
+4. Drop in the render tutorial to edit it nicely in a certain way based on prompt
+5. Drop in the SocialMediaAgent to post it 
+
+TODO: Add another workflow for the SearchCategory population? How many small ones do we need?
+
+-->
+<!--
+	
+	   <data id="smartcreator_findmemory" bean="smartCreatorFindMemoryFiles" agenttype="taskagent" ordering="20">
+      <name>
+         <language id="en"><![CDATA[Smart Creator: Find Embedded Search Categories Content]]></language>
+      </name>
+   </data>
+
+   
+	<data id="smartcreator_createoutline" bean="smartCreatorMakeOutlineAgent"  
+	 enabled="true" agenttype="taskagent" ordering="10">
+	      <name>
+	         <language id="en"><![CDATA[Smart Creator: Create Outline]]></language>
+	      </name>
+	      <llmprompt>
+	         <language id="en"><![CDATA[Create a brief outline for a Tutorial about ${data.longcaption}. 
+	         For each outline topic, create a summary with a header, and paragraphs + lists (where necessary). 
+	         Provide examples if applicable.]]></language>
+	      </llmprompt>
+	</data>
+
+	<data id="smartcreator_createsections" bean="smartCreatorMakeSectionsAgent"  
+	 enabled="true" agenttype="taskagent" ordering="10">
+	      <name>
+	         <language id="en"><![CDATA[Smart Creator: Create Sections]]></language>
+	      </name>
+	</data>
+   
+   <data id="smartcreator_renderasset" 
+	
+-->
+
+<records>
+
+  <data id="aitutorial_eventcreateTutorials" automationagent="smartcreator_startEvent" 
+   	automationscenario="smartcreator_processtutorials"
+   enabled="true" ordering="10">
+   </data>
+
+   <data id="aitutorial_smartcreator_findrecords" automationagent="smartcreator_findrecords" 
+   automationscenario="smartcreator_processtutorials" enabled="true" runafter="aitutorial_eventcreateTutorials">
+      <name>
+         <language id="en"><![CDATA[Find Record to Process]]></language>
+      </name>
+   </data>
+
+   <data id="aitutorial_smartcreator_findmemory" automationagent="smartcreator_findmemory" 
+   automationscenario="smartcreator_processtutorials" enabled="true" runafter="aitutorial_smartcreator_findrecords">
+      <name>
+         <language id="en"><![CDATA[Find Record Search Category Data]]></language>
+      </name>
+   </data>
+
+
+   <data id="aitutorial_smartcreator_createoutline" automationagent="smartcreator_createoutline" automationscenario="smartcreator_processtutorials" 
+    enabled="true"   runafter="aitutorial_smartcreator_findmemory"
+   ordering="10">
+      <name>
+         <language id="en"><![CDATA[Create Tutorial Outline]]></language>
+      </name>
+      <llmprompt>
+         <language id="en"><![CDATA[Create a brief outline for a Tutorial about ${data.longcaption}. 
+         For each outline topic, create a summary with a header, and paragraphs + lists (where necessary). 
+         Provide examples if applicable.]]></language>
+      </llmprompt>
+   </data>
+
+	<data id="aitutorial_smartcreator_createsections" automationagent="smartcreator_createsections" 
+   automationscenario="smartcreator_processtutorials" enabled="true" runafter="aitutorial_smartcreator_createoutline">
+      <name>
+         <language id="en"><![CDATA[Create Tutorial Sections]]></language>
+      </name>
+   	</data>
+
+   <data id="aitutorial_smartcreator_render" automationagent="smartcreator_renderasset" 
+   automationscenario="smartcreator_processtutorials" enabled="true" runafter="aitutorial_smartcreator_createsections">
+      <name>
+         <language id="en"><![CDATA[Render Tutorial Preview]]></language>
+      </name>
+   </data>
+
+
+</records>
