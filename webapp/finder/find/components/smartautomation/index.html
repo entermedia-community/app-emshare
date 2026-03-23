@@ -1,30 +1,5 @@
 <div class="automation-scenarios">
-  <header class=" org-header automation-header">
-    <div class="d-flex me-auto  align-items-center">
-      <img src="$siteroot$apphome/theme/images/emedialogo.png" alt="eMedia" />
-      <h1>[[Enabled Scenarios]]</h1>
-    </div>
-
-    <div class="d-flex align-items-center">
-		
-		<div class="btn-group">
-		  <a href="" class="btn btn-cta"><i class="bi bi-plus-lg me-1"></i>[[Add Scenario]]</a>
-		  <a href="" class="btn btn-cta dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-		    <span class="visually-hidden">Toggle Dropdown</span>
-		  </a>
-		  <ul class="dropdown-menu">
-		    
-		    <li><a class="dropdown-item" href="#" id="importScenario">[[Import]]</a></li>
-		    <li><a class="dropdown-item emdialog"  href="$applink/components/smartautomation/scenario-form.html" data-hidefooter="true">[[Create New]]</a></li>
-		  </ul>
-		  <input type="file" id="importScenarioFile" style="display:none;position:absolute;right:-9999px;" accept=".json,application/json">
-		</div>
-	</div>
-	
-	<button id="closeautomation" class="ms-2 btn closeorgnizer" title="[[Close Dialog]]">
-        <i class="bi bi-x-lg"></i>
-    </button>
-  </header>
+	$pages.include("./header.html", $context)
   
   <div class="p-4">
     <div class="automation-list row row-cols-2 row-cols-md-3 g-3">
@@ -35,7 +10,21 @@
 			#ifnull($icon)
 				#set($icon = "robot")
 			#end
-          <h5 class="card-title"><i class="bi bi-${icon} me-2"></i> $scenario.name</h5>
+			<div class="card-title d-flex  justify-content-between">
+	            <h5>
+					<i class="bi bi-${icon} me-2"></i> $scenario.name
+	              	
+	
+				</h5>
+				<a class="me-1 ajax" 
+				  	title="[[View Scenario]]"
+				  	data-scenarioid="$scenario.id" 
+					href="$applink/components/smartautomation/view.html" 
+					data-targetdivinner="smartautomation" 
+					data-oemaxlevel="1">
+	                <i class="bi bi-arrows-angle-expand"></i>
+              	</a>
+			</div>
           <div class="card-body">
 			#set($scenarioimage = "/${mediadbappid}/views/automations/${scenario.id}.png")
 			#set($imageexists = $mediaarchive.getPageManager().getPage( $scenarioimage).exists())
@@ -43,35 +32,43 @@
 				#set($scenarioimage = "/${mediadbappid}/views/automations/default.png")
 				
 			#end
-			<img src="$scenarioimage" class="card-img-top p-1" alt="$scenario.name" />
+			<a class="ajax" 
+				  	title="[[View Scenario]]"
+				  	data-scenarioid="$scenario.id" 
+					href="$applink/components/smartautomation/view.html" 
+					data-targetdivinner="smartautomation" 
+					data-oemaxlevel="1">
+				<img src="$scenarioimage" class="card-img-top p-1" alt="[[View]] $scenario.name" />
+			</a>
             <p class="card-text">$!scenario.longdescription</p>
-            <div class="active-automation">
-              <div>Status: Not running</div>
-			  <div>Last run: 00:15m ago</div>
-            </div>
-            <div class="actions">
-				
-				<a href="" class="btn btn-sm btn-cta me-1" title="[[Run Scenario]]">
-					<i class="bi bi-play-fill"></i>
-				</a>
+			<div class="d-flex position-relative">
+	            <div class="active-automation">
+	              <div>Status: Not running 	
+					<a href="#" class="ms-1" title="[[Run Scenario]]">
+					[[Run Now]]</a>
+				</div>
+				  <div>Last run: 00:15m ago</div>
+	            </div>
+				<div class="actions">
 
-              <a class="btn btn-primary btn-sm edit-btn me-1 ajax" 
-			  	title="[[Edit Scenario]]"
-			  	data-scenarioid="$scenario.id" 
-				href="$applink/components/smartautomation/editor.html" 
-				data-targetdivinner="smartautomation" 
-				data-oemaxlevel="1">
-                <i class="bi bi-pencil-square"></i>
-              </a>
-              <a class="btn btn-primary btn-sm delete-btn me-1 ajax" 
-			  title="[[Delete Scenario]]"
-			  href="$applink/components/smartautomation/scenario-delete.html?id=${scenario.id}&searchtype=automationscenario" 
-			  data-confirm="[[Are you sure you want to delete this scenario?]]"  
-			  data-targetdivinner="smartautomation" 
-			  data-oemaxlevel="1">
-                <i class="bi bi-trash"></i>
-              </a>
-            </div>
+	              <a class="btn btn-primary btn-sm edit-btn me-1 ajax" 
+				  	title="[[Edit Scenario]]"
+				  	data-scenarioid="$scenario.id" 
+					href="$applink/components/smartautomation/editor.html" 
+					data-targetdivinner="smartautomation" 
+					data-oemaxlevel="1">
+	                <i class="bi bi-pencil-square"></i>
+	              </a>
+	              <a class="btn btn-primary btn-sm delete-btn me-1 ajax" 
+				  title="[[Delete Scenario]]"
+				  href="$applink/components/smartautomation/scenario-delete.html?id=${scenario.id}&searchtype=automationscenario" 
+				  data-confirm="[[Are you sure you want to delete this scenario?]]"  
+				  data-targetdivinner="smartautomation" 
+				  data-oemaxlevel="1">
+	                <i class="bi bi-trash"></i>
+	              </a>
+	            </div>
+			</div>
           </div>
         </div>
       </div>
