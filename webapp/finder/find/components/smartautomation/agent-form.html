@@ -4,7 +4,9 @@
 
 #set( $agentid = $context.getRequestParameter("agentid"))
 
+
 #ifnotnull($agentid)
+  #set( $agenttype = $context.getRequestParameter("agenttype"))
   $context.putPageValue("agentid", $agentid)
   $context.putPageValue("searcher", "automationagentenabled")
   #set( $scenario = $mediaarchive.getData("automationagentenabled", $agentid) )
@@ -35,7 +37,13 @@
     <input type="hidden" name="offsety.value" value="$offsety"/>
   #end
 
-  $context.putPageValue("viewid", "automationagentenablededit") 
+  #set($viewid = "generaledit")
+
+  #ifnotnull($agenttype)
+    #set($viewid = $agenttype + "edit")
+  #end
+
+  $context.putPageValue("viewid", $viewid) 
   $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 
   <button type="submit" class="btn btn-primary">

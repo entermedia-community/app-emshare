@@ -1,27 +1,61 @@
 <header class=" org-header automation-header">
-   <div class="d-flex me-auto  align-items-center">
-     <img src="$siteroot$apphome/theme/images/emedialogo.png" alt="eMedia" />
-     <h1>[[Enabled Scenarios]]</h1>
-   </div>
-
-   <div class="d-flex align-items-center">
-		<div class="btn-group">
-		  <a href="" class="btn btn-cta"><i class="bi bi-plus-lg me-1"></i>[[Add Scenario]]</a>
-		  <a href="" class="btn btn-cta dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-		    <span class="visually-hidden">Toggle Dropdown</span>
-		  </a>
-		  <ul class="dropdown-menu">
-		    
-		    <li><a class="dropdown-item" href="#" id="importScenario">[[Import]]</a></li>
-		    <li><a class="dropdown-item emdialog"  href="$applink/components/smartautomation/scenario-form.html" data-hidefooter="true">[[Create New]]</a></li>
-		  </ul>
-		  <input type="file" id="importScenarioFile" style="display:none;position:absolute;right:-9999px;" accept=".json,application/json">
-		</div>
+	<div class="d-flex me-auto  align-items-center">
+		#if($cangoback)
+			<a class="ajax btn pe-2" href="$applink/components/smartautomation/index.html" data-targetdivinner="smartautomation" data-oemaxlevel="1">
+				<i class="fas fa-arrow-left text-muted me-1"></i>
+			</a>
+		#end
+		<img src="$siteroot$apphome/theme/images/emedialogo.png" alt="eMedia" />
+		#ifnotnull($scenario)
+			<div class="d-flex flex-column">
+	      <div class="d-flex align-items-center">
+	        <h2 class="my-0 me-2">#text($scenario)</h2>
+	        <a href="$applink/components/smartautomation/scenario-form.html?scenarioid=$!scenario.id" data-hidefooter="true" class="emdialog edit-scenario">
+	          <i class="bi bi-pencil-fill ns"></i>
+	        </a>
+	      </div>
+	      <p class="m-0 scenario-description">$!scenario.longdescription</p>
+	    </div>
+		#end
+		#ifnull($scenario)
+			<h1>[[Smart Automation]]</h1>
+		#end
 	</div>
 
+	#if($editmode)
+		<button class="btn btn-primary ms-2" id="exportScenario" data-name="#text($scenario)">
+			<i class="bi bi-upload deg-90 me-1"></i>[[Export]] 
+		</button>
+		<a class="btn btn-cta ms-2" id="saveScenarioLayout" 
+			title="[[Save Layout]]"
+			href="$siteroot$apphome/components/smartautomation/save-layout.html"
+			role="button">
+			<i class="bi bi-floppy-fill ns me-1"></i> [[Save]]
+		</a>
+	#end
+
+	#if($cangoback)
+		<a class="ajax btn btn-light ms-2" href="$applink/components/smartautomation/index.html" data-targetdivinner="smartautomation" data-oemaxlevel="1">
+			<i class="bi bi-arrow-90deg-left me-1"></i>
+			[[Back]]
+		</a>
+	#else
+		<div class="d-flex align-items-center">
+			<div class="btn-group">
+				<a href="" class="btn btn-cta"><i class="bi bi-plus-lg me-1"></i>[[Add Scenario]]</a>
+				<a href="" class="btn btn-cta dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+					<span class="visually-hidden">Toggle Dropdown</span>
+				</a>
+				<ul class="dropdown-menu">
+					
+					<li><a class="dropdown-item" href="#" id="importScenario">[[Import]]</a></li>
+					<li><a class="dropdown-item emdialog"  href="$applink/components/smartautomation/scenario-form.html" data-hidefooter="true">[[Create New]]</a></li>
+				</ul>
+				<input type="file" id="importScenarioFile" style="display:none;position:absolute;right:-9999px;" accept=".json,application/json">
+			</div>
+		</div>
+	#end
 	<button id="closeautomation" class="ms-2 btn closeorgnizer" title="[[Close Dialog]]">
-       <i class="bi bi-x-lg"></i>
-   	</button>
+		<i class="bi bi-x-lg"></i>
+	</button>
 </header>
-
-
