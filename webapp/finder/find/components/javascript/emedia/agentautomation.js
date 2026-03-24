@@ -186,15 +186,12 @@ function bfsTopDown(nodes) {
 	for (const node of nodes) {
 		if (!node.runafter) continue;
 
-		const parents = node.runafter;//.split("|");
+		const parents = node.runafter; //.split("|");
 		for (const parent of parents) {
 			var parentnode = children[parent.id];
-			if( parentnode === undefined)
-			{
-				console.log("Invalid parent tree ",parent,children);
-			}
-			else
-			{
+			if (parentnode === undefined) {
+				console.log("Invalid parent tree ", parent, children);
+			} else {
 				parentnode.push(node.id);
 			}
 		}
@@ -366,27 +363,24 @@ $(document).ready(function () {
 				url: url,
 				method: "GET",
 				success: function (res) {
-					try
-					{
+					try {
 						if (res.status && res.status == "ok") {
 							const data = res.data;
 							// console.log({ data });
 							// const scenario = data.scenario;
 							// console.log({ scenario });
-	
+
 							const agents = data.agents;
 							var queue = bfsTopDown(agents);
-	
+
 							renderQueue(queue);
 						} else {
 							console.log("Invalid response", res);
 						}
-					}			
-					catch (err)
-					{
+					} catch (err) {
 						console.log(err);
 						customToast("Error loading: " + err.message, {
-										positive: false,
+							positive: false,
 						});
 					}
 				},
@@ -415,7 +409,7 @@ $(document).ready(function () {
 						skipover = true;
 					} else {
 						if (node.runafter) {
-							const parents = node.runafter;//.split("|");
+							const parents = node.runafter; //.split("|");
 							if (parents.length === 1) {
 								parentNode = canvas.getFigure(parents[0].id);
 								if (parentNode) {
@@ -437,15 +431,17 @@ $(document).ready(function () {
 							}
 						}
 					}
-					
+
 					const label = node.name || node.automationagent.name;
-					
+					const icon = node.agenticon || null;
 
 					const attr = {
 						id: node.id,
 						x: startX,
 						y: startY,
-						text: label,
+						icon: icon,
+						text: JSON.parse(`"${icon}"`) + " " + label,
+						fontFamily: "bootstrap-icons, Arial, sans-serif",
 						bgColor: node.enabled
 							? agentSwatch[node.agenttype?.id] || "#888888"
 							: "#ff849f80",
@@ -490,13 +486,14 @@ $(document).ready(function () {
 					}
 
 					if (node.runafter) {
-						var runafter = node.runafter;//.split("|");
-						
-						var connectedTo = canvas
-							.getFigures()
-							.data.filter(
-								// //runafter.includes(f.id),
-								(f) => f.cssClass === "node" && runafter.some(item => item.id === f.id));
+						var runafter = node.runafter; //.split("|");
+
+						var connectedTo = canvas.getFigures().data.filter(
+							// runafter.includes(f.id),
+							(f) =>
+								f.cssClass === "node" &&
+								runafter.some((item) => item.id === f.id),
+						);
 
 						connectedTo.forEach((connectedNode) => {
 							var conn = createConnection(
@@ -681,17 +678,15 @@ $(document).ready(function () {
 			var width = Math.max.apply(Math, xCoords) - minX;
 			var height = Math.max.apply(Math, yCoords) - minY;
 
-			if( width < 300)
-			{
+			if (width < 300) {
 				width = width + 200;
 				minX = minX - 100;
-			} 
-			if( height < 300)
-			{
+			}
+			if (height < 300) {
 				height = height + 200;
 				minY = minY - 100;
-			} 
-			
+			}
+
 			// make square & centered
 			if (width > height) {
 				minY = minY - (width - height) / 2;
@@ -854,24 +849,20 @@ $(document).ready(function () {
 			updateModPosition();
 		});
 
-		
-
 		loadJSON();
 	});
-	
+
 	lQuery("#closeautomation").livequery("click", function (e) {
-				var changed = $("#automation_canvas").data("changed");
-				if (!changed) {
-					closeemdialog($(this).closest(".modal"));
-					return;
-				}
-				if (
-					confirm("You have unsaved changes. Are you sure you want to close?")
-				) {
-					$("#automation_canvas").data("changed", false);
-					closeemdialog($(this).closest(".modal"));
-				}
-			});
+		var changed = $("#automation_canvas").data("changed");
+		if (!changed) {
+			closeemdialog($(this).closest(".modal"));
+			return;
+		}
+		if (confirm("You have unsaved changes. Are you sure you want to close?")) {
+			$("#automation_canvas").data("changed", false);
+			closeemdialog($(this).closest(".modal"));
+		}
+	});
 
 	window.onbeforeunload = function () {
 		var changed = $("#automation_canvas").data("changed");
