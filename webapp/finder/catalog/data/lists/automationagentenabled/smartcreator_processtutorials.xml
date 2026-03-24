@@ -18,78 +18,68 @@ TODO: Add another workflow for the SearchCategory population? How many small one
 	   <data id="smartcreator_findmemory" bean="smartCreatorFindMemoryFiles" agenttype="taskagent" ordering="20">
       <name>
          <language id="en"><![CDATA[Smart Creator: Find Embedded Search Categories Content]]></language>
-      </name>
-   </data>
+</name>
+</data>
 
-   
-	<data id="smartcreator_createoutline" bean="smartCreatorMakeOutlineAgent"  
-	 enabled="true" agenttype="taskagent" ordering="10">
-	      <name>
-	         <language id="en"><![CDATA[Smart Creator: Create Outline]]></language>
-	      </name>
-	      <llmprompt>
-	         <language id="en"><![CDATA[Create a brief outline for a Tutorial about ${data.longcaption}. 
+
+<data id="smartcreator_createoutline" bean="smartCreatorMakeOutlineAgent" enabled="true" agenttype="taskagent" ordering="10">
+<name>
+<language id="en"><![CDATA[Smart Creator: Create Outline]]></language>
+</name>
+<llmprompt>
+<language id="en"><![CDATA[Create a brief outline for a Tutorial about ${data.longcaption}. 
 	         For each outline topic, create a summary with a header, and paragraphs + lists (where necessary). 
 	         Provide examples if applicable.]]></language>
-	      </llmprompt>
-	</data>
+</llmprompt>
+</data>
 
-	<data id="smartcreator_createsections" bean="smartCreatorMakeSectionsAgent"  
-	 enabled="true" agenttype="taskagent" ordering="10">
-	      <name>
-	         <language id="en"><![CDATA[Smart Creator: Create Sections]]></language>
-	      </name>
-	</data>
-   
-   <data id="smartcreator_renderasset" 
+<data id="smartcreator_createsections" bean="smartCreatorMakeSectionsAgent" enabled="true" agenttype="taskagent" ordering="10">
+<name>
+<language id="en"><![CDATA[Smart Creator: Create Sections]]></language>
+</name>
+</data>
+
+<data id="smartcreator_renderasset" 
 	
 -->
 
 <records>
 
-  <data id="aitutorial_eventcreateTutorials" automationagent="handleWebEventAgent" runoperation="smartcreator.checkpending"
-   	automationscenario="smartcreator_processtutorials"
-   enabled="true" ordering="10">
+   <data id="aitutorial_eventcreateTutorials" automationagent="handleWebEventAgent" runoperation="smartcreator.checkpending" automationscenario="smartcreator_processtutorials" enabled="true" ordering="10">
    </data>
 
-   <data id="aitutorial_processpendingrecords" automationagent="smartcreator_processpendingrecords" 
-   automationscenario="smartcreator_processtutorials" enabled="true" runafter="aitutorial_eventcreateTutorials">
+   <data id="aitutorial_processpendingrecords" automationagent="smartcreator_processpendingrecords" automationscenario="smartcreator_processtutorials" enabled="true" runafter="aitutorial_eventcreateTutorials">
       <name>
          <language id="en"><![CDATA[Process Pending Tutorials]]></language>
       </name>
-        <llmprompt>
-	         <language id="en"><![CDATA[Create a brief outline for a Tutorial about ${data.longcaption}. 
+      <llmprompt>
+         <language id="en"><![CDATA[Create a brief outline for a Tutorial about ${data.longcaption}. 
 	         For each outline topic, create a summary with a header, and paragraphs + lists (where necessary). 
 	         Provide examples if applicable.]]></language>
-	     </llmprompt>
+      </llmprompt>
    </data>
 
-   <data id="aitutorial_smartcreator_findmemory" automationagent="smartcreator_findmemory" 
-   automationscenario="smartcreator_processtutorials" enabled="true" runafter="aitutorial_processpendingrecords">
+   <data id="aitutorial_smartcreator_findmemory" automationagent="smartcreator_findmemory" automationscenario="smartcreator_processtutorials" enabled="true" runafter="aitutorial_processpendingrecords">
       <name>
          <language id="en"><![CDATA[Find Record Search Category Data]]></language>
       </name>
    </data>
 
 
-   <data id="aitutorial_smartcreator_createoutline" automationagent="smartcreator_createoutline" automationscenario="smartcreator_processtutorials" 
-    enabled="true"   runafter="aitutorial_smartcreator_findmemory"
-   ordering="10">
+   <data id="aitutorial_smartcreator_createoutline" automationagent="smartcreator_createoutline" automationscenario="smartcreator_processtutorials" enabled="true" runafter="aitutorial_smartcreator_findmemory" ordering="10">
       <name>
          <language id="en"><![CDATA[Create Tutorial Outline]]></language>
       </name>
-   
+
    </data>
 
-	<data id="aitutorial_smartcreator_createsections" automationagent="smartcreator_createsections" 
-   automationscenario="smartcreator_processtutorials" enabled="true" runafter="aitutorial_smartcreator_createoutline">
+   <data id="aitutorial_smartcreator_createsections" automationagent="smartcreator_createsections" automationscenario="smartcreator_processtutorials" enabled="true" runafter="aitutorial_smartcreator_createoutline">
       <name>
          <language id="en"><![CDATA[Create Tutorial Sections]]></language>
       </name>
-   	</data>
+   </data>
 
-   <data id="aitutorial_smartcreator_render" automationagent="smartcreator_renderasset" 
-   automationscenario="smartcreator_processtutorials" enabled="true" runafter="aitutorial_smartcreator_createsections">
+   <data id="aitutorial_smartcreator_render" automationagent="smartcreator_renderasset" automationscenario="smartcreator_processtutorials" enabled="true" runafter="aitutorial_smartcreator_createsections">
       <name>
          <language id="en"><![CDATA[Render Tutorial Preview]]></language>
       </name>

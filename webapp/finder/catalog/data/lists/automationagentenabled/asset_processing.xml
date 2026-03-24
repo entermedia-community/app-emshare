@@ -1,26 +1,26 @@
 <records>
 
- <data id="ap_asset_processing_start_event" automationagent="handleWebEventAgent" runoperation="importing.assetscreated" automationscenario="asset_processing" enabled="true" agenttype="eventagent">
-	<name>
-     <![CDATA[New Assets Created]]>
-    </name>
- </data>
- <data id="ap_assetimportmodule_importassets" automationagent="AssetImportModule_importAssets" automationscenario="asset_processing" runafter="ap_asset_processing_start_event" enabled="true">
- </data>
+   <data id="ap_asset_processing_start_event" automationagent="handleWebEventAgent" runoperation="importing.assetscreated" automationscenario="asset_processing" enabled="true" agenttype="eventagent">
+      <name>
+         <![CDATA[New Assets Created]]>
+      </name>
+   </data>
+   <data id="ap_assetimportmodule_importassets" automationagent="AssetImportModule_importAssets" automationscenario="asset_processing" runafter="ap_asset_processing_start_event" enabled="true">
+   </data>
 
- <data id="ap_importing_assetsreadmetadata" automationagent="importing_assetsreadmetadata" automationscenario="asset_processing" runafter="ap_assetimportmodule_importassets" enabled="true" >
- </data>
-	
- <data id="ap_importing_assetsimportedcustom" automationagent="importing_assetsimportedcustom" automationscenario="asset_processing" runafter="ap_importing_assetsreadmetadata" enabled="true" >
- </data>
+   <data id="ap_importing_assetsreadmetadata" automationagent="importing_assetsreadmetadata" automationscenario="asset_processing" runafter="ap_assetimportmodule_importassets" enabled="true">
+   </data>
 
- <data id="ap_EntityModule_handleAssetsImported" automationagent="EntityModule_handleAssetsImported" automationscenario="asset_processing" runafter="ap_importing_assetsimportedcustom" enabled="true" >
- </data>
+   <data id="ap_importing_assetsimportedcustom" automationagent="importing_assetsimportedcustom" automationscenario="asset_processing" runafter="ap_importing_assetsreadmetadata" enabled="true">
+   </data>
 
- <data id="ap_importing_queueconversions" automationagent="importing_queueconversions" automationscenario="asset_processing" runafter="ap_EntityModule_handleAssetsImported" enabled="true" >
- </data>
-	
- <data id="ap_importing_runconversions" automationagent="conversions_runconversions" automationscenario="asset_processing" runafter="ap_importing_queueconversions" enabled="true" >
- </data>
+   <data id="ap_EntityModule_handleAssetsImported" automationagent="EntityModule_handleAssetsImported" automationscenario="asset_processing" runafter="ap_importing_assetsimportedcustom" enabled="true">
+   </data>
+
+   <data id="ap_importing_queueconversions" automationagent="importing_queueconversions" automationscenario="asset_processing" runafter="ap_EntityModule_handleAssetsImported" enabled="true">
+   </data>
+
+   <data id="ap_importing_runconversions" automationagent="conversions_runconversions" automationscenario="asset_processing" runafter="ap_importing_queueconversions" enabled="true">
+   </data>
 
 </records>

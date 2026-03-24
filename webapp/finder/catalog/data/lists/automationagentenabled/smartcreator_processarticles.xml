@@ -1,49 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <records>
 
-  <data id="entityarticle_eventcreateArticles" automationagent="handleWebEventAgent" runoperation="smartcreator.checkpending"
-   	automationscenario="smartcreator_processarticles"
-   enabled="true" ordering="10">
+   <data id="entityarticle_eventcreateArticles" automationagent="handleWebEventAgent" runoperation="smartcreator.checkpending" automationscenario="smartcreator_processarticles" enabled="true" ordering="10">
    </data>
 
-   <data id="entityarticle_processpendingrecords" automationagent="smartcreator_processpendingrecords" runoperation="entityarticle"
-   automationscenario="smartcreator_processarticles" enabled="true" runafter="entityarticle_eventcreateArticles">
+   <data id="entityarticle_processpendingrecords" automationagent="smartcreator_processpendingrecords" runoperation="entityarticle" automationscenario="smartcreator_processarticles" enabled="true" runafter="entityarticle_eventcreateArticles">
       <name>
          <language id="en"><![CDATA[Process Pending Articles]]></language>
       </name>
-        <llmprompt>
-	         <language id="en"><![CDATA[Create a brief outline for a Article about ${data.longcaption}. 
+      <llmprompt>
+         <language id="en"><![CDATA[Create a brief outline for a Article about ${data.longcaption}. 
 	         For each outline topic, create a summary with a header, and paragraphs + lists (where necessary). 
 	         Provide examples if applicable.]]></language>
-	     </llmprompt>
+      </llmprompt>
    </data>
 
-   <data id="entityarticle_smartcreator_findmemory" automationagent="smartcreator_findmemory" 
-   automationscenario="smartcreator_processarticles" enabled="true" runafter="entityarticle_processpendingrecords">
+   <data id="entityarticle_smartcreator_findmemory" automationagent="smartcreator_findmemory" automationscenario="smartcreator_processarticles" enabled="true" runafter="entityarticle_processpendingrecords">
       <name>
          <language id="en"><![CDATA[Find Record Search Category Data]]></language>
       </name>
    </data>
 
 
-   <data id="entityarticle_smartcreator_createoutline" automationagent="smartcreator_createoutline" automationscenario="smartcreator_processarticles" 
-    enabled="true"   runafter="entityarticle_smartcreator_findmemory"
-   ordering="10">
+   <data id="entityarticle_smartcreator_createoutline" automationagent="smartcreator_createoutline" automationscenario="smartcreator_processarticles" enabled="true" runafter="entityarticle_smartcreator_findmemory" ordering="10">
       <name>
          <language id="en"><![CDATA[Create Article Outline]]></language>
       </name>
-   
+
    </data>
 
-	<data id="entityarticle_smartcreator_createsections" automationagent="smartcreator_createsections" 
-   automationscenario="smartcreator_processarticles" enabled="true" runafter="entityarticle_smartcreator_createoutline">
+   <data id="entityarticle_smartcreator_createsections" automationagent="smartcreator_createsections" automationscenario="smartcreator_processarticles" enabled="true" runafter="entityarticle_smartcreator_createoutline">
       <name>
          <language id="en"><![CDATA[Create Article Sections]]></language>
       </name>
-   	</data>
+   </data>
 
-   <data id="entityarticle_smartcreator_render" automationagent="smartcreator_renderasset" 
-   automationscenario="smartcreator_processarticles" enabled="true" runafter="entityarticle_smartcreator_createsections">
+   <data id="entityarticle_smartcreator_render" automationagent="smartcreator_renderasset" automationscenario="smartcreator_processarticles" enabled="true" runafter="entityarticle_smartcreator_createsections">
       <name>
          <language id="en"><![CDATA[Render Article Preview]]></language>
       </name>
