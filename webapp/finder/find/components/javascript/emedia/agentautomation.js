@@ -933,4 +933,42 @@ $(document).ready(function () {
 		}
 		$(this).find(".edit-btn").trigger("click");
 	});
+
+	lQuery("#automationagentvalue").livequery("select2:select", function (e) {
+		let newLabel = e.params.data.text;
+		newLabel = newLabel.substring(newLabel.indexOf(":") + 1).trim();
+		$(this).closest("form").find("#name\\.value").val(newLabel);
+	});
+
+	function connect() {
+		if (chatConnection && chatConnection.readyState !== chatConnection.CLOSED) {
+			return;
+		}
+		const tabID =
+			sessionStorage.tabID && sessionStorage.closedLastTab !== "2"
+				? sessionStorage.tabID
+				: (sessionStorage.tabID = Math.random());
+		sessionStorage.closedLastTab = "2";
+		$(window).on("unload beforeunload", function () {
+			sessionStorage.closedLastTab = "1";
+		});
+
+		const protocol = location.protocol;
+
+		let url = "//TODO";
+
+		//Get the channel
+		const channel = $(".chatterbox").data("channel");
+		if (channel != null) {
+			url = `${url}&channel=${channel}`;
+		}
+
+		if (protocol === "https:") {
+			chatConnection = new WebSocket(`wss://${location.host}${url}`);
+		} else {
+			chatConnection = new WebSocket(`ws://${location.host}${url}`);
+		}
+
+		chatConnection.addEventListener("message", function (event) {});
+	}
 });
