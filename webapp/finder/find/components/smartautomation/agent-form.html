@@ -4,12 +4,13 @@
 
 #set( $agentid = $context.getRequestParameter("agentid"))
 
+#set($searchtype = "automationagentenabled")
 
 #ifnotnull($agentid)
   #set( $agenttype = $context.getRequestParameter("agenttype"))
   $context.putPageValue("agentid", $agentid)
-  $context.putPageValue("searcher", $mediaarchive.getSearcher("automationagentenabled"))
-  #set( $scenario = $mediaarchive.getData("automationagentenabled", $agentid) )
+  $context.putPageValue("searcher", $mediaarchive.getSearcher($searchtype))
+  #set( $scenario = $mediaarchive.getData($searchtype, $agentid) )
   $context.putPageValue("data", $scenario)
 #end
 
@@ -17,7 +18,7 @@
 
 <form class="pb-2 ajaxform autocloseform" data-targetdivinner="smartautomation" data-oemaxlevel="1" action="$applink/components/smartautomation/agent-edit.html">
   <input name="save" type="hidden" value="true" />
-  <input name="searchtype" type="hidden" value="automationagentenabled" />
+  <input name="searchtype" type="hidden" value="$searchtype" />
   
   #ifnotnull($agentid)
     <input type="hidden" name="id" value="$agentid"/>
@@ -37,7 +38,7 @@
     <input type="hidden" name="offsety.value" value="$offsety"/>
   #end
 
-  #set($viewid = "generaledit")
+  #set($viewid = "${searchtype}general")
 
   #ifnotnull($agenttype)
     #set($viewid = $agenttype + "edit")
