@@ -933,4 +933,10 @@ $(document).ready(function () {
 		}
 		$(this).find(".edit-btn").trigger("click");
 	});
+
+	lQuery("#automationagentvalue").livequery("select2:select", function (e) {
+		let newLabel = e.params.data.text;
+		newLabel = newLabel.substring(newLabel.indexOf(":") + 1).trim();
+		$(this).closest("form").find("#name\\.value").val(newLabel);
+	});
 });
