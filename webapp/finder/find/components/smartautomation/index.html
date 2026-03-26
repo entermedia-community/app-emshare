@@ -1,4 +1,5 @@
-<div class="automation-scenarios">
+<div class="automation-scenarios" id="automation-scenarios">
+	
 	$pages.include("./header.html", $context)
   
   <div class="p-4">
@@ -40,10 +41,15 @@
 							<p class="card-text">$!scenario.longdescription</p>
 							<div class="d-flex position-relative mt-auto">
 	            	<div class="active-automation w-100">
-									<span class="text-muted">Last run: 15m ago</span>
+						#set( $ran = $scenario.getValue("lastsranstart"))
+									<span class="text-muted">Last run: $!context.getAge($ran) ago</span>
 	              	<div class="d-flex align-items-center justify-content-between">
-										<span>Status: Not running</span>
-										<a href="#" class="ms-1" title="[[Run Scenario]]">
+										<span>Status: #if($scenario.getBoolean("isrunning") ) [[Running]] #else [[Not running]] #end</span>
+										<a href="$apphome/components/smartautomation/runnow.html?scenarioid=$scenario.id" 
+										data-targetdiv="automation-scenarios"
+										data-oemaxlevel="1"
+										data-toastmessage="[[Running]] #text($scenario)"
+										class="ajax ms-1" title="[[Run Scenario]]">
 											[[Run Now]]
 										</a>
 									</div>
