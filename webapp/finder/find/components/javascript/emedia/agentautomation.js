@@ -245,6 +245,10 @@ $(document).ready(function () {
 
 	lQuery("#automation_canvas").livequery(function () {
 		var canvasContainer = $(this);
+		if (canvasContainer.hasClass("viewmode")) {
+			canvasWidth -= 340;
+		}
+
 		canvasContainer.data("uiloaded", true);
 		canvasContainer.data("changed", false);
 		canvasContainer.data("initializing", true);
@@ -348,9 +352,13 @@ $(document).ready(function () {
 				},
 				"fast",
 			);
+			let offset = 0;
+			if (canvasContainer.hasClass("editmode")) {
+				offset = 100;
+			}
 			canvasContainer.css({
 				marginTop: 0,
-				marginLeft: -midX + canvasWidth / 2,
+				marginLeft: -midX + canvasWidth / 2 + offset,
 			});
 		}
 
