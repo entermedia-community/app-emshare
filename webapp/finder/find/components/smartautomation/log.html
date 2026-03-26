@@ -1,3 +1,32 @@
-<a href="$applink/components/smartautomation/log-list.html" class="ajax" data-targetdiv="automation-logs">back</a>
+#set($manager = $mediaarchive.getBean("automationManager"))
 
-todo
+#set($agentcontextid = $context.getRequestParameter("agentcontextid"))
+#set($scenarioid = $context.getRequestParameter("scenarioid"))
+
+#set($agentcontext = $manager.findContextForScenerio($scenarioid, $agentcontextid))
+
+#set($logs = $agentcontext.getLogs())
+
+<div class="log-header">
+  <a href="$applink/components/smartautomation/log-list.html" class="ajax me-2 px-2" data-scenarioid="$scenarioid" data-targetdiv="automation-logs">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+  <p class="flex-grow-1 fw-bold text-muted text-center my-0 mx-1" style="padding-right: 40px;">
+    [[Detailed Log]]
+  </p>
+</div>
+
+<div class="log-container">
+  #set($prev = "")
+  #foreach($log in $logs)
+    #set($agentconfig = $log.getCurrentAgentEnabledConfig())
+    #if($agentconfig.getId() != $prev)
+      #set($prev = $agentconfig.getId())
+      <h6 class="log-title">$agentconfig.getId()</h6>
+    #end
+    <div class="log-body $log.logType">
+      <p class="log-message" title="$log.date">$log.message</p>
+      <!-- <p class="log-timestamp">$log.date</p>  -->
+    </div>
+  #end
+</div>

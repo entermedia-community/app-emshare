@@ -1,20 +1,31 @@
-<div id="automation-logs">
+#set($manager = $mediaarchive.getBean("automationManager"))
+
+#ifnotnull($scenario)
+  #set($scenarioid = $scenario.id)
+#end
+
+#ifnull($scenario)
+  #set($scenarioid = $context.getRequestParameter("scenarioid"))
+#end
+
+#set($scenariocontexts = $manager.getRecentScenerioContext($scenarioid))
+
+<div id="automation-logs" class="soft-scrollbar">
   <h5 class="logs-title">[[Recent Runs]]</h5>
   <div class="list-group">
-    <a href="$applink/components/smartautomation/log.html" class="list-group-item ajax" data-targetdivinner="automation-logs">
-      <h6 class="mb-1">Automation Task</h6>
-      <div class="d-flex w-100 justify-content-between align-items-center">
-        <small class="text-muted">2024-01-15 14:30:00</small>
-        <p class="mb-1 text-muted">Status: Completed</p>
-      </div>
-      <small class="text-danger">5 errors</small>
-    </a>
-    <a href="$applink/components/smartautomation/log.html" class="list-group-item ajax" data-targetdivinner="automation-logs">
-      <h6 class="mb-1">Sync Process</h6>
-      <div class="d-flex w-100 justify-content-between align-items-center">
-        <p class="mb-1 text-muted">Status: Running</p>
-        <small class="text-muted">2024-01-15 13:45:00</small>
-      </div>
-    </a>
+    #foreach($agentcontext in $scenariocontexts)
+      #set($errtotal = $agentcontext.getTotalErrorLogs())
+
+      <a href="$applink/components/smartautomation/log.html" data-scenarioid="$scenarioid" data-agentcontextid="$agentcontext.id" class="list-group-item ajax" data-targetdivinner="automation-logs">
+        <p class="m-0 text-muted">Ran on $agentcontext.getLastActive()</p>
+
+        <div class="d-flex w-100 justify-content-between align-items-center">
+          <strong class="m-0 text-muted">Status: Completed #if($errtotal > 0)with errors#end</strong>
+          #if($errtotal > 0)
+            <small class="text-danger">$errtotal errors</small>
+          #end
+        </div>
+      </a>
+    #end
   </div>
 </div>
