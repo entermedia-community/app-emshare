@@ -4,7 +4,12 @@
     "scenarios": [
       #foreach($scenario in ${scenarios})
         #if($foreach.count > 1),#end
-        #json($scenario $scenariosearcher.getPropertyDetails())
+		{
+        #jsonpartial($scenario $scenariosearcher.getPropertyDetails())
+		,
+			#set( $position = $automationmanager.getPosition( $scenario.getId() ) )
+			"postion": 	#json($position $automationpositionsearcher.getPropertyDetails())
+		}
       #end
     ]
   }

@@ -8,7 +8,12 @@
     "agents": [
       #foreach($agent in ${agents})
         #if($foreach.count > 1),#end
-        #json($agent $agentenabledsearcher.getPropertyDetails())
+		{
+        #jsonpartial($agent $agentenabledsearcher.getPropertyDetails())
+		,
+			#set( $position = $automationmanager.getPosition( $agent.getId() ) )
+			"postion": 	#json($position $automationpositionsearcher.getPropertyDetails())
+		}
       #end
     ]
   }
