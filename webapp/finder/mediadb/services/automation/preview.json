@@ -7,8 +7,19 @@
 		{
         #jsonpartial($scenario $scenariosearcher.getPropertyDetails())
 		,
-			#set( $position = $automationmanager.getPosition( $scenario.getId() ) )
-			"postion": 	#json($position $automationpositionsearcher.getPropertyDetails())
+			#set( $position = $automationManager.getPosition( $scenario.getId() ) )
+			"position": 	#json($position $automationpositionsearcher.getPropertyDetails())
+		}
+      #end
+    ],
+    "labels": [
+      #foreach($label in ${labels})
+        #if($foreach.count > 1),#end
+		{
+        #jsonpartial($label $labelsearcher.getPropertyDetails())
+		,
+			#set( $position = $automationManager.getPosition( $label.getId() ) )
+			"position": 	#json($position $automationpositionsearcher.getPropertyDetails())
 		}
       #end
     ]

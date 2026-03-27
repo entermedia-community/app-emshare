@@ -70,7 +70,7 @@ function createConnection(sourcePort, targetPort, attr = {}) {
 		targetPort = conn.targetPort?.name?.includes("labelPort");
 		if (sourcePort || targetPort) {
 			var parent = conn.getSource().getParent();
-			if (parent && parent.cssClass !== "labelGroup") {
+			if (parent && parent.cssClass !== "prevLabel") {
 				parent = conn.getTarget().getParent();
 			}
 			conn.setColor(parent.getColor());
@@ -113,40 +113,40 @@ const previewJson = (attr, userdata = {}) => [
 					y: 0,
 				},
 			},
-			{
-				...nodePort,
-				id: draw2d.util.UUID.create(),
-				name: "bottomPort",
-				locatorAttr: {
-					x: 50,
-					y: 100,
-				},
-			},
-			{
-				...nodePort,
-				id: draw2d.util.UUID.create(),
-				name: "rightPort",
-				locatorAttr: {
-					x: 100,
-					y: 50,
-				},
-			},
-			{
-				...nodePort,
-				id: draw2d.util.UUID.create(),
-				name: "leftPort",
-				locatorAttr: {
-					x: 0,
-					y: 50,
-				},
-			},
+			// {
+			// 	...nodePort,
+			// 	id: draw2d.util.UUID.create(),
+			// 	name: "bottomPort",
+			// 	locatorAttr: {
+			// 		x: 50,
+			// 		y: 100,
+			// 	},
+			// },
+			// {
+			// 	...nodePort,
+			// 	id: draw2d.util.UUID.create(),
+			// 	name: "rightPort",
+			// 	locatorAttr: {
+			// 		x: 100,
+			// 		y: 50,
+			// 	},
+			// },
+			// {
+			// 	...nodePort,
+			// 	id: draw2d.util.UUID.create(),
+			// 	name: "leftPort",
+			// 	locatorAttr: {
+			// 		x: 0,
+			// 		y: 50,
+			// 	},
+			// },
 		],
 	},
 	{
 		type: "draw2d.shape.basic.Circle",
 		cssClass: "previewCircle",
 		...attr,
-		bgColor: "transparent",
+		bgColor: "#ffffff",
 		stroke: 4,
 		color: "royalblue",
 		radius: 100,
@@ -259,35 +259,28 @@ var labelPort = {
 	height: 16,
 };
 var labelJson = function (attr) {
-	var groupId = draw2d.util.UUID.create();
+	if (!attr.id) {
+		attr.id = draw2d.util.UUID.create();
+	}
 	return [
 		{
 			type: "draw2d.shape.note.PostIt",
-			id: groupId,
 			...attr,
-			fontSize: 14,
-			padding: 20,
+			fontSize: 32,
+			padding: 40,
+			bold: true,
 			fontColor: setContrast(attr.bgColor),
 			stroke: 1,
-			cssClass: "labelGroup",
+			cssClass: "prevLabel",
 			radius: 4,
 			ports: [
 				{
 					id: draw2d.util.UUID.create(),
-					name: "labelPortLeft",
+					name: "bottomPort",
 					...labelPort,
 					locatorAttr: {
-						x: 0,
-						y: 50,
-					},
-				},
-				{
-					id: draw2d.util.UUID.create(),
-					name: "labelPortRight",
-					...labelPort,
-					locatorAttr: {
-						x: 100,
-						y: 50,
+						x: 50,
+						y: 100,
 					},
 				},
 			],
@@ -314,6 +307,12 @@ function rgbToHex(r, g, b) {
 		((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()
 	);
 }
+
+function rgbaStringToHex(rgb) {
+	const [r, g, b, _] = rgb.match(/[\d.]+/g).map(Number);
+	return rgbToHex(r, g, b);
+}
+
 function setContrast(hex) {
 	var rgb = hexToRgb(hex);
 	const brightness = Math.round(
@@ -470,15 +469,17 @@ $(document).ready(function () {
 			marginLeft: -midX + canvasWidth / 2,
 		});
 
+		const previewConnConfig = {
+			stroke: 4,
+			strokeDasharray: "5 5",
+			color: "royalblue",
+			maxFanOut: 1,
+			targetDecorator: undefined,
+		};
+
 		canvas = new draw2d.Canvas("automation_canvas_preview");
 		installPolicies(canvas, {
-			connectionAttr: {
-				stroke: 4,
-				strokeDasharray: "5 5",
-				color: "royalblue",
-				maxFanOut: 1,
-				targetDecorator: undefined,
-			},
+			connectionAttr: previewConnConfig,
 		});
 
 		canvas.on("dblclick", function (_, node) {
@@ -516,7 +517,7 @@ $(document).ready(function () {
 						anchor.remove();
 						$("#previewpan").css(css).fadeIn();
 					});
-				} else if (figure.cssClass === "labelGroup") {
+				} else if (figure.cssClass === "prevLabel") {
 					const anchor = $("<a>")
 						.attr("href", `${applink}/components/smartautomation/label.html`)
 						.appendTo("body");
@@ -555,6 +556,10 @@ $(document).ready(function () {
 			closeemdialog($("#prevLabelConfig"));
 		});
 
+		canvas.on("select", function () {
+			const selected = canvas.getPrimarySelection();
+			console.log(selected);
+		});
 		canvas.on("unselect", function () {
 			if ($("#previewpan").is(":visible")) {
 				$("#previewpan").fadeOut(function () {
@@ -575,7 +580,8 @@ $(document).ready(function () {
 						if (res.status && res.status == "ok") {
 							const data = res.data;
 							const scenarios = data.scenarios;
-							renderPreview(scenarios);
+							const labels = data.labels;
+							renderPreview(scenarios, labels);
 						} else {
 							console.log("Invalid response", res);
 						}
@@ -635,21 +641,40 @@ $(document).ready(function () {
 			};
 		}
 
-		function renderPreview(scenarios) {
+		function renderPreview(scenarios, labels) {
+			const connections = [];
 			const startX = midX - canvasWidth / 2 + 200;
 			let row = 0,
 				col = 0;
+			console.log(scenarios);
 			scenarios.forEach((scenario, i) => {
+				if (scenario.connectedtop) {
+					connections.push({
+						source: scenario.connectedtop,
+						target: scenario.id,
+					});
+				}
 				row = i % 3;
 				col = Math.floor(i / 3);
 				let label = scenario.name;
 				label = label.replace(/[^A-Za-z0-9 ]/g, " ");
 				label = label.replace(/\s+/g, " ");
-				console.log(label);
+
+				let X = startX + 50 + col * 250;
+				let Y = 150 + row * 250;
+
+				let skipover = false;
+
+				if (scenario.position) {
+					X = parseFloat(scenario.position.posx);
+					Y = parseFloat(scenario.position.posy);
+					skipover = true;
+				}
+
 				const attr = {
 					id: "scenario" + scenario.id,
-					x: startX + 50 + col * 250,
-					y: 150 + row * 250,
+					x: X,
+					y: Y,
 					text: label,
 					fontColor: "royalblue",
 					bold: true,
@@ -658,6 +683,7 @@ $(document).ready(function () {
 				const userdata = {
 					id: scenario.id,
 				};
+				console.log(attr.id);
 				const node_obj = previewJson(attr, userdata);
 				readerUnmarshal(canvas, node_obj);
 
@@ -671,6 +697,52 @@ $(document).ready(function () {
 					);
 				}
 				renderedPreview.composite.setWidth(200);
+			});
+
+			labels.forEach((label) => {
+				if (label.connectedbottom) {
+					connections.push({
+						source: label.connectedbottom,
+						target: label.id,
+					});
+				}
+
+				addLabelAt({
+					id: label.id,
+					x: parseFloat(label.position.posx),
+					y: parseFloat(label.position.posy),
+					titleText: label.text,
+					color: rgbaStringToHex(label.strokecolor),
+					bgColor: rgbaStringToHex(label.bgcolor),
+				});
+			});
+
+			connections.forEach((conn) => {
+				let sourceNode = canvas.getFigure("scenario" + conn.source + "-group");
+				if (!sourceNode) {
+					sourceNode = canvas.getFigure(conn.source);
+				}
+				let targetNode = canvas.getFigure("scenario" + conn.target + "-group");
+				if (!targetNode) {
+					targetNode = canvas.getFigure(conn.target);
+				}
+
+				if (sourceNode && targetNode) {
+					const sourcePortName =
+						sourceNode.cssClass === "prevLabel" ? "bottomPort" : "topPort";
+					const targetPortName =
+						targetNode.cssClass === "prevLabel" ? "bottomPort" : "topPort";
+
+					const sourcePort = sourceNode.getPort(sourcePortName);
+					const targetPort = targetNode.getPort(targetPortName);
+					if (sourcePort && targetPort) {
+						canvas.add(
+							createConnection(sourcePort, targetPort, previewConnConfig),
+						);
+					} else {
+						console.log({ sourceNode, targetNode, sourcePort, targetPort });
+					}
+				}
 			});
 		}
 
@@ -745,27 +817,115 @@ $(document).ready(function () {
 				color = lightenHex(bgColor, -5);
 			}
 
-			console.log({ x, y });
-
 			if (id) {
 				var previousLabel = canvas.getFigure(id);
-				previousLabel.setText(titleText);
-				previousLabel.setBackgroundColor(bgColor);
-				previousLabel.setColor(color);
-			} else {
-				const json = labelJson({
-					x,
-					y,
-					text: titleText,
-					bgColor: bgColor || "#60729e",
-					color: color || "#4d5d80",
-				});
-				readerUnmarshal(canvas, json);
+				if (previousLabel) {
+					previousLabel.setText(titleText);
+					previousLabel.setBackgroundColor(bgColor);
+					previousLabel.setColor(color);
+					closeemdialog($("#prevLabelConfig"));
+					return;
+				}
+			}
+
+			const json = labelJson({
+				id,
+				x,
+				y,
+				text: titleText,
+				bgColor: bgColor || "#60729e",
+				color: color || "#4d5d80",
+			});
+			readerUnmarshal(canvas, json);
+
+			const renderedLabel = canvas.getFigure(json[0].id);
+			if (renderedLabel) {
+				renderedLabel.setPadding({ top: 20, right: 40, bottom: 20, left: 40 });
 			}
 
 			closeemdialog($("#prevLabelConfig"));
 		}
+
+		$("#savePreviewLayout").on("click", function (e) {
+			e.preventDefault();
+			if (!canvas) {
+				return;
+			}
+			canvasContainer.data("changed", false); //User Save
+
+			writerMarshal(canvas, function (json) {
+				if (json.length === 0) {
+					customToast("Nothing to save", { positive: false });
+					return;
+				}
+
+				const scenarios = [];
+				const labels = [];
+				const connectedTo = {};
+
+				json.forEach((element) => {
+					if (element.type?.endsWith(".Connection")) {
+						const sourceNode = element.source?.node;
+						const targetNode = element.target?.node;
+
+						if (sourceNode && targetNode) {
+							connectedTo[targetNode] = sourceNode;
+						}
+					}
+				});
+
+				json.forEach((element) => {
+					const userData = element.userData || {};
+					if (element.cssClass === "preview" && userData.id) {
+						const node = {
+							...userData,
+							posx: element.x,
+							posy: element.y,
+						};
+						if (connectedTo[element.id]) {
+							node.connectedtop = connectedTo[element.id];
+						}
+						scenarios.push(node);
+					} else if (element.cssClass === "prevLabel") {
+						const node = {
+							id: element.id,
+							text: element.text,
+							bgcolor: element.bgColor,
+							strokecolor: element.color,
+							posx: element.x,
+							posy: element.y,
+						};
+						if (connectedTo[element.id]) {
+							node.connectedbottom = connectedTo[element.id];
+						}
+						labels.push(node);
+					}
+				});
+
+				const url = `${siteroot}/${mediadb}/services/automation/savepreview.json`;
+				const payload = {
+					scenarios,
+					labels,
+				};
+				$.ajax({
+					url,
+					method: "POST",
+					contentType: "application/json",
+					data: JSON.stringify(payload),
+					success: function () {
+						customToast("Preview layout saved successfully");
+					},
+					error: function (err) {
+						console.log(err);
+						customToast("Error while saving!", {
+							positive: false,
+						});
+					},
+				});
+			});
+		});
 	});
+
 	lQuery("#automation_canvas").livequery(function () {
 		canvasContainer = $(this);
 		if (canvasContainer.hasClass("viewmode")) {
@@ -1192,6 +1352,15 @@ $(document).ready(function () {
 						method: "POST",
 						contentType: "application/json",
 						data: JSON.stringify(payload),
+						success: function () {
+							customToast("Layout saved successfully");
+						},
+						error: function (err) {
+							console.log(err);
+							customToast("Error while saving!", {
+								positive: false,
+							});
+						},
 					});
 				});
 			});
@@ -1230,7 +1399,7 @@ $(document).ready(function () {
 		}
 		$("#vToBottom").prop("disabled", false);
 		canvasContainer.css("margin-top", pos);
-		updateModPosition();
+		// updateModPosition();
 	});
 	lQuery("#vToBottom").livequery("click", function (e) {
 		e.stopImmediatePropagation();
@@ -1242,7 +1411,7 @@ $(document).ready(function () {
 		}
 		$("#vToTop").prop("disabled", false);
 		canvasContainer.css("margin-top", pos);
-		updateModPosition();
+		// updateModPosition();
 	});
 	lQuery("#vToLeft").livequery("click", function (e) {
 		e.stopImmediatePropagation();
@@ -1254,7 +1423,7 @@ $(document).ready(function () {
 		}
 		$("#vToRight").prop("disabled", false);
 		canvasContainer.css("margin-left", pos);
-		updateModPosition();
+		// updateModPosition();
 	});
 	lQuery("#vToRight").livequery("click", function (e) {
 		e.stopImmediatePropagation();
@@ -1266,7 +1435,7 @@ $(document).ready(function () {
 		}
 		$("#vToLeft").prop("disabled", false);
 		canvasContainer.css("margin-left", pos);
-		updateModPosition();
+		// updateModPosition();
 	});
 	lQuery("#zoomInBtn").livequery("click", function (e) {
 		e.stopImmediatePropagation();
@@ -1283,7 +1452,7 @@ $(document).ready(function () {
 
 		var newtop = parseInt(canvasContainer.css("margin-top")) + change;
 		canvasContainer.css("margin-top", newtop);
-		updateModPosition();
+		// updateModPosition();
 	});
 
 	lQuery("#zoomOutBtn").livequery("click", function (e) {
@@ -1301,7 +1470,7 @@ $(document).ready(function () {
 
 		var newtop = parseInt(canvasContainer.css("margin-top")) + change;
 		canvasContainer.css("margin-top", newtop);
-		updateModPosition();
+		// updateModPosition();
 	});
 
 	lQuery("#zoomResetBtn").livequery("click", function (e) {
@@ -1309,7 +1478,7 @@ $(document).ready(function () {
 		if (!canvas) return;
 		canvas.setZoom(1.0);
 		recenterCanvas();
-		updateModPosition();
+		// updateModPosition();
 	});
 
 	lQuery("#closeautomation").livequery("click", function (e) {
