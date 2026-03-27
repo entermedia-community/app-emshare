@@ -762,8 +762,11 @@ $(document).ready(function () {
 				var offsetLeft = $("#automation_canvas_preview").css("margin-left");
 				offsetLeft = parseInt(offsetLeft) * -1;
 				$(this).css("opacity", 1);
-				console.log(ui.position, offsetLeft);
-				addLabelAt(ui.position.left * zoom, ui.position.top * zoom);
+				console.log(ui);
+				addLabelAt({
+					x: offsetLeft + ui.offset.left * zoom,
+					y: ui.offset.top * zoom - 100,
+				});
 			},
 			over: function () {
 				$(this).css("opacity", 0.5);
