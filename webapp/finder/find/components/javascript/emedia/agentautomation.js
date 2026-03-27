@@ -6,10 +6,46 @@ const agentSwatch = {
 	logicagent: "#ffde59",
 };
 
+var reader = new draw2d.io.json.Reader();
+var writer = new draw2d.io.json.Writer();
+
+function removeDuplicates(json) {
+	var checkedIds = {
+		Connection: {},
+		Group: {},
+		Label: {},
+		Image: {},
+		End: {},
+	};
+	json.forEach((element, index) => {
+		Object.keys(checkedIds).forEach((key) => {
+			if (element.type && element.type.endsWith("." + key)) {
+				if (checkedIds[key][element.id]) {
+					json.splice(index, 1);
+				} else {
+					checkedIds[key][element.id] = true;
+				}
+			}
+		});
+	});
+}
+
+function readerUnmarshal(canvas, json) {
+	removeDuplicates(json);
+	reader.unmarshal(canvas, json);
+}
+
+function writerMarshal(canvas, callback) {
+	writer.marshal(canvas, function (json) {
+		removeDuplicates(json);
+		callback(json);
+	});
+}
+
 const arrowDeco = new draw2d.decoration.connection.ArrowDecorator(16, 16);
 arrowDeco.setBackgroundColor("#4d5d80");
 
-function createConnection(sourcePort, targetPort) {
+function createConnection(sourcePort, targetPort, attr = {}) {
 	// console.log({ sourcePort, targetPort });
 	const conn = new draw2d.Connection({
 		stroke: 2,
@@ -21,6 +57,7 @@ function createConnection(sourcePort, targetPort) {
 		source: sourcePort,
 		target: targetPort,
 		targetDecorator: arrowDeco,
+		...attr,
 	});
 	conn.on("connect", function () {
 		let sourcePort = conn.sourcePort?.name?.includes("mainInput");
@@ -56,11 +93,87 @@ const nodePort = {
 	locator: "draw2d.layout.locator.XYRelPortLocator",
 };
 
+const previewJson = (attr, userdata = {}) => [
+	{
+		type: "draw2d.shape.composite.Group",
+		id: attr.id + "-group",
+		cssClass: "preview",
+		x: attr.x,
+		y: attr.y,
+		height: 200,
+		width: 200,
+		userData: userdata,
+		ports: [
+			{
+				...nodePort,
+				id: draw2d.util.UUID.create(),
+				name: "topPort",
+				locatorAttr: {
+					x: 50,
+					y: 0,
+				},
+			},
+			{
+				...nodePort,
+				id: draw2d.util.UUID.create(),
+				name: "bottomPort",
+				locatorAttr: {
+					x: 50,
+					y: 100,
+				},
+			},
+			{
+				...nodePort,
+				id: draw2d.util.UUID.create(),
+				name: "rightPort",
+				locatorAttr: {
+					x: 100,
+					y: 50,
+				},
+			},
+			{
+				...nodePort,
+				id: draw2d.util.UUID.create(),
+				name: "leftPort",
+				locatorAttr: {
+					x: 0,
+					y: 50,
+				},
+			},
+		],
+	},
+	{
+		type: "draw2d.shape.basic.Circle",
+		cssClass: "previewCircle",
+		...attr,
+		bgColor: "transparent",
+		stroke: 4,
+		color: "royalblue",
+		radius: 100,
+		composite: attr.id + "-group",
+	},
+	{
+		cssClass: "previewLabel",
+		type: "draw2d.shape.basic.Text",
+		id: attr.id + "-label",
+		x: attr.x + 25,
+		y: attr.y + 20,
+		fontSize: 18,
+		width: 150,
+		fontColor: attr.fontColor,
+		textAlign: "center",
+		stroke: 0,
+		selectable: false,
+		draggable: false,
+		text: attr.text,
+		composite: attr.id + "-group",
+	},
+];
+
 const agentJson = (attr, userdata = {}) => [
 	{
 		type: "draw2d.shape.note.PostIt",
 		...attr,
-		padding: 40,
 		fontSize: 18,
 		cssClass: "node",
 		userData: userdata,
@@ -227,6 +340,55 @@ function bfsTopDown(nodes) {
 	return result;
 }
 
+function installPolicies(canvas, config = {}) {
+	canvas.installEditPolicy(
+		new draw2d.policy.connection.DragConnectionCreatePolicy({
+			createConnection: function (sourcePort, targetPort) {
+				return createConnection(
+					sourcePort,
+					targetPort,
+					config.connectionAttr || {},
+				);
+			},
+		}),
+	);
+
+	canvas.installEditPolicy(new draw2d.policy.canvas.ShowGridEditPolicy());
+	canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGridEditPolicy());
+	canvas.installEditPolicy(new draw2d.policy.canvas.CoronaDecorationPolicy());
+	canvas.uninstallEditPolicy(new draw2d.policy.canvas.WheelZoomPolicy());
+	canvas.uninstallEditPolicy(new draw2d.policy.canvas.DefaultKeyboardPolicy());
+	canvas.installEditPolicy(new draw2d.policy.canvas.ZoomPolicy());
+
+	canvas.installEditPolicy(
+		new draw2d.policy.canvas.KeyboardPolicy({
+			onKeyDown: function (canvas, keyCode, _, ctrlOrMeta) {
+				var selections = canvas.getSelection();
+				if (selections.getSize() === 0) return;
+				if (46 === keyCode || 8 == keyCode) {
+					canvas.getCommandStack().startTransaction("batch_delete");
+					selections.each(function (_, figure) {
+						var cmd = null;
+						if (figure.cssClass === "node") {
+							cmd = new draw2d.command.CommandDeleteGroup(figure);
+							var connections = figure.getConnections();
+							connections.each(function (_, conn) {
+								var c = new draw2d.command.CommandDelete(conn);
+								c !== null && canvas.getCommandStack().execute(c);
+							});
+						} else {
+							cmd = new draw2d.command.CommandDelete(figure);
+						}
+						cmd !== null && canvas.getCommandStack().execute(cmd);
+					});
+					canvas.getCommandStack().commitTransaction();
+					hideLabelConfig();
+				}
+			},
+		}),
+	);
+}
+
 $(document).ready(function () {
 	var app = jQuery("#application");
 	var apphome = app.data("apphome");
@@ -243,6 +405,201 @@ $(document).ready(function () {
 	var midX = fullCanvasWidth / 2;
 	// var midY = fullCanvasHeight / 2;
 
+	lQuery("#automation_canvas_preview").livequery(function () {
+		var canvasContainer = $(this);
+
+		canvasContainer.data("uiloaded", true);
+		canvasContainer.data("changed", false);
+		canvasContainer.data("initializing", true);
+		if (canvas) {
+			canvas.clear();
+			canvas = null;
+		}
+
+		canvasContainer.css({
+			width: fullCanvasWidth,
+			height: fullCanvasHeight,
+			marginTop: 0,
+			marginLeft: -midX + canvasWidth / 2,
+		});
+
+		canvas = new draw2d.Canvas("automation_canvas_preview");
+		installPolicies(canvas, {
+			connectionAttr: {
+				stroke: 4,
+				strokeDasharray: "5 5",
+				color: "royalblue",
+				maxFanOut: 1,
+				targetDecorator: undefined,
+			},
+		});
+
+		canvas.on("dblclick", function (_, node) {
+			var figure = node.figure;
+			if (figure) {
+				if (figure.cssClass?.startsWith("preview")) {
+					if (figure.composite) {
+						figure = figure.composite;
+					}
+					const shape = figure.shape[0].getBoundingClientRect();
+					const bb = {
+						x: shape.x + shape.width,
+						y: shape.y - 20,
+					};
+					const data = figure.getUserData();
+					const anchor = $("<a>")
+						.attr("href", `${applink}/components/smartautomation/view.html`)
+						.appendTo("body");
+					anchor.data("scenarioid", data.id);
+					anchor.data("targetdivinner", "previewpan");
+					anchor.data("oemaxlevel", 1);
+					anchor.runAjax(function () {
+						const css = {
+							left: bb.x,
+							top: bb.y,
+						};
+						let mW = 640;
+						if (bb.x + mW > $(window).width()) {
+							css.left = $(window).width() - mW - 40;
+						}
+						let mH = Math.max(window.innerHeight * 0.5, 480);
+						if (bb.y + mH > $(window).height()) {
+							css.top = $(window).height() - mH - 40;
+						}
+						anchor.remove();
+						$("#previewpan").css(css).fadeIn();
+					});
+				}
+			}
+		});
+
+		canvas.on("select unselect", function () {
+			if ($("#previewpan").is(":visible")) {
+				$("#previewpan").fadeOut(function () {
+					$(this).empty();
+				});
+			}
+		});
+
+		function loadPreviews() {
+			const url = `${siteroot}/${mediadb}/services/automation/preview.json`;
+
+			jQuery.ajax({
+				dataType: "json",
+				url: url,
+				method: "GET",
+				success: function (res) {
+					try {
+						if (res.status && res.status == "ok") {
+							const data = res.data;
+							const scenarios = data.scenarios;
+							renderPreview(scenarios);
+						} else {
+							console.log("Invalid response", res);
+						}
+					} catch (err) {
+						console.log(err);
+						customToast("Error loading: " + err.message, {
+							positive: false,
+						});
+					}
+				},
+			});
+
+			var logo = $("#brandLogo").val();
+			var img = new Image();
+			img.src = logo;
+			img.onload = function () {
+				var imgWidth = img.naturalWidth;
+				var imgHeight = img.naturalHeight;
+				var aspectRatio = imgWidth / imgHeight;
+
+				if (aspectRatio > 1) {
+					imgWidth = 150;
+					imgHeight = imgWidth / aspectRatio;
+				} else {
+					imgHeight = 150;
+					imgWidth = imgHeight * aspectRatio;
+				}
+				const imgX = midX - imgWidth / 2;
+				const imgY = $(".automation-canvas").height() / 2 - imgHeight / 2;
+				canvas.add(
+					new draw2d.shape.basic.Circle({
+						id: "logoCircle",
+						x: imgX + imgWidth / 2 - 25,
+						y: imgY + imgHeight / 2 - 20,
+						radius: Math.max(imgWidth, imgHeight) / 2 + 20,
+						bgColor: "#efefef",
+						color: "#ddd",
+						stroke: 2,
+						selectable: false,
+						draggable: false,
+						cssClass: "brandLogoCircle",
+					}),
+				);
+				canvas.add(
+					new draw2d.shape.basic.Image({
+						id: "logo",
+						path: logo,
+						width: imgWidth,
+						height: imgHeight,
+						draggable: false,
+						selectable: false,
+						cssClass: "brandLogo",
+					}),
+					imgX,
+					imgY,
+				);
+			};
+		}
+
+		function renderPreview(scenarios) {
+			const startX = midX - canvasWidth / 2 + 200;
+			let row = 0,
+				col = 0;
+			scenarios.forEach((scenario, i) => {
+				row = i % 3;
+				col = Math.floor(i / 3);
+				let label = scenario.name;
+				label = label.replace(/[^A-Za-z0-9 ]/g, " ");
+				label = label.replace(/\s+/g, " ");
+				console.log(label);
+				const attr = {
+					id: "scenario" + scenario.id,
+					x: startX + 50 + col * 250,
+					y: 150 + row * 250,
+					text: label,
+					fontColor: "royalblue",
+					bold: true,
+					bgColor: "#f5f7ff",
+				};
+				const userdata = {
+					id: scenario.id,
+				};
+				const node_obj = previewJson(attr, userdata);
+				readerUnmarshal(canvas, node_obj);
+
+				const renderedPreview = canvas.getFigure(
+					"scenario" + scenario.id + "-label",
+				);
+
+				if (renderedPreview) {
+					renderedPreview.setY(
+						renderedPreview.getY() - renderedPreview.getHeight() * 0.28,
+					);
+				}
+				renderedPreview.composite.setWidth(200);
+			});
+		}
+
+		loadPreviews();
+
+		lQuery("#closeautomationprev").livequery("click", function () {
+			$("#previewpan").fadeOut(function () {
+				$(this).empty();
+			});
+		});
+	});
 	lQuery("#automation_canvas").livequery(function () {
 		var canvasContainer = $(this);
 		if (canvasContainer.hasClass("viewmode")) {
@@ -266,84 +623,7 @@ $(document).ready(function () {
 
 		canvas = new draw2d.Canvas("automation_canvas");
 
-		var reader = new draw2d.io.json.Reader();
-		var writer = new draw2d.io.json.Writer();
-
-		function removeDuplicates(json) {
-			var checkedIds = {
-				Connection: {},
-				Group: {},
-				Label: {},
-				Image: {},
-				End: {},
-			};
-			json.forEach((element, index) => {
-				Object.keys(checkedIds).forEach((key) => {
-					if (element.type && element.type.endsWith("." + key)) {
-						if (checkedIds[key][element.id]) {
-							json.splice(index, 1);
-						} else {
-							checkedIds[key][element.id] = true;
-						}
-					}
-				});
-			});
-		}
-
-		function readerUnmarshal(canvas, json) {
-			removeDuplicates(json);
-			reader.unmarshal(canvas, json);
-		}
-
-		function writerMarshal(canvas, callback) {
-			writer.marshal(canvas, function (json) {
-				removeDuplicates(json);
-				callback(json);
-			});
-		}
-
-		canvas.installEditPolicy(
-			new draw2d.policy.connection.DragConnectionCreatePolicy({
-				createConnection: createConnection,
-			}),
-		);
-
-		canvas.installEditPolicy(new draw2d.policy.canvas.ShowGridEditPolicy());
-		canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGridEditPolicy());
-		canvas.installEditPolicy(new draw2d.policy.canvas.CoronaDecorationPolicy());
-		canvas.uninstallEditPolicy(new draw2d.policy.canvas.WheelZoomPolicy());
-		canvas.uninstallEditPolicy(
-			new draw2d.policy.canvas.DefaultKeyboardPolicy(),
-		);
-		canvas.installEditPolicy(new draw2d.policy.canvas.ZoomPolicy());
-
-		canvas.installEditPolicy(
-			new draw2d.policy.canvas.KeyboardPolicy({
-				onKeyDown: function (canvas, keyCode, _, ctrlOrMeta) {
-					var selections = canvas.getSelection();
-					if (selections.getSize() === 0) return;
-					if (46 === keyCode || 8 == keyCode) {
-						canvas.getCommandStack().startTransaction("batch_delete");
-						selections.each(function (_, figure) {
-							var cmd = null;
-							if (figure.cssClass === "node") {
-								cmd = new draw2d.command.CommandDeleteGroup(figure);
-								var connections = figure.getConnections();
-								connections.each(function (_, conn) {
-									var c = new draw2d.command.CommandDelete(conn);
-									c !== null && canvas.getCommandStack().execute(c);
-								});
-							} else {
-								cmd = new draw2d.command.CommandDelete(figure);
-							}
-							cmd !== null && canvas.getCommandStack().execute(cmd);
-						});
-						canvas.getCommandStack().commitTransaction();
-						hideLabelConfig();
-					}
-				},
-			}),
-		);
+		installPolicies(canvas);
 
 		function recenterCanvas() {
 			$(".automation-canvas").animate(
@@ -686,14 +966,12 @@ $(document).ready(function () {
 			var width = Math.max.apply(Math, xCoords) - minX;
 			var height = Math.max.apply(Math, yCoords) - minY;
 
-			if (width < 300) {
-				width = width + 200;
-				minX = minX - 100;
-			}
-			if (height < 300) {
-				height = height + 200;
-				minY = minY - 100;
-			}
+			// add padding
+			const padding = 40;
+			minX = minX - padding;
+			minY = minY - padding;
+			width = width + padding * 2;
+			height = height + padding * 2;
 
 			// make square & centered
 			if (width > height) {

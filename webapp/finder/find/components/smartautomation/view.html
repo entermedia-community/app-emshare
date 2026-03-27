@@ -1,52 +1,24 @@
+#set($scenarioid = $context.getRequestParameter("scenarioid"))
+<div class="preview-header">
+  <a class="btn btn-primary btn-sm edit-btn me-1 ajax" 
+    title="[[Edit Scenario]]"
+    data-scenarioid="$scenarioid" 
+    href="$applink/components/smartautomation/editor.html" 
+    data-targetdivinner="smartautomation" 
+    data-oemaxlevel="1">
+    <i class="bi bi-pencil-square me-1"></i> [[Edit]]
+  </a>
+  <button id="closeautomationprev" class="ms-2 btn closeorgnizer" title="[[Close Dialog]]">
+		<i class="bi bi-x-lg"></i>
+	</button>
+</div>
+<div class="automation-preview">
+  #set($scenarioimage = "/${mediadbappid}/views/automations/${scenarioid}.png")
+  #set($imageexists = $mediaarchive.getPageManager().getPage( $scenarioimage).exists())
+  #if(!$imageexists)
+    #set($scenarioimage = "/${mediadbappid}/views/automations/default.png")
+  #end
 
-<div id="smartautomationmain" class="automation" data-setpagetitle="[[Smart Organizer]]">
-  <div class="automation-inner">
-    $context.putPageValue("cangoback", true)
-    $context.putPageValue("viewmode", "true")
-    $pages.include("./header.html", $context)
-    <input type="hidden" id="automationId" name="id" value="$!scenario.getId()" />
-	
-    <div class="org-row">
-      <div class="automation-canvas soft-scrollbar viewmode">
-        <div id="draggableArea" class="h-100">
-          <div
-            id="automation_canvas" data-initializing="true"
-            style="width: 3000px; height: 3000px"
-            class="viewmode"
-          ></div>
-        </div>
-      </div>
-      $pages.include("./log-list.html", $context)
-    </div>
-
-    <div class="position-absolute bottom-0 start-0 p-3">
-      <div class="viewport-nav">
-        <button id="vToTop" title="[[Move Up (Ctrl + Scroll Up)]]" disabled>
-          <i class="bi bi-chevron-up"></i>
-        </button>
-        <div class="w-100 d-flex justify-content-between">
-          <button id="vToLeft" title="[[Move Left (Ctrl + Shift + Scroll Up)]]">
-            <i class="bi bi-chevron-left"></i>
-          </button>
-          <button id="vToRight" title="[[Move Right (Ctrl + Shift + Scroll Down)]]">
-            <i class="bi bi-chevron-right"></i>
-          </button>
-        </div>
-        <button id="vToBottom" title="[[Move Down (Ctrl + Scroll Down)]]">
-          <i class="bi bi-chevron-down"></i>
-        </button>
-      </div>
-      <div class="canvas-zoom">
-        <button id="zoomInBtn">
-          <i class="bi bi-zoom-in"></i>
-        </button>
-        <button id="zoomResetBtn">
-          <i class="bi bi-crosshair"></i>
-        </button>
-        <button id="zoomOutBtn">
-          <i class="bi bi-zoom-out"></i>
-        </button>
-      </div>
-    </div>
-  </div>
+  <img src="$scenarioimage" class="card-img-top p-1" alt="[[View]] $scenario.name" />
+	$pages.include("./log-list.html", $context)
 </div>
