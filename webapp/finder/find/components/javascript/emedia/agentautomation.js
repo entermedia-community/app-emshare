@@ -249,6 +249,52 @@ const logicJson = (attr, userdata = {}) => [
 	},
 ];
 
+var labelPort = {
+	type: "draw2d.HybridPort",
+	bgColor: "#60729e",
+	color: "#4d5d80",
+	port: "draw2d.HybridPort",
+	locator: "draw2d.layout.locator.XYRelPortLocator",
+	width: 16,
+	height: 16,
+};
+var labelJson = function (attr) {
+	var groupId = draw2d.util.UUID.create();
+	return [
+		{
+			type: "draw2d.shape.note.PostIt",
+			id: groupId,
+			...attr,
+			fontSize: 14,
+			padding: 20,
+			fontColor: setContrast(attr.bgColor),
+			stroke: 1,
+			cssClass: "labelGroup",
+			radius: 4,
+			ports: [
+				{
+					id: draw2d.util.UUID.create(),
+					name: "labelPortLeft",
+					...labelPort,
+					locatorAttr: {
+						x: 0,
+						y: 50,
+					},
+				},
+				{
+					id: draw2d.util.UUID.create(),
+					name: "labelPortRight",
+					...labelPort,
+					locatorAttr: {
+						x: 100,
+						y: 50,
+					},
+				},
+			],
+		},
+	];
+};
+
 function hexToRgb(hex) {
 	if (hex.length == 4) {
 		hex = hex.replace(/^#(.)(.)(.)$/, "#$1$1$2$2$3$3");
@@ -398,6 +444,7 @@ $(document).ready(function () {
 	var userid = $("#application").data("user");
 
 	var canvas = null;
+	var canvasContainer = null;
 	var canvasWidth = 1920 * window.devicePixelRatio;
 	var canvasHeight = 1920 * window.devicePixelRatio;
 	var fullCanvasWidth = canvasWidth + 1000;
@@ -406,7 +453,7 @@ $(document).ready(function () {
 	// var midY = fullCanvasHeight / 2;
 
 	lQuery("#automation_canvas_preview").livequery(function () {
-		var canvasContainer = $(this);
+		canvasContainer = $(this);
 
 		canvasContainer.data("uiloaded", true);
 		canvasContainer.data("changed", false);
@@ -437,10 +484,10 @@ $(document).ready(function () {
 		canvas.on("dblclick", function (_, node) {
 			var figure = node.figure;
 			if (figure) {
-				if (figure.cssClass?.startsWith("preview")) {
-					if (figure.composite) {
-						figure = figure.composite;
-					}
+				if (figure.composite) {
+					figure = figure.composite;
+				}
+				if (figure.cssClass === "preview") {
 					const shape = figure.shape[0].getBoundingClientRect();
 					const bb = {
 						x: shape.x + shape.width,
@@ -469,11 +516,46 @@ $(document).ready(function () {
 						anchor.remove();
 						$("#previewpan").css(css).fadeIn();
 					});
+				} else if (figure.cssClass === "labelGroup") {
+					const anchor = $("<a>")
+						.attr("href", `${applink}/components/smartautomation/label.html`)
+						.appendTo("body");
+					anchor.data("oemaxlevel", 1);
+					anchor.data("id", figure.getId());
+					anchor.data("title", figure.getText());
+					const bgColor = figure.getBackgroundColor();
+					anchor.data(
+						"bgColor",
+						rgbToHex(bgColor.red, bgColor.green, bgColor.blue),
+					);
+					const color = figure.getColor();
+					anchor.data("color", rgbToHex(color.red, color.green, color.blue));
+					anchor.data("dialogid", "prevLabelConfig");
+					anchor.emDialog();
 				}
 			}
 		});
 
-		canvas.on("select unselect", function () {
+		lQuery("#previewLabelForm").livequery("submit", function (e) {
+			e.preventDefault();
+			e.stopImmediatePropagation();
+
+			var id = $(this).data("id");
+
+			var titleText = $(this).find("input[name='title']").val();
+			var color = $(this).find("input[name='stroke']").val();
+			var bgColor = $(this).find("input[name='fill']").val();
+
+			addLabelAt({
+				id,
+				titleText,
+				color,
+				bgColor,
+			});
+			closeemdialog($("#prevLabelConfig"));
+		});
+
+		canvas.on("unselect", function () {
 			if ($("#previewpan").is(":visible")) {
 				$("#previewpan").fadeOut(function () {
 					$(this).empty();
@@ -599,9 +681,93 @@ $(document).ready(function () {
 				$(this).empty();
 			});
 		});
+
+		$(".automation-canvas").droppable({
+			scope: "automationPrev",
+			tolerance: "pointer",
+			drop: function (_, ui) {
+				var zoom = canvas.getZoom();
+				var offsetLeft = $("#automation_canvas_preview").css("margin-left");
+				offsetLeft = parseInt(offsetLeft) * -1;
+				$(this).css("opacity", 1);
+				console.log(ui.position, offsetLeft);
+				addLabelAt(ui.position.left * zoom, ui.position.top * zoom);
+			},
+			over: function () {
+				$(this).css("opacity", 0.5);
+			},
+			out: function () {
+				$(this).css("opacity", 1);
+			},
+		});
+
+		var labelDragging = false;
+		$("#addPrevLabelBtn").on("mouseup", function () {
+			if (!canvas) return;
+
+			if (labelDragging) {
+				labelDragging = false;
+				return;
+			}
+			var mainNode = canvas.getFigure("logoCircle");
+			var centerX = mainNode.getX() + 110;
+			var centerY = mainNode.getY() + 50;
+			var dirX = Math.random() > 0.5 ? 150 : -300;
+			var dirY = Math.random() > 0.5 ? 150 : -300;
+
+			addLabelAt({
+				x: centerX + dirX + Math.random() * 50,
+				y: centerY + dirY + Math.random() * 50,
+			});
+		});
+		$("#addPrevLabelBtn").draggable({
+			scope: "automationPrev",
+			helper: "clone",
+			revert: "invalid",
+			start: function () {
+				labelDragging = true;
+			},
+			end: function () {
+				labelDragging = false;
+			},
+		});
+
+		function addLabelAt({
+			x = midX + 200,
+			y = 100,
+			id = null,
+			titleText = "Double click to edit",
+			color = "#ffffff",
+			bgColor = null,
+		}) {
+			if (!bgColor) {
+				bgColor = getRandomColor();
+				color = lightenHex(bgColor, -5);
+			}
+
+			console.log({ x, y });
+
+			if (id) {
+				var previousLabel = canvas.getFigure(id);
+				previousLabel.setText(titleText);
+				previousLabel.setBackgroundColor(bgColor);
+				previousLabel.setColor(color);
+			} else {
+				const json = labelJson({
+					x,
+					y,
+					text: titleText,
+					bgColor: bgColor || "#60729e",
+					color: color || "#4d5d80",
+				});
+				readerUnmarshal(canvas, json);
+			}
+
+			closeemdialog($("#prevLabelConfig"));
+		}
 	});
 	lQuery("#automation_canvas").livequery(function () {
-		var canvasContainer = $(this);
+		canvasContainer = $(this);
 		if (canvasContainer.hasClass("viewmode")) {
 			canvasWidth -= 340;
 		}
@@ -624,23 +790,6 @@ $(document).ready(function () {
 		canvas = new draw2d.Canvas("automation_canvas");
 
 		installPolicies(canvas);
-
-		function recenterCanvas() {
-			$(".automation-canvas").animate(
-				{
-					scrollTop: 0,
-				},
-				"fast",
-			);
-			let offset = 0;
-			if (canvasContainer.hasClass("editmode")) {
-				offset = 100;
-			}
-			canvasContainer.css({
-				marginTop: 0,
-				marginLeft: -midX + canvasWidth / 2 + offset,
-			});
-		}
 
 		function loadJSON() {
 			const id = $("#automationId").val();
@@ -1048,94 +1197,119 @@ $(document).ready(function () {
 			});
 		});
 
-		var maxLeft = Math.floor(canvasWidth / 2 + 100);
-
-		$("#vToTop").on("click", function (e) {
-			e.stopImmediatePropagation();
-			var pos = parseInt(canvasContainer.css("margin-top")) + 50;
-			if (pos > 0) {
-				$(this).prop("disabled", true);
-				return;
-			}
-			$("#vToBottom").prop("disabled", false);
-			canvasContainer.css("margin-top", pos);
-			updateModPosition();
-		});
-		$("#vToBottom").on("click", function (e) {
-			e.stopImmediatePropagation();
-			var pos = parseInt(canvasContainer.css("margin-top")) - 50;
-			if (Math.abs(pos) > canvasHeight - 80) {
-				$(this).prop("disabled", true);
-				return;
-			}
-			$("#vToTop").prop("disabled", false);
-			canvasContainer.css("margin-top", pos);
-			updateModPosition();
-		});
-		$("#vToLeft").on("click", function (e) {
-			e.stopImmediatePropagation();
-			var pos = parseInt(canvasContainer.css("margin-left")) + 50;
-			if (pos > 0) {
-				$(this).prop("disabled", true);
-				return;
-			}
-			$("#vToRight").prop("disabled", false);
-			canvasContainer.css("margin-left", pos);
-			updateModPosition();
-		});
-		$("#vToRight").on("click", function (e) {
-			e.stopImmediatePropagation();
-			var pos = parseInt(canvasContainer.css("margin-left")) - 50;
-			if (Math.abs(pos) > maxLeft) {
-				$(this).prop("disabled", true);
-				return;
-			}
-			$("#vToLeft").prop("disabled", false);
-			canvasContainer.css("margin-left", pos);
-			updateModPosition();
-		});
-		$("#zoomInBtn").on("click", function (e) {
-			e.stopImmediatePropagation();
-			var zoom = canvas.getZoom();
-			if (zoom < 0.5) return;
-			zoom -= 0.1;
-			canvas.setZoom(zoom);
-
-			var change = -80;
-
-			var newleft = parseInt(canvasContainer.css("margin-left")) + change;
-			canvasContainer.css("margin-left", newleft);
-
-			var newtop = parseInt(canvasContainer.css("margin-top")) + change;
-			canvasContainer.css("margin-top", newtop);
-			updateModPosition();
-		});
-
-		$("#zoomOutBtn").on("click", function (e) {
-			e.stopImmediatePropagation();
-			var zoom = canvas.getZoom();
-			if (zoom > 2) return;
-			zoom += 0.1;
-			canvas.setZoom(zoom);
-
-			var change = 80;
-
-			var newleft = parseInt(canvasContainer.css("margin-left")) + change;
-			canvasContainer.css("margin-left", newleft);
-
-			var newtop = parseInt(canvasContainer.css("margin-top")) + change;
-			canvasContainer.css("margin-top", newtop);
-			updateModPosition();
-		});
-
-		$("#zoomResetBtn").on("click", function (e) {
-			e.stopImmediatePropagation();
-			canvas.setZoom(1.0);
-			recenterCanvas();
-			updateModPosition();
-		});
-
 		loadJSON();
+	});
+
+	function recenterCanvas() {
+		$(".automation-canvas").animate(
+			{
+				scrollTop: 0,
+			},
+			"fast",
+		);
+		if (!canvasContainer) return;
+		let offset = 0;
+		if (canvasContainer.hasClass("editmode")) {
+			offset = 100;
+		}
+		canvasContainer.css({
+			marginTop: 0,
+			marginLeft: -midX + canvasWidth / 2 + offset,
+		});
+	}
+
+	var maxLeft = Math.floor(canvasWidth / 2 + 100);
+
+	lQuery("#vToTop").livequery("click", function (e) {
+		e.stopImmediatePropagation();
+		if (!canvasContainer) return;
+		var pos = parseInt(canvasContainer.css("margin-top")) + 50;
+		if (pos > 0) {
+			$(this).prop("disabled", true);
+			return;
+		}
+		$("#vToBottom").prop("disabled", false);
+		canvasContainer.css("margin-top", pos);
+		updateModPosition();
+	});
+	lQuery("#vToBottom").livequery("click", function (e) {
+		e.stopImmediatePropagation();
+		if (!canvasContainer) return;
+		var pos = parseInt(canvasContainer.css("margin-top")) - 50;
+		if (Math.abs(pos) > canvasHeight - 80) {
+			$(this).prop("disabled", true);
+			return;
+		}
+		$("#vToTop").prop("disabled", false);
+		canvasContainer.css("margin-top", pos);
+		updateModPosition();
+	});
+	lQuery("#vToLeft").livequery("click", function (e) {
+		e.stopImmediatePropagation();
+		if (!canvasContainer) return;
+		var pos = parseInt(canvasContainer.css("margin-left")) + 50;
+		if (pos > 0) {
+			$(this).prop("disabled", true);
+			return;
+		}
+		$("#vToRight").prop("disabled", false);
+		canvasContainer.css("margin-left", pos);
+		updateModPosition();
+	});
+	lQuery("#vToRight").livequery("click", function (e) {
+		e.stopImmediatePropagation();
+		if (!canvasContainer) return;
+		var pos = parseInt(canvasContainer.css("margin-left")) - 50;
+		if (Math.abs(pos) > maxLeft) {
+			$(this).prop("disabled", true);
+			return;
+		}
+		$("#vToLeft").prop("disabled", false);
+		canvasContainer.css("margin-left", pos);
+		updateModPosition();
+	});
+	lQuery("#zoomInBtn").livequery("click", function (e) {
+		e.stopImmediatePropagation();
+		if (!canvas || !canvasContainer) return;
+		var zoom = canvas.getZoom();
+		if (zoom < 0.5) return;
+		zoom -= 0.1;
+		canvas.setZoom(zoom);
+
+		var change = -80;
+
+		var newleft = parseInt(canvasContainer.css("margin-left")) + change;
+		canvasContainer.css("margin-left", newleft);
+
+		var newtop = parseInt(canvasContainer.css("margin-top")) + change;
+		canvasContainer.css("margin-top", newtop);
+		updateModPosition();
+	});
+
+	lQuery("#zoomOutBtn").livequery("click", function (e) {
+		e.stopImmediatePropagation();
+		if (!canvas || !canvasContainer) return;
+		var zoom = canvas.getZoom();
+		if (zoom > 2) return;
+		zoom += 0.1;
+		canvas.setZoom(zoom);
+
+		var change = 80;
+
+		var newleft = parseInt(canvasContainer.css("margin-left")) + change;
+		canvasContainer.css("margin-left", newleft);
+
+		var newtop = parseInt(canvasContainer.css("margin-top")) + change;
+		canvasContainer.css("margin-top", newtop);
+		updateModPosition();
+	});
+
+	lQuery("#zoomResetBtn").livequery("click", function (e) {
+		e.stopImmediatePropagation();
+		if (!canvas) return;
+		canvas.setZoom(1.0);
+		recenterCanvas();
+		updateModPosition();
 	});
 
 	lQuery("#closeautomation").livequery("click", function (e) {
