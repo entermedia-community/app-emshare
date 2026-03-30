@@ -1283,8 +1283,8 @@ $(document).ready(function () {
 			var height = Math.max.apply(Math, yCoords) - minY;
 
 			// add padding
-			const paddingX = Math.max(40, 400 - width);
-			const paddingY = Math.max(40, 600 - height);
+			const paddingX = 40;
+			const paddingY = 20;
 			minX = minX - paddingX;
 			minY = minY - paddingY;
 			width = width + paddingX * 2;
