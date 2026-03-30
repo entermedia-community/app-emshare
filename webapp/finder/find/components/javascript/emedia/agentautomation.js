@@ -665,7 +665,11 @@ $(document).ready(function () {
 
 				let skipover = false;
 
-				if (scenario.position) {
+				if (
+					scenario.position &&
+					scenario.position.posx &&
+					scenario.position.posy
+				) {
 					X = parseFloat(scenario.position.posx);
 					Y = parseFloat(scenario.position.posy);
 					skipover = true;
