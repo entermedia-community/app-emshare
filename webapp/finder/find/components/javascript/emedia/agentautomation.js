@@ -414,7 +414,6 @@ function installPolicies(canvas, config = {}) {
 					const deleteIds = [];
 					canvas.getCommandStack().startTransaction("batch_delete");
 					selections.each(function (_, figure) {
-						console.log(figure.cssClass);
 						const del = {};
 						if (figure.cssClass === "preview") {
 							del.type = "scenario";
@@ -428,7 +427,7 @@ function installPolicies(canvas, config = {}) {
 						}
 						deleteIds.push(del);
 						var cmd = null;
-						if (figure.type === "draw2d.shape.composite.Group") {
+						if (figure instanceof draw2d.shape.composite.Group) {
 							cmd = new draw2d.command.CommandDeleteGroup(figure);
 						} else {
 							cmd = new draw2d.command.CommandDelete(figure);
