@@ -425,18 +425,20 @@ function installPolicies(canvas, config = {}) {
 							del.type = "agent";
 							del.id = figure.getUserData().id;
 						}
-						deleteIds.push(del);
+						if (del.id && del.type) deleteIds.push(del);
 						var cmd = null;
 						if (figure instanceof draw2d.shape.composite.Group) {
 							cmd = new draw2d.command.CommandDeleteGroup(figure);
 						} else {
 							cmd = new draw2d.command.CommandDelete(figure);
 						}
-						var connections = figure.getConnections();
-						connections.each(function (_, conn) {
-							var c = new draw2d.command.CommandDelete(conn);
-							c !== null && canvas.getCommandStack().execute(c);
-						});
+						var connections = figure.getConnections?.();
+						if (connections) {
+							connections.each(function (_, conn) {
+								var c = new draw2d.command.CommandDelete(conn);
+								c !== null && canvas.getCommandStack().execute(c);
+							});
+						}
 						cmd !== null && canvas.getCommandStack().execute(cmd);
 					});
 					canvas.getCommandStack().commitTransaction();
@@ -619,51 +621,51 @@ $(document).ready(function () {
 				},
 			});
 
-			var logo = $("#brandLogo").val();
-			var img = new Image();
-			img.src = logo;
-			img.onload = function () {
-				var imgWidth = img.naturalWidth;
-				var imgHeight = img.naturalHeight;
-				var aspectRatio = imgWidth / imgHeight;
+			// var logo = $("#brandLogo").val();
+			// var img = new Image();
+			// img.src = logo;
+			// img.onload = function () {
+			// 	var imgWidth = img.naturalWidth;
+			// 	var imgHeight = img.naturalHeight;
+			// 	var aspectRatio = imgWidth / imgHeight;
 
-				if (aspectRatio > 1) {
-					imgWidth = 150;
-					imgHeight = imgWidth / aspectRatio;
-				} else {
-					imgHeight = 150;
-					imgWidth = imgHeight * aspectRatio;
-				}
-				const imgX = midX - imgWidth / 2;
-				const imgY = $(".automation-canvas").height() / 2 - imgHeight / 2;
-				canvas.add(
-					new draw2d.shape.basic.Circle({
-						id: "logoCircle",
-						x: imgX + imgWidth / 2 - 25,
-						y: imgY + imgHeight / 2 - 20,
-						radius: Math.max(imgWidth, imgHeight) / 2 + 20,
-						bgColor: "#efefef",
-						color: "#ddd",
-						stroke: 2,
-						selectable: false,
-						draggable: false,
-						cssClass: "brandLogoCircle",
-					}),
-				);
-				canvas.add(
-					new draw2d.shape.basic.Image({
-						id: "logo",
-						path: logo,
-						width: imgWidth,
-						height: imgHeight,
-						draggable: false,
-						selectable: false,
-						cssClass: "brandLogo",
-					}),
-					imgX,
-					imgY,
-				);
-			};
+			// 	if (aspectRatio > 1) {
+			// 		imgWidth = 150;
+			// 		imgHeight = imgWidth / aspectRatio;
+			// 	} else {
+			// 		imgHeight = 150;
+			// 		imgWidth = imgHeight * aspectRatio;
+			// 	}
+			// 	const imgX = midX - imgWidth / 2;
+			// 	const imgY = $(".automation-canvas").height() / 2 - imgHeight / 2;
+			// 	canvas.add(
+			// 		new draw2d.shape.basic.Circle({
+			// 			id: "logoCircle",
+			// 			x: imgX + imgWidth / 2 - 25,
+			// 			y: imgY + imgHeight / 2 - 20,
+			// 			radius: Math.max(imgWidth, imgHeight) / 2 + 20,
+			// 			bgColor: "#efefef",
+			// 			color: "#ddd",
+			// 			stroke: 2,
+			// 			selectable: false,
+			// 			draggable: false,
+			// 			cssClass: "brandLogoCircle",
+			// 		}),
+			// 	);
+			// 	canvas.add(
+			// 		new draw2d.shape.basic.Image({
+			// 			id: "logo",
+			// 			path: logo,
+			// 			width: imgWidth,
+			// 			height: imgHeight,
+			// 			draggable: false,
+			// 			selectable: false,
+			// 			cssClass: "brandLogo",
+			// 		}),
+			// 		imgX,
+			// 		imgY,
+			// 	);
+			// };
 		}
 
 		function renderPreview(scenarios, labels) {
@@ -904,11 +906,18 @@ $(document).ready(function () {
 
 				json.forEach((element) => {
 					if (element.type?.endsWith(".Connection")) {
+						console.log(element);
 						const sourceNode = element.source?.node;
 						const targetNode = element.target?.node;
+						const targetPort = element.target?.port;
 
 						if (sourceNode && targetNode) {
-							connectedTo[targetNode] = sourceNode;
+							const sourcePort = element.source?.port;
+							if (sourcePort === "topPort") {
+								connectedTo[sourceNode] = targetNode;
+							} else if (targetPort === "topPort") {
+								connectedTo[targetNode] = sourceNode;
+							}
 						}
 					}
 				});
