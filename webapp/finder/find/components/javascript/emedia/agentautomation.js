@@ -725,6 +725,13 @@ $(document).ready(function () {
 						renderedPreview.getY() - renderedPreview.getHeight() * 0.28,
 					);
 				}
+				if (skipover) {
+					const renderedGroup = canvas.getFigure(
+						"scenario" + scenario.id + "-group",
+					);
+					renderedGroup.setX(renderedPreview.getX() + 75);
+					renderedGroup.setY(renderedPreview.getY() + 75);
+				}
 				renderedPreview.composite.setWidth(200);
 			});
 
@@ -911,8 +918,8 @@ $(document).ready(function () {
 					if (element.cssClass === "preview" && userData.id) {
 						const node = {
 							...userData,
-							posx: element.x,
-							posy: element.y,
+							posx: element.x - 100,
+							posy: element.y - 80,
 						};
 						if (connectedTo[element.id]) {
 							node.connectedtop = connectedTo[element.id];
