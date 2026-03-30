@@ -407,27 +407,57 @@ function installPolicies(canvas, config = {}) {
 
 	canvas.installEditPolicy(
 		new draw2d.policy.canvas.KeyboardPolicy({
-			onKeyDown: function (canvas, keyCode, _, ctrlOrMeta) {
+			onKeyDown: function (canvas, keyCode) {
 				var selections = canvas.getSelection();
 				if (selections.getSize() === 0) return;
 				if (46 === keyCode || 8 == keyCode) {
+					const deleteIds = [];
 					canvas.getCommandStack().startTransaction("batch_delete");
 					selections.each(function (_, figure) {
+						console.log(figure.cssClass);
+						const del = {};
+						if (figure.cssClass === "preview") {
+							del.type = "scenario";
+							del.id = figure.getUserData().id;
+						} else if (figure.cssClass === "prevLabel") {
+							del.type = "label";
+							del.id = figure.getId();
+						} else if (figure.cssClass === "node") {
+							del.type = "agent";
+							del.id = figure.getUserData().id;
+						}
+						deleteIds.push(del);
 						var cmd = null;
-						if (figure.cssClass === "node") {
+						if (figure.type === "draw2d.shape.composite.Group") {
 							cmd = new draw2d.command.CommandDeleteGroup(figure);
-							var connections = figure.getConnections();
-							connections.each(function (_, conn) {
-								var c = new draw2d.command.CommandDelete(conn);
-								c !== null && canvas.getCommandStack().execute(c);
-							});
 						} else {
 							cmd = new draw2d.command.CommandDelete(figure);
 						}
+						var connections = figure.getConnections();
+						connections.each(function (_, conn) {
+							var c = new draw2d.command.CommandDelete(conn);
+							c !== null && canvas.getCommandStack().execute(c);
+						});
 						cmd !== null && canvas.getCommandStack().execute(cmd);
 					});
 					canvas.getCommandStack().commitTransaction();
-					hideLabelConfig();
+					if (deleteIds.length) {
+						var siteroot = $("#application").data("siteroot");
+						var mediadb = $("#application").data("mediadbappid");
+						const url = `${siteroot}/${mediadb}/services/automation/delete.json`;
+						jQuery.ajax({
+							url: url,
+							method: "POST",
+							contentType: "application/json",
+							data: JSON.stringify({ deleteIds }),
+							success: function (response) {
+								console.log("Delete successful", response);
+							},
+							error: function (error) {
+								console.error("Delete failed", error);
+							},
+						});
+					}
 				}
 			},
 		}),
@@ -1282,6 +1312,8 @@ $(document).ready(function () {
 			var width = Math.max.apply(Math, xCoords) - minX;
 			var height = Math.max.apply(Math, yCoords) - minY;
 
+			console.log({ minX, minY, width, height });
+
 			// add padding
 			const paddingX = 40;
 			const paddingY = 20;
@@ -1291,13 +1323,13 @@ $(document).ready(function () {
 			height = height + paddingY * 2;
 
 			// make square & centered
-			if (width > height) {
-				minY = minY - (width - height) / 2;
-				height = width;
-			} else {
-				minX = minX - (height - width) / 2;
-				width = height;
-			}
+			// if (width > height) {
+			// 	minY = minY - (width - height) / 2;
+			// 	height = width;
+			// } else {
+			// 	minX = minX - (height - width) / 2;
+			// 	width = height;
+			// }
 
 			var pngWriter = new draw2d.io.png.Writer();
 			pngWriter.marshal(
