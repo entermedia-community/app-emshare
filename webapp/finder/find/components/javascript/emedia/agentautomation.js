@@ -506,15 +506,16 @@ $(document).ready(function () {
 							left: bb.x,
 							top: bb.y,
 						};
-						let mW = 640;
+						let mW = $("#previewpan").outerWidth();
 						if (bb.x + mW > $(window).width()) {
 							css.left = $(window).width() - mW - 40;
 						}
-						let mH = Math.max(window.innerHeight * 0.5, 480);
+						let mH = Math.max(window.innerHeight * 0.7, 640);
 						if (bb.y + mH > $(window).height()) {
 							css.top = $(window).height() - mH - 40;
 						}
 						anchor.remove();
+						$("#previewpan").attr("data-figure", figure.getId());
 						$("#previewpan").css(css).fadeIn();
 					});
 				} else if (figure.cssClass === "prevLabel") {
@@ -556,15 +557,10 @@ $(document).ready(function () {
 			closeemdialog($("#prevLabelConfig"));
 		});
 
-		canvas.on("select", function () {
-			const selected = canvas.getPrimarySelection();
-			console.log(selected);
-		});
 		canvas.on("unselect", function () {
 			if ($("#previewpan").is(":visible")) {
-				$("#previewpan").fadeOut(function () {
-					$(this).empty();
-				});
+				$("#previewpan").hide();
+				$("#previewpan").empty();
 			}
 		});
 
@@ -1205,6 +1201,10 @@ $(document).ready(function () {
 			helper: "clone",
 			revert: "invalid",
 		});
+
+		// $("#previewpan").draggable({
+		// 	handle: "#dragHandle",
+		// });
 
 		$(".automation-canvas").droppable({
 			scope: "automationOrg",
