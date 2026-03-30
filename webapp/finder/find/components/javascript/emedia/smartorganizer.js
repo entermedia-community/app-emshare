@@ -172,7 +172,6 @@ $(document).ready(function () {
 				y: y + 88,
 				width: 150,
 				text: "New Folder",
-				textAnchor: "middle",
 				stroke: 0,
 				fontSize: 20,
 				fontWeight: "bold",
@@ -275,7 +274,6 @@ $(document).ready(function () {
 				x: attr.x,
 				y: attr.y + 10,
 				text: attr.title,
-				textAnchor: "middle",
 				stroke: 0,
 				fontSize: attr.titleFS,
 				fontColor: setContrast(attr.bgColor),
@@ -293,7 +291,6 @@ $(document).ready(function () {
 				x: attr.x,
 				y: attr.y + attr.titleHeight + (attr.image ? 110 : 10),
 				text: attr.caption,
-				textAnchor: "middle",
 				stroke: 0,
 				fontSize: attr.captionFS,
 				fontColor: setContrast(attr.bgColor),
@@ -460,12 +457,16 @@ $(document).ready(function () {
 							figure.id.endsWith("-" + t),
 						)
 					) {
-						var w = figure.getWidth();
-						var gw = Math.max(w, figure.cssClass === "folderLabel" ? 150 : 100);
+						var figureWidth = figure.getWidth();
 						var group = figure.composite;
-						group.setWidth(gw);
-						var midX = group.getX() + gw / 2;
-						figure.setX(midX - w / 2);
+						var groupWidth = group.getWidth();
+
+						var w = Math.max(figureWidth, groupWidth);
+
+						group.setWidth(w);
+
+						var midX = group.getX() + w / 2;
+						figure.setX(midX - figureWidth / 2);
 					}
 				});
 			});
