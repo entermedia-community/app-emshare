@@ -1283,11 +1283,12 @@ $(document).ready(function () {
 			var height = Math.max.apply(Math, yCoords) - minY;
 
 			// add padding
-			const padding = 40;
-			minX = minX - padding;
-			minY = minY - padding;
-			width = width + padding * 2;
-			height = height + padding * 2;
+			const paddingX = Math.max(40, 400 - width);
+			const paddingY = Math.max(40, 600 - height);
+			minX = minX - paddingX;
+			minY = minY - paddingY;
+			width = width + paddingX * 2;
+			height = height + paddingY * 2;
 
 			// make square & centered
 			if (width > height) {
