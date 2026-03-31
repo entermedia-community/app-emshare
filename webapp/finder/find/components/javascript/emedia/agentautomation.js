@@ -398,8 +398,6 @@ function installPolicies(canvas, config = {}) {
 		}),
 	);
 
-	canvas.installEditPolicy(new draw2d.policy.canvas.ShowGridEditPolicy());
-	canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGridEditPolicy());
 	canvas.installEditPolicy(new draw2d.policy.canvas.CoronaDecorationPolicy());
 	canvas.uninstallEditPolicy(new draw2d.policy.canvas.WheelZoomPolicy());
 	canvas.uninstallEditPolicy(new draw2d.policy.canvas.DefaultKeyboardPolicy());
