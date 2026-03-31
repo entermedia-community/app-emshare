@@ -495,7 +495,7 @@ $(document).ready(function () {
 			width: fullCanvasWidth,
 			height: fullCanvasHeight,
 			marginTop: 0,
-			marginLeft: -midX + canvasWidth / 2,
+			marginLeft: 0,
 		});
 
 		const previewConnConfig = {
@@ -780,6 +780,7 @@ $(document).ready(function () {
 					}
 				}
 			});
+			recenterCanvas();
 		}
 
 		loadPreviews();
@@ -1422,7 +1423,7 @@ $(document).ready(function () {
 		loadJSON();
 	});
 
-	function recenterCanvas() {
+	function recenterCanvas(test = false) {
 		if (!canvasContainer) return;
 
 		var xCoords = [];
@@ -1447,24 +1448,18 @@ $(document).ready(function () {
 		const y = containerHeight / 2 - centerY;
 
 		let offsetTop = 0;
+		let offsetLeft = 0;
 		if (canvasContainer.hasClass("editmode")) {
-			offsetTop = 100;
+			offsetLeft = 100;
 		}
-		let offsetLeft = 40;
-
-		const oldZoom = canvas.getZoom();
-		const newZoom = width / (containerWidth - offsetLeft * 2);
-		// canvas.setZoom(newZoom, true);
-
-		const dx = centerX * (newZoom - oldZoom);
-		const dy = centerY * (newZoom - oldZoom);
-
-		const scale = Math.abs(1 - newZoom) + (newZoom > 1 ? 0 : 1);
 
 		canvasContainer.css({
 			marginTop: y + offsetTop,
 			marginLeft: x + offsetLeft,
 		});
+
+		// const zoom = width / (containerWidth - offsetLeft * 2);
+		// canvas.setZoom(zoom);
 	}
 
 	var maxLeft = Math.floor(canvasWidth / 2 + 100);
@@ -1680,4 +1675,6 @@ $(document).ready(function () {
 
 		chatConnection.addEventListener("message", function (event) {});
 	}
+
+	// $("a[data-dialogid='smartautomation']").trigger("click");
 });
