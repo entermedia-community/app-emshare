@@ -1423,20 +1423,47 @@ $(document).ready(function () {
 	});
 
 	function recenterCanvas() {
-		$(".automation-canvas").animate(
-			{
-				scrollTop: 0,
-			},
-			"fast",
-		);
 		if (!canvasContainer) return;
-		let offset = 0;
+
+		var xCoords = [];
+		var yCoords = [];
+		canvas.getFigures().each(function (i, f) {
+			var b = f.getBoundingBox();
+			xCoords.push(b.x, b.x + b.w);
+			yCoords.push(b.y, b.y + b.h);
+		});
+		var minX = Math.min.apply(Math, xCoords);
+		var minY = Math.min.apply(Math, yCoords);
+		var width = Math.max.apply(Math, xCoords) - minX;
+		var height = Math.max.apply(Math, yCoords) - minY;
+
+		const containerWidth = $(".automation-canvas").width();
+		const containerHeight = $(".automation-canvas").height();
+
+		const centerX = minX + width / 2;
+		const centerY = minY + height / 2;
+
+		const x = containerWidth / 2 - centerX;
+		const y = containerHeight / 2 - centerY;
+
+		let offsetTop = 0;
 		if (canvasContainer.hasClass("editmode")) {
-			offset = 100;
+			offsetTop = 100;
 		}
+		let offsetLeft = 40;
+
+		const oldZoom = canvas.getZoom();
+		const newZoom = width / (containerWidth - offsetLeft * 2);
+		// canvas.setZoom(newZoom, true);
+
+		const dx = centerX * (newZoom - oldZoom);
+		const dy = centerY * (newZoom - oldZoom);
+
+		const scale = Math.abs(1 - newZoom) + (newZoom > 1 ? 0 : 1);
+
 		canvasContainer.css({
-			marginTop: 0,
-			marginLeft: -midX + canvasWidth / 2 + offset,
+			marginTop: y + offsetTop,
+			marginLeft: x + offsetLeft,
 		});
 	}
 
