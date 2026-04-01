@@ -71,6 +71,11 @@ const colorOnConnect = (source, target, conn) => {
 			);
 			circle.setColor(lightenedColor);
 			conn.setColor(lightenedColor);
+			const ports = target.getPorts();
+			ports.each(function (_, port) {
+				port.setColor(bgColor);
+				port.setBackgroundColor(lightenedColor);
+			});
 		}
 	}
 };
@@ -884,6 +889,12 @@ $(document).ready(function () {
 						colorOnConnect(sourcePortParent, targetPortParent, conn);
 					});
 
+					const ports = previousLabel.getPorts();
+					ports.each(function (_, port) {
+						port.setColor(bgColor);
+						port.setBackgroundColor(lightenHex(color, 10));
+					});
+
 					closeemdialog($("#prevLabelConfig"));
 					return;
 				}
@@ -902,6 +913,11 @@ $(document).ready(function () {
 			const renderedLabel = canvas.getFigure(json[0].id);
 			if (renderedLabel) {
 				renderedLabel.setPadding({ top: 20, right: 40, bottom: 20, left: 40 });
+				const ports = renderedLabel.getPorts();
+				ports.each(function (_, port) {
+					port.setColor(bgColor);
+					port.setBackgroundColor(lightenHex(color, 10));
+				});
 			}
 
 			closeemdialog($("#prevLabelConfig"));
