@@ -109,7 +109,6 @@ const nodePort = {
 	color: "#4d5d80",
 	stroke: 2,
 	port: "draw2d.HybridPort",
-	maxFanOut: 1,
 	locator: "draw2d.layout.locator.XYRelPortLocator",
 };
 
@@ -526,7 +525,6 @@ $(document).ready(function () {
 			stroke: 4,
 			strokeDasharray: "5 5",
 			color: "royalblue",
-			maxFanOut: 1,
 			targetDecorator: undefined,
 		};
 
