@@ -17,9 +17,9 @@
       #set($errtotal = $agentcontext.getTotalErrorLogs())
 
       <a href="$applink/components/smartautomation/log.html" data-scenarioid="$scenarioid" data-agentcontextid="$agentcontext.id" class="list-group-item d-flex flex-column ajax px-0" data-targetdivinner="automation-logs">
-        #set($lastactive = $agentcontext.getLastActive())
-        <p class="m-0 text-muted"><b>Ran on:</b> $lastactive</p>
-        <span class="m-0 text-muted"><b>Status:</b> Completed #if($errtotal > 0)with errors#end</span>
+        #set($lastrunstart = $!context.getAge($agentcontext.getValue("lastrunstart")))
+        <p class="m-0 text-muted"><b>Status:</b> Completed #if($errtotal > 0)with errors#end</p>
+        <p class="m-0 text-muted">Ran $lastrunstart ago</p>
         #if($errtotal > 0)
           <span class="text-danger ms-auto">$errtotal errors</span>
         #end
