@@ -1423,7 +1423,7 @@ $(document).ready(function () {
 		loadJSON();
 	});
 
-	function recenterCanvas(test = false) {
+	function recenterCanvas() {
 		if (!canvasContainer) return;
 
 		var xCoords = [];
@@ -1448,18 +1448,38 @@ $(document).ready(function () {
 		const y = containerHeight / 2 - centerY;
 
 		let offsetTop = 0;
-		let offsetLeft = 0;
+		let offsetLeft = 30;
 		if (canvasContainer.hasClass("editmode")) {
 			offsetLeft = 100;
+		}
+
+		const zoom = width / (containerWidth - offsetLeft * 2);
+
+		if (zoom > 1) {
+			canvas.setZoom(zoom);
+			const zoomedWidth = containerWidth / zoom;
+			const zoomedHeight = containerHeight / zoom;
+			const zoomedCenterX = minX + zoomedWidth / 2;
+			const zoomedCenterY = minY + zoomedHeight / 2;
+
+			const zoomedX = containerWidth / 2 - zoomedCenterX;
+			const zoomedY = containerHeight / 2 - zoomedCenterY;
+
+			offsetTop = (containerHeight - zoomedHeight) / 2;
+			offsetLeft = (containerWidth - zoomedWidth) / 2;
+
+			canvas.setZoom(zoom);
+			canvasContainer.css({
+				marginTop: zoomedY + offsetTop,
+				marginLeft: zoomedX + offsetLeft,
+			});
+			return;
 		}
 
 		canvasContainer.css({
 			marginTop: y + offsetTop,
 			marginLeft: x + offsetLeft,
 		});
-
-		// const zoom = width / (containerWidth - offsetLeft * 2);
-		// canvas.setZoom(zoom);
 	}
 
 	var maxLeft = Math.floor(canvasWidth / 2 + 100);
@@ -1551,7 +1571,6 @@ $(document).ready(function () {
 	lQuery("#zoomResetBtn").livequery("click", function (e) {
 		e.stopImmediatePropagation();
 		if (!canvas) return;
-		canvas.setZoom(1.0);
 		recenterCanvas();
 		// updateModPosition();
 	});
@@ -1676,5 +1695,5 @@ $(document).ready(function () {
 		chatConnection.addEventListener("message", function (event) {});
 	}
 
-	// $("a[data-dialogid='smartautomation']").trigger("click");
+	$("a[data-dialogid='smartautomation']").trigger("click");
 });
