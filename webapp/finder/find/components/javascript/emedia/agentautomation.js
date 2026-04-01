@@ -45,8 +45,39 @@ function writerMarshal(canvas, callback) {
 const arrowDeco = new draw2d.decoration.connection.ArrowDecorator(16, 16);
 arrowDeco.setBackgroundColor("#4d5d80");
 
+const colorOnConnect = (source, target, conn) => {
+	if (target.cssClass === "prevLabel") {
+		let temp = source;
+		source = target;
+		target = temp;
+	}
+	if (source.cssClass === "prevLabel") {
+		let bgColor = source.getBackgroundColor();
+		if (target.cssClass === "preview") {
+			const assignedFigures = target.getAssignedFigures();
+			const circle = assignedFigures.find(
+				(f) => f instanceof draw2d.shape.basic.Circle,
+			);
+			const label = assignedFigures.find(
+				(f) => f instanceof draw2d.shape.basic.Text,
+			);
+			circle.setBackgroundColor(bgColor);
+			console.log(bgColor);
+			label.setFontColor(getContrast(bgColor));
+
+			const lightenedColor = lightenHex(
+				rgbToHex(bgColor.red, bgColor.green, bgColor.blue),
+				10,
+			);
+			circle.setColor(lightenedColor);
+			conn.setColor(lightenedColor);
+		}
+	}
+};
+
 function createConnection(sourcePort, targetPort, attr = {}) {
-	// console.log({ sourcePort, targetPort });
+	let sourcePortParent = sourcePort.getParent(),
+		targetPortParent = targetPort.getParent();
 	const conn = new draw2d.Connection({
 		stroke: 2,
 		color: "#4d5d80",
@@ -59,22 +90,11 @@ function createConnection(sourcePort, targetPort, attr = {}) {
 		targetDecorator: arrowDeco,
 		...attr,
 	});
+	colorOnConnect(sourcePortParent, targetPortParent, conn);
 	conn.on("connect", function () {
-		let sourcePort = conn.sourcePort?.name?.includes("mainInput");
-		let targetPort = conn.targetPort?.name?.includes("mainInput");
-		if (sourcePort || targetPort) {
-			conn.setColor(strokeColor);
-			return;
-		}
-		sourcePort = conn.sourcePort?.name?.includes("labelPort");
-		targetPort = conn.targetPort?.name?.includes("labelPort");
-		if (sourcePort || targetPort) {
-			var parent = conn.getSource().getParent();
-			if (parent && parent.cssClass !== "prevLabel") {
-				parent = conn.getTarget().getParent();
-			}
-			conn.setColor(parent.getColor());
-		}
+		let sourcePortParent = conn.getSource().getParent(),
+			targetPortParent = conn.getTarget().getParent();
+		colorOnConnect(sourcePortParent, targetPortParent, conn);
 	});
 	return conn;
 }
@@ -157,8 +177,8 @@ const previewJson = (attr, userdata = {}) => [
 		type: "draw2d.shape.basic.Text",
 		id: attr.id + "-label",
 		x: attr.x + 25,
-		y: attr.y + 20,
-		fontSize: 18,
+		y: attr.y + 16,
+		fontSize: 22,
 		width: 150,
 		fontColor: attr.fontColor,
 		textAlign: "center",
@@ -269,7 +289,7 @@ var labelJson = function (attr) {
 			fontSize: 32,
 			padding: 40,
 			bold: true,
-			fontColor: setContrast(attr.bgColor),
+			fontColor: getContrast(attr.bgColor),
 			stroke: 1,
 			cssClass: "prevLabel",
 			radius: 4,
@@ -295,9 +315,9 @@ function hexToRgb(hex) {
 	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 	return result
 		? {
-				r: parseInt(result[1], 16),
-				g: parseInt(result[2], 16),
-				b: parseInt(result[3], 16),
+				red: parseInt(result[1], 16),
+				green: parseInt(result[2], 16),
+				blue: parseInt(result[3], 16),
 			}
 		: null;
 }
@@ -313,10 +333,14 @@ function rgbaStringToHex(rgb) {
 	return rgbToHex(r, g, b);
 }
 
-function setContrast(hex) {
-	var rgb = hexToRgb(hex);
+function getContrast(color) {
+	if (typeof color === "string") {
+		color = hexToRgb(color);
+	}
 	const brightness = Math.round(
-		(parseInt(rgb.r) * 299 + parseInt(rgb.g) * 587 + parseInt(rgb.b) * 114) /
+		(parseInt(color.red) * 299 +
+			parseInt(color.green) * 587 +
+			parseInt(color.blue) * 114) /
 			1000,
 	);
 	return brightness > 125 ? "#000000" : "#ffffff";
@@ -531,21 +555,8 @@ $(document).ready(function () {
 					anchor.data("targetdivinner", "previewpan");
 					anchor.data("oemaxlevel", 1);
 					anchor.runAjax(function () {
-						const css = {
-							left: bb.x,
-							top: bb.y,
-						};
-						let mW = $("#previewpan").outerWidth();
-						if (bb.x + mW > $(window).width()) {
-							css.left = $(window).width() - mW - 40;
-						}
-						let mH = Math.max(window.innerHeight * 0.7, 640);
-						if (bb.y + mH > $(window).height()) {
-							css.top = $(window).height() - mH - 40;
-						}
-						anchor.remove();
 						$("#previewpan").attr("data-figure", figure.getId());
-						$("#previewpan").css(css).fadeIn();
+						$("#previewpan").fadeIn();
 					});
 				} else if (figure.cssClass === "prevLabel") {
 					const anchor = $("<a>")
