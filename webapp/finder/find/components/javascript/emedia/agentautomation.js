@@ -1,5 +1,14 @@
 "use strict";
 
+var canvas = null;
+var canvasContainer = null;
+var canvasWidth = 1920 * window.devicePixelRatio;
+var canvasHeight = 1920 * window.devicePixelRatio;
+var fullCanvasWidth = canvasWidth + 1000;
+var fullCanvasHeight = canvasHeight + 1000;
+var midX = fullCanvasWidth / 2;
+var midY = fullCanvasHeight / 2;
+
 const agentSwatch = {
 	eventagent: "#44acff",
 	taskagent: "#c684ff",
@@ -496,16 +505,23 @@ $(document).ready(function () {
 	var siteroot = $("#application").data("siteroot");
 	var applink = siteroot + apphome;
 	var mediadb = $("#application").data("mediadbappid");
-	var userid = $("#application").data("user");
+	// var userid = $("#application").data("user");
 
-	var canvas = null;
-	var canvasContainer = null;
-	var canvasWidth = 1920 * window.devicePixelRatio;
-	var canvasHeight = 1920 * window.devicePixelRatio;
-	var fullCanvasWidth = canvasWidth + 1000;
-	var fullCanvasHeight = canvasHeight + 1000;
-	var midX = fullCanvasWidth / 2;
-	var midY = fullCanvasHeight / 2;
+	function loadCanvasPosition(canvasProps) {
+		if (canvasProps) {
+			canvas.setZoom(parseFloat(canvasProps.zoom) || 1);
+			canvasContainer.data("zoom", parseFloat(canvasProps.zoom) || 1);
+			if (canvasProps.posx && canvasProps.posy) {
+				canvasContainer.data("posx", parseInt(canvasProps.posx));
+				canvasContainer.data("posy", parseInt(canvasProps.posy));
+
+				canvasContainer.css({
+					marginLeft: parseInt(canvasProps.posx),
+					marginTop: parseInt(canvasProps.posy),
+				});
+			}
+		}
+	}
 
 	lQuery("#automation_canvas_preview").livequery(function () {
 		canvasContainer = $(this);
@@ -620,6 +636,7 @@ $(document).ready(function () {
 							const scenarios = data.scenarios;
 							const labels = data.labels;
 							renderPreview(scenarios, labels);
+							loadCanvasPosition(data.canvas);
 						} else {
 							console.log("Invalid response", res);
 						}
@@ -812,11 +829,13 @@ $(document).ready(function () {
 				var zoom = canvas.getZoom();
 				var offsetLeft = $("#automation_canvas_preview").css("margin-left");
 				offsetLeft = parseInt(offsetLeft) * -1;
+				var offsetTop = $("#automation_canvas_preview").css("margin-top");
+				offsetTop = parseInt(offsetTop) * -1;
 				$(this).css("opacity", 1);
 				console.log(ui);
 				addLabelAt({
 					x: offsetLeft + ui.offset.left * zoom,
-					y: ui.offset.top * zoom - 100,
+					y: offsetTop + ui.offset.top * zoom - 100,
 				});
 			},
 			over: function () {
@@ -860,7 +879,7 @@ $(document).ready(function () {
 
 		function addLabelAt({
 			x = midX + 200,
-			y = 100,
+			y = midY + 100,
 			id = null,
 			titleText = "Double click to edit",
 			color = null,
@@ -986,9 +1005,25 @@ $(document).ready(function () {
 				});
 
 				const url = `${siteroot}/${mediadb}/services/automation/savepreview.json`;
+				const marginLeft = parseInt(
+					$("#automation_canvas_preview").css("margin-left"),
+				);
+				const marginTop = parseInt(
+					$("#automation_canvas_preview").css("margin-top"),
+				);
+				const zoom = canvas.getZoom();
+
+				const canvasProps = {
+					id: "automation_canvas_preview",
+					posx: marginLeft,
+					posy: marginTop,
+					zoom: zoom,
+				};
+
 				const payload = {
 					scenarios,
 					labels,
+					canvas: canvasProps,
 				};
 				$.ajax({
 					url,
@@ -1026,7 +1061,7 @@ $(document).ready(function () {
 		canvasContainer.css({
 			width: fullCanvasWidth,
 			height: fullCanvasHeight,
-			marginTop: 0,
+			marginTop: midY - canvasHeight / 2,
 			marginLeft: -midX + canvasWidth / 2,
 		});
 
@@ -1054,6 +1089,8 @@ $(document).ready(function () {
 							var queue = bfsTopDown(agents);
 
 							renderQueue(queue);
+
+							loadCanvasPosition(data.canvas);
 						} else {
 							console.log("Invalid response", res);
 						}
@@ -1069,12 +1106,13 @@ $(document).ready(function () {
 
 		function renderQueue(queue) {
 			var rootX = midX - $(".automation-canvas").width() / 4;
+			var rootY = midY - $(".automation-canvas").height() / 2 + 50;
 
 			let previousNode = null;
 			let parentNode = null;
 
 			queue.map((nodes) => {
-				let y = 50;
+				let y = rootY;
 				if (previousNode) {
 					y = previousNode.getY() + previousNode.getHeight() + 40;
 				}
@@ -1428,14 +1466,27 @@ $(document).ready(function () {
 						data.push(node);
 					}
 				});
-				console.log(data);
+
+				const scenarioid = $("#automationId").val();
+
+				const marginLeft = parseInt($("#automation_canvas").css("margin-left"));
+				const marginTop = parseInt($("#automation_canvas").css("margin-top"));
+				const zoom = canvas.getZoom();
+
+				const canvasProps = {
+					id: `automation_canvas--${scenarioid}`,
+					posx: marginLeft,
+					posy: marginTop,
+					zoom: zoom,
+				};
 
 				getPngPreview(function (png) {
 					const url = `${siteroot}/${mediadb}/services/automation/savelayout.json`;
 					const payload = {
 						thumbnail: png,
 						data,
-						scenarioid: $("#automationId").val(),
+						scenarioid,
+						canvas: canvasProps,
 					};
 					$.ajax({
 						url,
@@ -1461,6 +1512,19 @@ $(document).ready(function () {
 
 	function recenterCanvas() {
 		if (!canvasContainer) return;
+
+		const posx = canvasContainer.data("posx");
+		const posy = canvasContainer.data("posy");
+		const _zoom = canvasContainer.data("zoom");
+		console.log({ posx, posy, _zoom });
+		if (posx !== undefined && posy !== undefined && _zoom !== undefined) {
+			canvas.setZoom(_zoom);
+			canvasContainer.css({
+				marginTop: posy,
+				marginLeft: posx,
+			});
+			return;
+		}
 
 		var xCoords = [];
 		var yCoords = [];
@@ -1491,7 +1555,12 @@ $(document).ready(function () {
 
 		const zoom = width / (containerWidth - offsetLeft * 2) + 0.1;
 
-		if (zoom > 1) {
+		if (zoom <= 1) {
+			canvasContainer.css({
+				marginTop: y + offsetTop,
+				marginLeft: x + offsetLeft,
+			});
+		} else {
 			canvas.setZoom(zoom);
 			const zoomedWidth = containerWidth / zoom;
 			const zoomedHeight = containerHeight / zoom;
@@ -1506,13 +1575,7 @@ $(document).ready(function () {
 				marginTop: zoomedY + offsetTop,
 				marginLeft: zoomedX + offsetLeft,
 			});
-			return;
 		}
-
-		canvasContainer.css({
-			marginTop: y + offsetTop,
-			marginLeft: x + offsetLeft,
-		});
 	}
 
 	var maxLeft = Math.floor(canvasWidth / 2 + 100);
