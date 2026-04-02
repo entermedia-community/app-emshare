@@ -1728,5 +1728,5 @@ $(document).ready(function () {
 		chatConnection.addEventListener("message", function (event) {});
 	}
 
-	$("a[data-dialogid='smartautomation']").trigger("click");
+	// $("a[data-dialogid='smartautomation']").trigger("click");
 });
