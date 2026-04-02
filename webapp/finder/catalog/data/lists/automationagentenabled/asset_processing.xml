@@ -2,13 +2,17 @@
 
    <data id="ap_asset_processing_start_event" automationagent="handleWebEventAgent" runoperation="importing.assetscreated" automationscenario="asset_processing" enabled="true" agenttype="eventagent">
       <name>
-         <![CDATA[New Assets Created]]>
+         <![CDATA[Event Handler]]>
       </name>
    </data>
-   <data id="ap_assetimportmodule_importassets" automationagent="AssetImportModule_importAssets" automationscenario="asset_processing" runafter="ap_asset_processing_start_event" enabled="true">
+   
+   <data id="ap_assetimportcreated" automationagent="AssetsImportCreated" automationscenario="asset_processing" runafter="ap_asset_processing_start_event" enabled="true">
    </data>
 
-   <data id="ap_importing_assetsreadmetadata" automationagent="importing_assetsreadmetadata" automationscenario="asset_processing" runafter="ap_assetimportmodule_importassets" enabled="true">
+   <data id="ap_assetimportimported" automationagent="AssetImportImported" automationscenario="asset_processing" runafter="ap_assetimportcreated" enabled="true">
+   </data>
+
+   <data id="ap_importing_assetsreadmetadata" automationagent="importing_assetsreadmetadata" automationscenario="asset_processing" runafter="ap_assetimportimported" enabled="true">
    </data>
 
    <data id="ap_importing_assetsimportedcustom" automationagent="importing_assetsimportedcustom" automationscenario="asset_processing" runafter="ap_importing_assetsreadmetadata" enabled="true">
