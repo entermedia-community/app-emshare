@@ -71,6 +71,11 @@ const colorOnConnect = (source, target, conn) => {
 			);
 			circle.setColor(lightenedColor);
 			conn.setColor(lightenedColor);
+			const ports = target.getPorts();
+			ports.each(function (_, port) {
+				port.setColor(bgColor);
+				port.setBackgroundColor(lightenedColor);
+			});
 		}
 	}
 };
@@ -289,7 +294,7 @@ var labelJson = function (attr) {
 			padding: 40,
 			bold: true,
 			fontColor: getContrast(attr.bgColor),
-			stroke: 1,
+			stroke: 3,
 			cssClass: "prevLabel",
 			radius: 4,
 			ports: [
@@ -501,7 +506,7 @@ $(document).ready(function () {
 	var fullCanvasWidth = canvasWidth + 1000;
 	var fullCanvasHeight = canvasHeight + 1000;
 	var midX = fullCanvasWidth / 2;
-	// var midY = fullCanvasHeight / 2;
+	var midY = fullCanvasHeight / 2;
 
 	lQuery("#automation_canvas_preview").livequery(function () {
 		canvasContainer = $(this);
@@ -678,6 +683,7 @@ $(document).ready(function () {
 		function renderPreview(scenarios, labels) {
 			const connections = [];
 			const startX = midX - canvasWidth / 2 + 200;
+			const startY = midY - canvasHeight / 2 + 200;
 			let row = 0,
 				col = 0;
 			console.log(scenarios);
@@ -695,7 +701,7 @@ $(document).ready(function () {
 				label = label.replace(/\s+/g, " ");
 
 				let X = startX + 50 + col * 250;
-				let Y = 150 + row * 250;
+				let Y = startY + row * 250;
 
 				let skipover = false;
 
@@ -858,12 +864,14 @@ $(document).ready(function () {
 			y = 100,
 			id = null,
 			titleText = "Double click to edit",
-			color = "#ffffff",
+			color = null,
 			bgColor = null,
 		}) {
 			if (!bgColor) {
 				bgColor = getRandomColor();
-				color = lightenHex(bgColor, -5);
+			}
+			if (!color) {
+				color = lightenHex(bgColor, 10);
 			}
 
 			if (id) {
@@ -872,6 +880,21 @@ $(document).ready(function () {
 					previousLabel.setText(titleText);
 					previousLabel.setBackgroundColor(bgColor);
 					previousLabel.setColor(color);
+					previousLabel.setFontColor(getContrast(bgColor));
+
+					const connectedFigures = previousLabel.getConnections();
+					connectedFigures.each(function (_, conn) {
+						let sourcePortParent = conn.getSource().getParent(),
+							targetPortParent = conn.getTarget().getParent();
+						colorOnConnect(sourcePortParent, targetPortParent, conn);
+					});
+
+					const ports = previousLabel.getPorts();
+					ports.each(function (_, port) {
+						port.setColor(bgColor);
+						port.setBackgroundColor(lightenHex(color, 10));
+					});
+
 					closeemdialog($("#prevLabelConfig"));
 					return;
 				}
@@ -882,14 +905,19 @@ $(document).ready(function () {
 				x,
 				y,
 				text: titleText,
-				bgColor: bgColor || "#60729e",
-				color: color || "#4d5d80",
+				bgColor: bgColor,
+				color: color,
 			});
 			readerUnmarshal(canvas, json);
 
 			const renderedLabel = canvas.getFigure(json[0].id);
 			if (renderedLabel) {
 				renderedLabel.setPadding({ top: 20, right: 40, bottom: 20, left: 40 });
+				const ports = renderedLabel.getPorts();
+				ports.each(function (_, port) {
+					port.setColor(bgColor);
+					port.setBackgroundColor(lightenHex(color, 10));
+				});
 			}
 
 			closeemdialog($("#prevLabelConfig"));
