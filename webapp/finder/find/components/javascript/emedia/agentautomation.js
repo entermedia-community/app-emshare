@@ -62,7 +62,6 @@ const colorOnConnect = (source, target, conn) => {
 				(f) => f instanceof draw2d.shape.basic.Text,
 			);
 			circle.setBackgroundColor(bgColor);
-			console.log(bgColor);
 			label.setFontColor(getContrast(bgColor));
 
 			const lightenedColor = lightenHex(
@@ -727,7 +726,7 @@ $(document).ready(function () {
 				const userdata = {
 					id: scenario.id,
 				};
-				console.log(attr.id);
+
 				const node_obj = previewJson(attr, userdata);
 				readerUnmarshal(canvas, node_obj);
 
@@ -1485,12 +1484,12 @@ $(document).ready(function () {
 		const y = containerHeight / 2 - centerY;
 
 		let offsetTop = 0;
-		let offsetLeft = 30;
+		let offsetLeft = 0;
 		if (canvasContainer.hasClass("editmode")) {
 			offsetLeft = 100;
 		}
 
-		const zoom = width / (containerWidth - offsetLeft * 2);
+		const zoom = width / (containerWidth - offsetLeft * 2) + 0.1;
 
 		if (zoom > 1) {
 			canvas.setZoom(zoom);
@@ -1501,9 +1500,6 @@ $(document).ready(function () {
 
 			const zoomedX = containerWidth / 2 - zoomedCenterX;
 			const zoomedY = containerHeight / 2 - zoomedCenterY;
-
-			offsetTop = (containerHeight - zoomedHeight) / 2;
-			offsetLeft = (containerWidth - zoomedWidth) / 2;
 
 			canvas.setZoom(zoom);
 			canvasContainer.css({
@@ -1732,5 +1728,5 @@ $(document).ready(function () {
 		chatConnection.addEventListener("message", function (event) {});
 	}
 
-	// $("a[data-dialogid='smartautomation']").trigger("click");
+	$("a[data-dialogid='smartautomation']").trigger("click");
 });
