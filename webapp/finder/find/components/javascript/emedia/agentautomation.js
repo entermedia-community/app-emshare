@@ -45,17 +45,18 @@ function writerMarshal(canvas, callback) {
 	});
 }
 
-const arrowDeco = new draw2d.decoration.connection.ArrowDecorator(16, 16);
-arrowDeco.setBackgroundColor("#4d5d80");
-
-const colorOnConnect = (source, target, conn) => {
+const colorOnConnect = (source, target, conn, decorator = null) => {
 	if (target.cssClass === "prevLabel") {
 		let temp = source;
 		source = target;
 		target = temp;
 	}
+	const bgColor = source.getBackgroundColor();
+	const lightenedColor = lightenHex(
+		rgbToHex(bgColor.red, bgColor.green, bgColor.blue),
+		10,
+	);
 	if (source.cssClass === "prevLabel") {
-		let bgColor = source.getBackgroundColor();
 		if (target.cssClass === "preview") {
 			const assignedFigures = target.getAssignedFigures();
 			const circle = assignedFigures.find(
@@ -67,10 +68,6 @@ const colorOnConnect = (source, target, conn) => {
 			circle.setBackgroundColor(bgColor);
 			label.setFontColor(getContrast(bgColor));
 
-			const lightenedColor = lightenHex(
-				rgbToHex(bgColor.red, bgColor.green, bgColor.blue),
-				10,
-			);
 			circle.setColor(lightenedColor);
 			conn.setColor(lightenedColor);
 			const ports = target.getPorts();
@@ -79,20 +76,21 @@ const colorOnConnect = (source, target, conn) => {
 				port.setBackgroundColor(lightenedColor);
 			});
 		}
+	} else {
+		conn.setColor(bgColor);
+		if (decorator) {
+			decorator.setBackgroundColor(lightenedColor);
+		}
 	}
 };
 
 function createConnection(sourcePort, targetPort, attr = {}) {
-	let sourcePortParent = sourcePort.getParent(),
+	const sourcePortParent = sourcePort.getParent(),
 		targetPortParent = targetPort.getParent();
 
-	if (attr.arrowColor) {
-		arrowDeco.setBackgroundColor(attr.arrowColor);
-	} else if (sourcePortParent) {
-		const spBg = sourcePortParent.getBackgroundColor();
-		arrowDeco.setBackgroundColor(
-			lightenHex(rgbToHex(spBg.red, spBg.green, spBg.blue), 10),
-		);
+	let arrowDeco;
+	if (attr.showArrow) {
+		arrowDeco = new draw2d.decoration.connection.ArrowDecorator(16, 16);
 	}
 
 	const conn = new draw2d.Connection({
@@ -107,11 +105,11 @@ function createConnection(sourcePort, targetPort, attr = {}) {
 		targetDecorator: arrowDeco,
 		...attr,
 	});
-	colorOnConnect(sourcePortParent, targetPortParent, conn);
+	colorOnConnect(sourcePortParent, targetPortParent, conn, arrowDeco);
 	conn.on("connect", function () {
 		let sourcePortParent = conn.getSource().getParent(),
 			targetPortParent = conn.getTarget().getParent();
-		colorOnConnect(sourcePortParent, targetPortParent, conn);
+		colorOnConnect(sourcePortParent, targetPortParent, conn, arrowDeco);
 	});
 	return conn;
 }
@@ -1216,23 +1214,19 @@ $(document).ready(function () {
 					}
 
 					if (node.runafter) {
-						var runafter = node.runafter; //.split("|");
-
-						var connectedTo = canvas.getFigures().data.filter(
-							// runafter.includes(f.id),
-							(f) =>
-								f.cssClass === "node" &&
-								runafter.some((item) => item.id === f.id),
-						);
+						const connectedTo = canvas
+							.getFigures()
+							.data.filter(
+								(f) =>
+									f.cssClass === "node" &&
+									node.runafter.some((item) => item.id === f.id),
+							);
 
 						connectedTo.forEach((connectedNode) => {
-							var conn = createConnection(
+							const conn = createConnection(
 								connectedNode.getPort("bottomPort"),
 								renderedNode.getPort("topPort"),
-								{
-									color: lightenedColor,
-									arrowColor: lightenedColor,
-								},
+								{ showArrow: true },
 							);
 							canvas.add(conn);
 						});
