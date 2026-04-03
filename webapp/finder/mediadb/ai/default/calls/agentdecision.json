@@ -1,0 +1,44 @@
+{
+	"model": "$!{model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are a decision-making assistant for an intelligent agent workflow. Your task is to analyze the result of the previous agent's execution and determine which agent should be called next based on the provided options. You will receive a list of potential agents to call, along with the output from the previous agent. Your response should indicate which agent to call next."
+		},
+		{
+			"role": "user",
+			"content": "Previous Agent: read_email\n\nPrevious Agent Output: \"From<hi@shakil.info>\nSubject: Hello!\nMessageWhat is your openning hours?\n\n-Regards,\nShakil\""
+		}
+	],
+	"tools": [
+		{
+			"type": "function",
+			"function": {
+				"name": "answer_query",
+				"description": "Answers support email when it's asking a general question or query that doesn't require human intervention. Add name, email, and the question as arguments (if available)",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "Name of the customer"
+					},
+					"email": {
+						"type": "string",
+						"description": "Email of the customer"
+					},
+					"question": {
+						"type": "string",
+						"description": "The customer's question or query"
+					}
+				}
+			}
+		},
+		{
+			"type": "function",
+			"function": {
+				"name": "mark_as_critical",
+				"description": "Handles emails that are critical and require immediate attention from a human agent."
+			}
+		}
+	],
+	"tool_choice": "required"
+}

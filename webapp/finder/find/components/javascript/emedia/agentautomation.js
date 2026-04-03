@@ -91,6 +91,16 @@ const colorOnConnect = (source, target, conn) => {
 function createConnection(sourcePort, targetPort, attr = {}) {
 	let sourcePortParent = sourcePort.getParent(),
 		targetPortParent = targetPort.getParent();
+
+	if (attr.arrowColor) {
+		arrowDeco.setBackgroundColor(attr.arrowColor);
+	} else if (sourcePortParent) {
+		const spBg = sourcePortParent.getBackgroundColor();
+		arrowDeco.setBackgroundColor(
+			lightenHex(rgbToHex(spBg.red, spBg.green, spBg.blue), 10),
+		);
+	}
+
 	const conn = new draw2d.Connection({
 		stroke: 2,
 		color: "#4d5d80",
@@ -1188,6 +1198,14 @@ $(document).ready(function () {
 
 					const renderedNode = canvas.getFigure(node.id);
 
+					const lightenedColor = lightenHex(attr.bgColor, 10);
+
+					const ports = renderedNode.getPorts();
+					ports.each(function (_, port) {
+						port.setColor(attr.bgColor);
+						port.setBackgroundColor(lightenedColor);
+					});
+
 					if (!skipover) {
 						if (nodes.length === 1) {
 							renderedNode.setX(
@@ -1218,6 +1236,10 @@ $(document).ready(function () {
 							var conn = createConnection(
 								connectedNode.getPort("bottomPort"),
 								renderedNode.getPort("topPort"),
+								{
+									color: lightenedColor,
+									arrowColor: lightenedColor,
+								},
 							);
 							canvas.add(conn);
 						});
