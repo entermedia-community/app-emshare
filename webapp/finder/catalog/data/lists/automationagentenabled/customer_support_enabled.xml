@@ -1,0 +1,61 @@
+<records>
+
+  <data id="customer_support_start" automationagent="handleWebEventAgent" runoperation="mcp.readmail" automationscenario="email" enabled="true">
+    <name>
+      <![CDATA[Start Customer Support]]>
+    </name>
+  </data>
+
+  <data id="check_email_enabled" automationagent="check_email" automationscenario="email" enabled="true" runafter="customer_support_start">
+    <name>
+      <![CDATA[Check Email]]>
+    </name>
+  </data>
+
+  <data id="read_email_enabled" automationagent="read_email" automationscenario="email" enabled="true" runafter="check_email_enabled">
+    <name>
+      <![CDATA[Read Email]]>
+    </name>
+  </data>
+
+  <data id="answer_query_enabled" automationagent="answer_query" automationscenario="email" runafter="read_email_enabled" enabled="true">
+    <name>
+      <![CDATA[Answer Query]]>
+    </name>
+    <llmprompt>
+      <language id="en"><![CDATA[Answers support email when it's asking a general question or query that doesn't require human intervention.]]></language>
+    </llmprompt>
+    <skilloverview>
+      <language id="en"><![CDATA[Requires name, email, and the question as arguments (if available).]]></language>
+    </skilloverview>
+  </data>
+
+  <data id="close_email_enabled" automationagent="close_email" automationscenario="email" runafter="answer_query_enabled" enabled="true">
+    <name>
+      <![CDATA[Close Email]]>
+    </name>
+  </data>
+
+  <data id="mark_as_critical_enabled" automationagent="mark_as_critical" automationscenario="email" runafter="read_email_enabled" enabled="true">
+    <name>
+      <![CDATA[Mark as Critical]]>
+    </name>
+    <llmprompt>
+      <language id="en"><![CDATA[Handles emails that are critical and require immediate attention from a human agent.]]></language>
+    </llmprompt>
+    <skilloverview>
+      <language id="en"><![CDATA[Requires name, email, the primary problem and possible department to escalate this problem to.]]></language>
+    </skilloverview>
+  </data>
+
+  <data id="escalate_issue_enabled" automationagent="escalate_issue" automationscenario="email" runafter="mark_as_critical_enabled" enabled="true">
+    <name>
+      <![CDATA[Escalate Issue]]>
+    </name>
+    <llmprompt>
+      <language id="en"><![CDATA[Escalates issues that cannot be resolved by the automated system to a human agent for further handling.]]></language>
+    </llmprompt>
+  </data>
+
+
+</records>
