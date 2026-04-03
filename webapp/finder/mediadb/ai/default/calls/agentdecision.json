@@ -7,38 +7,42 @@
 		},
 		{
 			"role": "user",
-			"content": "Previous Agent: read_email\n\nPrevious Agent Output: \"From<hi@shakil.info>\nSubject: Hello!\nMessageWhat is your openning hours?\n\n-Regards,\nShakil\""
+			"content": #jesc("
+Previous Agent: $!{previousagent}
+Previous Agent's Output: $!{previousoutput}
+")
 		}
 	],
 	"tools": [
+		#foreach($agentenabled in $enabledchildren)
+		#if($foreach.count>1)
+		,
+		#end
 		{
 			"type": "function",
 			"function": {
-				"name": "answer_query",
-				"description": "Answers support email when it's asking a general question or query that doesn't require human intervention. Add name, email, and the question as arguments (if available)",
-				"properties": {
-					"name": {
-						"type": "string",
-						"description": "Name of the customer"
-					},
-					"email": {
-						"type": "string",
-						"description": "Email of the customer"
-					},
-					"question": {
-						"type": "string",
-						"description": "The customer's question or query"
+				"name": "$!{agent.id}",
+				"description": "$!{agent.llmprompt}"
+				#set($params = $agentenabled.getAgentParameterStructure())
+				#if($params.size() > 0)
+					,
+					"parameters": {
+						"type": "object",
+						"properties": {
+							#foreach($param in $params)
+								#if($foreach.count>1)
+								,
+								#end
+								"${param.id}": {
+									"type": "${param.data_type}",
+									"description": "${param.description}"
+								}
+							#end
+						}
 					}
-				}
+				#end
 			}
-		},
-		{
-			"type": "function",
-			"function": {
-				"name": "mark_as_critical",
-				"description": "Handles emails that are critical and require immediate attention from a human agent."
-			}
-		}
+		}#if($foreach.hasNext),#end
 	],
 	"tool_choice": "required"
 }
