@@ -9,12 +9,6 @@ var fullCanvasHeight = canvasHeight + 1000;
 var midX = fullCanvasWidth / 2;
 var midY = fullCanvasHeight / 2;
 
-const agentSwatch = {
-	eventagent: "#44acff",
-	taskagent: "#c684ff",
-	logicagent: "#ffde59",
-};
-
 var reader = new draw2d.io.json.Reader();
 var writer = new draw2d.io.json.Writer();
 
@@ -1163,6 +1157,7 @@ $(document).ready(function () {
 
 					const label = node.name || node.automationagent.name;
 					const icon = node.agenticon || null;
+					const bgColor = node.agentcolor || "#888888";
 
 					const attr = {
 						id: node.id,
@@ -1171,9 +1166,7 @@ $(document).ready(function () {
 						icon: icon,
 						text: JSON.parse(`"${icon}"`) + " " + label,
 						fontFamily: "bootstrap-icons, Arial, sans-serif",
-						bgColor: node.enabled
-							? agentSwatch[node.agenttype?.id] || "#888888"
-							: "#ff849f80",
+						bgColor: node.enabled ? bgColor : "#DA6C6C80",
 					};
 
 					const userData = {
