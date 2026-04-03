@@ -525,10 +525,8 @@ $(document).ready(function () {
 
 	lQuery("#automation_canvas_preview").livequery(function () {
 		canvasContainer = $(this);
-
-		canvasContainer.data("uiloaded", true);
 		canvasContainer.data("changed", false);
-		canvasContainer.data("initializing", true);
+
 		if (canvas) {
 			canvas.clear();
 			canvas = null;
@@ -551,6 +549,10 @@ $(document).ready(function () {
 		canvas = new draw2d.Canvas("automation_canvas_preview");
 		installPolicies(canvas, {
 			connectionAttr: previewConnConfig,
+		});
+
+		canvas.on("select", function () {
+			canvasContainer.data("changed", true);
 		});
 
 		canvas.on("dblclick", function (_, node) {
@@ -946,7 +948,7 @@ $(document).ready(function () {
 			if (!canvas) {
 				return;
 			}
-			canvasContainer.data("changed", false); //User Save
+			canvasContainer.data("changed", false);
 
 			writerMarshal(canvas, function (json) {
 				if (json.length === 0) {
@@ -1046,13 +1048,12 @@ $(document).ready(function () {
 
 	lQuery("#automation_canvas").livequery(function () {
 		canvasContainer = $(this);
+		canvasContainer.data("changed", false);
+
 		if (canvasContainer.hasClass("viewmode")) {
 			canvasWidth -= 340;
 		}
 
-		canvasContainer.data("uiloaded", true);
-		canvasContainer.data("changed", false);
-		canvasContainer.data("initializing", true);
 		if (canvas) {
 			canvas.clear();
 			canvas = null;
@@ -1274,6 +1275,7 @@ $(document).ready(function () {
 
 		canvas.on("select", function () {
 			handleSelect();
+			canvasContainer.data("changed", true);
 		});
 
 		canvas.on("unselect", function () {
@@ -1434,7 +1436,7 @@ $(document).ready(function () {
 			if (!canvas) {
 				return;
 			}
-			canvasContainer.data("changed", false); //User Save
+			canvasContainer.data("changed", false);
 
 			writerMarshal(canvas, function (json) {
 				if (json.length === 0) {
@@ -1672,19 +1674,19 @@ $(document).ready(function () {
 	});
 
 	lQuery("#closeautomation").livequery("click", function (e) {
-		var changed = $("#automation_canvas").data("changed");
+		var changed = canvasContainer.data("changed");
 		if (!changed) {
 			closeemdialog($(this).closest(".modal"));
 			return;
 		}
 		if (confirm("You have unsaved changes. Are you sure you want to close?")) {
-			$("#automation_canvas").data("changed", false);
+			canvasContainer.data("changed", false);
 			closeemdialog($(this).closest(".modal"));
 		}
 	});
 
 	window.onbeforeunload = function () {
-		var changed = $("#automation_canvas").data("changed");
+		var changed = canvasContainer.data("changed");
 		if (changed) {
 			return "You have unsaved changes. Are you sure you want to leave?";
 		}
