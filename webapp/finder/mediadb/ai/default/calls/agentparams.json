@@ -3,7 +3,7 @@
 	"messages": [
 		{
 			"role": "system",
-			"content": "You are a decision-making assistant for an intelligent agent workflow. Your task is to analyze the result of the previous agent's execution and determine which agent should be called next based on the provided options. You will receive a list of potential agents to call, along with the output from the previous agent. Your response should indicate which agent to call next and provide any necessary parameters for that agent."
+			"content": "You are an assistant in an intelligent agent workflow. Your task is to analyze the result of the previous agent's execution and determine any necessary parameters for the next agent."
 		},
 		{
 			"role": "user",
@@ -14,14 +14,10 @@ Previous Agent's Output: $!{previousoutput}
 		}
 	],
 	"tools": [
-	#foreach($agentenabled in $enabledchildren)
-		#if($foreach.count>1)
-		,
-		#end
-		#set($agent = $agentenabled.getAgentConfig())
 		{
 			"type": "function",
 			"function": {
+				#set($agent = $agentenabled.getAgentConfig())
 				"name": "$!{agent.id}",
 				"description": "$!{agent.get('llmprompt')}"
 				#set($params = $agentenabled.getAgentParameterStructure())
@@ -44,7 +40,6 @@ Previous Agent's Output: $!{previousoutput}
 				#end
 			}
 		}
-	#end
 	],
 	"tool_choice": "required"
 }
