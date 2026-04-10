@@ -12,6 +12,10 @@ var midY = fullCanvasHeight / 2;
 var reader = new draw2d.io.json.Reader();
 var writer = new draw2d.io.json.Writer();
 
+function parseBoolean(value) {
+	return value === "true" || value === true;
+}
+
 function removeDuplicates(json) {
 	var checkedIds = {
 		Connection: {},
@@ -1164,12 +1168,12 @@ $(document).ready(function () {
 						icon: icon,
 						text: JSON.parse(`"${icon}"`) + " " + label,
 						fontFamily: "bootstrap-icons, Arial, sans-serif",
-						bgColor: node.enabled ? bgColor : "#DA6C6C80",
+						bgColor: parseBoolean(node.enabled) ? bgColor : "#afafaf",
 					};
 
 					const userData = {
 						id: node.id,
-						enabled: node.enabled,
+						enabled: parseBoolean(node.enabled),
 						automationagent: node.automationagent.id,
 						automationscenario: node.automationscenario.id,
 						skilloverview: node.skilloverview,
