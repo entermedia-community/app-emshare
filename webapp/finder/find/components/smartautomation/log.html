@@ -19,16 +19,24 @@
 <div class="log-container ajaxstatus"
   ajaxpath="$applink/components/smartautomation/log.html?scenarioid=$scenarioid&agentcontextid=$agentcontextid"
   >
-  #set($prev = "")
-  #foreach($log in $logs)
-    #set($agentconfig = $log.getCurrentAgentEnabledConfig())
-    #if($agentconfig.getId() != $prev)
-      #set($prev = $agentconfig.getId())
-      <h6 class="log-title">$agentconfig.getId()</h6>
-    #end
-    <div class="log-body $log.logType">
-      <p class="log-message" title="$log.date">$log.message</p>
+  #set($prev = "x")
+  #if(!$logs.isEmpty())
+    #foreach($log in $logs)
+      #if($log.name != $prev)
+        #if($prev != "x")
+          </div>
+        #end
+        #set($prev = $log.name )
+
+           
+        <h6 class="log-title"> $prev</h6>
+        <div class="log-body ">
+      #end
+      
+      <p class="log-message logtype-$!{log.logType}" title="$log.date">$log.message</p>
       <!-- <p class="log-timestamp">$log.date</p>  -->
+      
+    #end
     </div>
   #end
 </div>
