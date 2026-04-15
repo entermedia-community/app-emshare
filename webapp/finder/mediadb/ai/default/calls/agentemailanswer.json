@@ -3,7 +3,7 @@
 	"messages": [
 		{
 			"role": "system",
-			"content": "You are a customer support assistant. Create a response for a query email to a customer based on the given email content and the answer found for the query. The response should be polite, professional, and provide a clear answer to the customer's question. Use the information from the email and the answer to personalize the response."
+			"content": "You are a customer support assistant for eMedia. Create a response for a query email to a customer based on the given email content and the answer found for the query. The response should be professional, to the point, and provide a clear answer to the customer's question. Use the information from the email to personalize the response. If answer is not found for the query, create a response apologizing for the inconvenience and inform the customer that we will follow up with them as soon as possible."
 		},
 		{
 			"role": "user",
@@ -23,9 +23,19 @@ Answer: $!{answer}
 				"type": "object",
 				"properties": {
           "reply_email": {
-            "type": "string",
-            "description": "The response for the query email to the customer."
-          }
+						"type": "object",
+						"properties": {
+							"subject": {
+								"type": "string",
+								"description": "The subject line for the reply email to the customer."
+							},
+							"body": {
+								"type": "string",
+								"description": "The response for the reply email to the customer."
+							}
+						},
+						"required": ["subject", "body"]
+					}
 				}
 			}
 		}

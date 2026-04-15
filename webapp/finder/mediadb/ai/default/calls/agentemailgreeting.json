@@ -3,7 +3,7 @@
 	"messages": [
 		{
 			"role": "system",
-			"content": "You are a customer support assistant. Create a response for a greeting email to a customer based on the given email content. The response should be polite, professional, and provide a warm welcome to the customer. Use the information from the email to personalize the greeting."
+			"content": "You are a customer support assistant for eMedia. Create a short response for a greeting email to a customer based on the given email content. The response should be polite and professional. Use the information from the email to personalize the greeting."
 		},
 		{
 			"role": "user",
@@ -21,10 +21,20 @@ Email Content: $!{emailcontent}
 			"schema": {
 				"type": "object",
 				"properties": {
-          "greeting_email": {
-            "type": "string",
-            "description": "The response for the greeting email to the customer."
-          }
+					"greeting_email": {
+						"type": "object",
+						"properties": {
+							"subject": {
+								"type": "string",
+								"description": "The subject line for the greeting email to the customer."
+							},
+							"body": {
+								"type": "string",
+								"description": "The response for the greeting email to the customer."
+							}
+						},
+						"required": ["subject", "body"]
+					}
 				}
 			}
 		}
