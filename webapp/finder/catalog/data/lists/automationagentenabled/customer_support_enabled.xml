@@ -6,19 +6,24 @@
     </name>
   </data>
 
-  <data id="check_email_enabled" automationagent="check_email" automationscenario="email" enabled="true" runafter="customer_support_start">
+  <data id="process_email_enabled" automationagent="process_email" automationscenario="email" enabled="true" runafter="customer_support_start">
     <name>
-      <![CDATA[Check Email]]>
+      <![CDATA[Process Email]]>
+    </name>
+    <skilloverview>
+      <language id="en"><![CDATA[Outputs name, email, and the email text]]></language>
+    </skilloverview>
+    <parameterstructure>[{"data_type":"string","description":"The name associated with the email","id":"name"},{"data_type":"string","description":"The email address of the recipient or sender","id":"email"},{"data_type":"string","description":"The content or body of the email message","id":"text"}]</parameterstructure>
+    <contextvalues>{"mailserver": "mail.emediadb.net","mailport": 993,"mailusername": "dev@emediadb.net","mailpassword": ""}</contextvalues>
+  </data>
+
+  <data id="find_embeddings_enabled" automationagent="find_embeddings" automationscenario="email" runafter="process_email_enabled" enabled="true">
+    <name>
+      <![CDATA[Find Embeddings]]>
     </name>
   </data>
 
-  <data id="read_email_enabled" automationagent="read_email" automationscenario="email" enabled="true" runafter="check_email_enabled">
-    <name>
-      <![CDATA[Read Email]]>
-    </name>
-  </data>
-
-  <data id="answer_query_enabled" automationagent="answer_query" automationscenario="email" runafter="read_email_enabled" enabled="true">
+  <data id="answer_query_enabled" automationagent="answer_query" automationscenario="email" runafter="find_embeddings_enabled" enabled="true">
     <name>
       <![CDATA[Answer Query]]>
     </name>
@@ -36,7 +41,7 @@
     </name>
   </data>
 
-  <data id="mark_as_critical_enabled" automationagent="mark_as_critical" automationscenario="email" runafter="read_email_enabled" enabled="true">
+  <data id="mark_as_critical_enabled" automationagent="mark_as_critical" automationscenario="email" runafter="find_embeddings_enabled" enabled="true">
     <name>
       <![CDATA[Mark as Critical]]>
     </name>

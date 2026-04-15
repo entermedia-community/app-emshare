@@ -1,0 +1,33 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are an assistant that analyzes a question, query or an issue, and chooses the most relevant category for it. The categories are: ${categories}. Respond with the categories that best fit the question, query or issue."
+		},
+		{
+			"role": "user",
+			"content": #jesc("$rawoutput")
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "category_selection",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"categories": {
+						"type": "array",
+            "description": "The categories that best fit the question, query or issue",
+						"items": {
+							"type": "string",
+              "enum": ${categories}
+						}
+					}
+				}
+			}
+		}
+	}
+}
