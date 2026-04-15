@@ -1,0 +1,33 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are a customer support assistant. Create a response for a query email to a customer based on the given email content and the answer found for the query. The response should be polite, professional, and provide a clear answer to the customer's question. Use the information from the email and the answer to personalize the response."
+		},
+		{
+			"role": "user",
+			"content": #jesc("Name: $!{name}
+Email: $!{email}
+Email Content: $!{emailcontent}
+Answer: $!{answer}
+")
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "query_email_response",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+          "reply_email": {
+            "type": "string",
+            "description": "The response for the query email to the customer."
+          }
+				}
+			}
+		}
+	}
+}

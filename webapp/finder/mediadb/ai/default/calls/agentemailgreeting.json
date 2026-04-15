@@ -1,0 +1,32 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are a customer support assistant. Create a response for a greeting email to a customer based on the given email content. The response should be polite, professional, and provide a warm welcome to the customer. Use the information from the email to personalize the greeting."
+		},
+		{
+			"role": "user",
+			"content": #jesc("Name: $!{name}
+Email: $!{email}
+Email Content: $!{emailcontent}
+")
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "greeting_email_response",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+          "greeting_email": {
+            "type": "string",
+            "description": "The response for the greeting email to the customer."
+          }
+				}
+			}
+		}
+	}
+}

@@ -8,8 +8,8 @@
 		{
 			"role": "user",
 			"content": #jesc("
-Previous Agent: $!{previousagent}
-Previous Agent's Output: $!{previousoutput}
+Previous Agent: $!{agentid}
+Previous Agent's Output: $!{agentoutput}
 ")
 		}
 	],
@@ -35,7 +35,11 @@ Previous Agent's Output: $!{previousoutput}
 								#end
 								"${param.id}": {
 									"type": "${param.data_type}",
-									"description": "${param.description}"
+									"description": "${param.description}",
+									#ifnotnull($param.enum)
+									,
+									"enum": ${param.enum}
+									#end
 								}
 							#end
 						}
