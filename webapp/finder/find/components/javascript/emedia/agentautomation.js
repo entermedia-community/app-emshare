@@ -2,10 +2,10 @@
 
 var canvas = null;
 var canvasContainer = null;
-var canvasWidth = 1920 * window.devicePixelRatio;
-var canvasHeight = 1920 * window.devicePixelRatio;
-var fullCanvasWidth = canvasWidth + 1000;
-var fullCanvasHeight = canvasHeight + 1000;
+var canvasWidth = 4000;
+var canvasHeight = 4000;
+var fullCanvasWidth = 4000;
+var fullCanvasHeight = 4000;
 var midX = fullCanvasWidth / 2;
 var midY = fullCanvasHeight / 2;
 
@@ -181,23 +181,27 @@ const previewJson = (attr, userdata = {}) => [
 		],
 	},
 	{
+		id: attr.id,
+		x: attr.x,
+		y: attr.y,
 		type: "draw2d.shape.basic.Circle",
 		cssClass: "previewCircle",
-		...attr,
 		bgColor: "#ffffff",
 		stroke: 4,
 		color: "royalblue",
 		radius: 100,
 		composite: attr.id + "-group",
+		selectable: false,
+		draggable: false,
 	},
 	{
 		cssClass: "previewLabel",
 		type: "draw2d.shape.basic.Text",
 		id: attr.id + "-label",
-		x: attr.x + 25,
-		y: attr.y + 16,
+		x: attr.x,
+		y: attr.y,
 		fontSize: 22,
-		width: 150,
+		width: 200 - 16,
 		fontColor: attr.fontColor,
 		textAlign: "center",
 		stroke: 0,
@@ -511,23 +515,6 @@ $(document).ready(function () {
 	var siteroot = $("#application").data("siteroot");
 	var applink = siteroot + apphome;
 	var mediadb = $("#application").data("mediadbappid");
-	// var userid = $("#application").data("user");
-
-	function loadCanvasPosition(canvasProps) {
-		if (canvasProps) {
-			canvas.setZoom(parseFloat(canvasProps.zoom) || 1);
-			canvasContainer.data("zoom", parseFloat(canvasProps.zoom) || 1);
-			if (canvasProps.posx && canvasProps.posy) {
-				canvasContainer.data("posx", parseInt(canvasProps.posx));
-				canvasContainer.data("posy", parseInt(canvasProps.posy));
-
-				canvasContainer.css({
-					marginLeft: parseInt(canvasProps.posx),
-					marginTop: parseInt(canvasProps.posy),
-				});
-			}
-		}
-	}
 
 	lQuery("#automation_canvas_preview").livequery(function () {
 		canvasContainer = $(this);
@@ -541,8 +528,6 @@ $(document).ready(function () {
 		canvasContainer.css({
 			width: fullCanvasWidth,
 			height: fullCanvasHeight,
-			marginTop: 0,
-			marginLeft: 0,
 		});
 
 		const previewConnConfig = {
@@ -644,7 +629,6 @@ $(document).ready(function () {
 							const scenarios = data.scenarios;
 							const labels = data.labels;
 							renderPreview(scenarios, labels);
-							loadCanvasPosition(data.canvas);
 						} else {
 							console.log("Invalid response", res);
 						}
@@ -706,11 +690,6 @@ $(document).ready(function () {
 
 		function renderPreview(scenarios, labels) {
 			const connections = [];
-			const startX = midX - canvasWidth / 2 + 200;
-			const startY = midY - canvasHeight / 2 + 200;
-			let row = 0,
-				col = 0;
-			console.log(scenarios);
 			scenarios.forEach((scenario, i) => {
 				if (scenario.connectedtop) {
 					connections.push({
@@ -718,36 +697,29 @@ $(document).ready(function () {
 						target: scenario.id,
 					});
 				}
-				row = i % 3;
-				col = Math.floor(i / 3);
+
+				if (
+					!scenario.position ||
+					!scenario.position.posx ||
+					!scenario.position.posy
+				) {
+					console.error("Positions not set!");
+				}
+
 				let label = scenario.name;
 				label = label.replace(/[^A-Za-z0-9 ]/g, " ");
 				label = label.replace(/\s+/g, " ");
 
-				let X = startX + 50 + col * 250;
-				let Y = startY + row * 250;
-
-				let skipover = false;
-
-				if (
-					scenario.position &&
-					scenario.position.posx &&
-					scenario.position.posy
-				) {
-					X = parseFloat(scenario.position.posx);
-					Y = parseFloat(scenario.position.posy);
-					skipover = true;
-				}
-
 				const attr = {
 					id: "scenario" + scenario.id,
-					x: X,
-					y: Y,
+					x: parseFloat(scenario.position.posx),
+					y: parseFloat(scenario.position.posy),
 					text: label,
 					fontColor: "royalblue",
 					bold: true,
 					bgColor: "#f5f7ff",
 				};
+
 				const userdata = {
 					id: scenario.id,
 				};
@@ -755,23 +727,22 @@ $(document).ready(function () {
 				const node_obj = previewJson(attr, userdata);
 				readerUnmarshal(canvas, node_obj);
 
-				const renderedPreview = canvas.getFigure(
-					"scenario" + scenario.id + "-label",
-				);
+				const renderedGroup = canvas.getFigure(attr.id + "-group");
 
-				if (renderedPreview) {
-					renderedPreview.setY(
-						renderedPreview.getY() - renderedPreview.getHeight() * 0.28,
-					);
-				}
-				if (skipover) {
-					const renderedGroup = canvas.getFigure(
-						"scenario" + scenario.id + "-group",
-					);
-					renderedGroup.setX(renderedPreview.getX() + 75);
-					renderedGroup.setY(renderedPreview.getY() + 75);
-				}
-				renderedPreview.composite.setWidth(200);
+				const renderedLabel = canvas.getFigure(attr.id + "-label");
+				const labelWidth = renderedLabel.getWidth();
+				renderedLabel.setX(renderedGroup.getX() + labelWidth / 2 + 4);
+				const labelHeight = renderedLabel.getHeight();
+				renderedLabel.setY(renderedGroup.getY() + 100 - labelHeight / 2);
+
+				renderedGroup.setWidth(200);
+				renderedGroup.setHeight(200);
+				renderedGroup.setX(attr.x);
+				renderedGroup.setY(attr.y);
+
+				const renderedCircle = canvas.getFigure(attr.id);
+				renderedCircle.setX(attr.x);
+				renderedCircle.setY(attr.y);
 			});
 
 			labels.forEach((label) => {
@@ -989,8 +960,8 @@ $(document).ready(function () {
 					if (element.cssClass === "preview" && userData.id) {
 						const node = {
 							...userData,
-							posx: element.x - 100,
-							posy: element.y - 80,
+							posx: element.x,
+							posy: element.y,
 						};
 						if (connectedTo[element.id]) {
 							node.connectedtop = connectedTo[element.id];
@@ -1013,25 +984,10 @@ $(document).ready(function () {
 				});
 
 				const url = `${siteroot}/${mediadb}/services/automation/savepreview.json`;
-				const marginLeft = parseInt(
-					$("#automation_canvas_preview").css("margin-left"),
-				);
-				const marginTop = parseInt(
-					$("#automation_canvas_preview").css("margin-top"),
-				);
-				const zoom = canvas.getZoom();
-
-				const canvasProps = {
-					id: "automation_canvas_preview",
-					posx: marginLeft,
-					posy: marginTop,
-					zoom: zoom,
-				};
 
 				const payload = {
 					scenarios,
 					labels,
-					canvas: canvasProps,
 				};
 				$.ajax({
 					url,
@@ -1052,6 +1008,10 @@ $(document).ready(function () {
 		});
 	});
 
+	function hideConfig() {
+		$("#edit-toggler").fadeOut();
+	}
+
 	lQuery("#automation_canvas").livequery(function () {
 		canvasContainer = $(this);
 		canvasContainer.data("changed", false);
@@ -1068,8 +1028,6 @@ $(document).ready(function () {
 		canvasContainer.css({
 			width: fullCanvasWidth,
 			height: fullCanvasHeight,
-			marginTop: midY - canvasHeight / 2,
-			marginLeft: -midX + canvasWidth / 2,
 		});
 
 		canvas = new draw2d.Canvas("automation_canvas");
@@ -1088,16 +1046,11 @@ $(document).ready(function () {
 					try {
 						if (res.status && res.status == "ok") {
 							const data = res.data;
-							// console.log({ data });
-							// const scenario = data.scenario;
-							// console.log({ scenario });
 
 							const agents = data.agents;
 							var queue = bfsTopDown(agents);
 
 							renderQueue(queue);
-
-							loadCanvasPosition(data.canvas);
 						} else {
 							console.log("Invalid response", res);
 						}
@@ -1261,10 +1214,6 @@ $(document).ready(function () {
 			} else {
 				hideConfig();
 			}
-		}
-
-		function hideConfig() {
-			$("#edit-toggler").fadeOut();
 		}
 
 		function updateModPosition(selectedNode) {
@@ -1484,24 +1433,12 @@ $(document).ready(function () {
 
 				const scenarioid = $("#automationId").val();
 
-				const marginLeft = parseInt($("#automation_canvas").css("margin-left"));
-				const marginTop = parseInt($("#automation_canvas").css("margin-top"));
-				const zoom = canvas.getZoom();
-
-				const canvasProps = {
-					id: `automation_canvas--${scenarioid}`,
-					posx: marginLeft,
-					posy: marginTop,
-					zoom: zoom,
-				};
-
 				getPngPreview(function (png) {
 					const url = `${siteroot}/${mediadb}/services/automation/savelayout.json`;
 					const payload = {
 						thumbnail: png,
 						data,
 						scenarioid,
-						canvas: canvasProps,
 					};
 					$.ajax({
 						url,
@@ -1527,19 +1464,9 @@ $(document).ready(function () {
 
 	function recenterCanvas() {
 		if (!canvasContainer) return;
-
-		const posx = canvasContainer.data("posx");
-		const posy = canvasContainer.data("posy");
-		const _zoom = canvasContainer.data("zoom");
-		console.log({ posx, posy, _zoom });
-		if (posx !== undefined && posy !== undefined && _zoom !== undefined) {
-			canvas.setZoom(_zoom);
-			canvasContainer.css({
-				marginTop: posy,
-				marginLeft: posx,
-			});
-			return;
-		}
+		const isEditor = canvasContainer
+			.closest(".automation-canvas")
+			.hasClass("editmode");
 
 		var xCoords = [];
 		var yCoords = [];
@@ -1556,12 +1483,6 @@ $(document).ready(function () {
 		const containerWidth = $(".automation-canvas").width();
 		const containerHeight = $(".automation-canvas").height();
 
-		const centerX = minX + width / 2;
-		const centerY = minY + height / 2;
-
-		const x = containerWidth / 2 - centerX;
-		const y = containerHeight / 2 - centerY;
-
 		let offsetTop = 0;
 		let offsetLeft = 0;
 		if (canvasContainer.hasClass("editmode")) {
@@ -1570,27 +1491,29 @@ $(document).ready(function () {
 
 		const zoom = width / (containerWidth - offsetLeft * 2) + 0.1;
 
-		if (zoom <= 1) {
+		if (isEditor) {
 			canvasContainer.css({
-				marginTop: y + offsetTop,
-				marginLeft: x + offsetLeft,
+				top: minY * -1 + height / 2,
+				left: minX * -1 + width / 2 + offsetLeft,
+				marginTop: 0,
+				marginLeft: 0,
 			});
-		} else {
-			canvas.setZoom(zoom);
-			const zoomedWidth = containerWidth / zoom;
-			const zoomedHeight = containerHeight / zoom;
-			const zoomedCenterX = minX + zoomedWidth / 2;
-			const zoomedCenterY = minY + zoomedHeight / 2;
-
-			const zoomedX = containerWidth / 2 - zoomedCenterX;
-			const zoomedY = containerHeight / 2 - zoomedCenterY;
-
-			canvas.setZoom(zoom);
-			canvasContainer.css({
-				marginTop: zoomedY + offsetTop,
-				marginLeft: zoomedX + offsetLeft,
-			});
+			return;
 		}
+
+		canvas.setZoom(zoom);
+
+		const viewBox = canvasContainer.find("svg").attr("viewBox");
+		const viewBoxValues = viewBox.split(" ");
+		const viewBoxWidth = parseFloat(viewBoxValues[2]);
+		const viewBoxHeight = parseFloat(viewBoxValues[3]);
+		const scale = 4000 / viewBoxHeight;
+		canvasContainer.css({
+			top: "50%",
+			left: "50%",
+			marginTop: (4000 * (1 - scale)) / 2,
+			marginLeft: (4000 * (1 - scale)) / 2,
+		});
 	}
 
 	var maxLeft = Math.floor(canvasWidth / 2 + 100);
@@ -1598,67 +1521,39 @@ $(document).ready(function () {
 	lQuery("#vToTop").livequery("click", function (e) {
 		e.stopImmediatePropagation();
 		if (!canvasContainer) return;
-		var pos = parseInt(canvasContainer.css("margin-top")) + 50;
-		if (pos > 0) {
-			$(this).prop("disabled", true);
-			return;
-		}
-		$("#vToBottom").prop("disabled", false);
-		canvasContainer.css("margin-top", pos);
-		// updateModPosition();
+		var pos = parseInt(canvasContainer.css("top")) + 50;
+		canvasContainer.css("top", pos);
+		hideConfig();
 	});
 	lQuery("#vToBottom").livequery("click", function (e) {
 		e.stopImmediatePropagation();
 		if (!canvasContainer) return;
-		var pos = parseInt(canvasContainer.css("margin-top")) - 50;
-		if (Math.abs(pos) > canvasHeight - 80) {
-			$(this).prop("disabled", true);
-			return;
-		}
-		$("#vToTop").prop("disabled", false);
-		canvasContainer.css("margin-top", pos);
-		// updateModPosition();
+		var pos = parseInt(canvasContainer.css("top")) - 50;
+		canvasContainer.css("top", pos);
+		hideConfig();
 	});
 	lQuery("#vToLeft").livequery("click", function (e) {
 		e.stopImmediatePropagation();
 		if (!canvasContainer) return;
-		var pos = parseInt(canvasContainer.css("margin-left")) + 50;
-		if (pos > 0) {
-			$(this).prop("disabled", true);
-			return;
-		}
-		$("#vToRight").prop("disabled", false);
-		canvasContainer.css("margin-left", pos);
-		// updateModPosition();
+		var pos = parseInt(canvasContainer.css("left")) + 50;
+		canvasContainer.css("left", pos);
+		hideConfig();
 	});
 	lQuery("#vToRight").livequery("click", function (e) {
 		e.stopImmediatePropagation();
 		if (!canvasContainer) return;
-		var pos = parseInt(canvasContainer.css("margin-left")) - 50;
-		if (Math.abs(pos) > maxLeft) {
-			$(this).prop("disabled", true);
-			return;
-		}
-		$("#vToLeft").prop("disabled", false);
-		canvasContainer.css("margin-left", pos);
-		// updateModPosition();
+		var pos = parseInt(canvasContainer.css("left")) - 50;
+		canvasContainer.css("left", pos);
+		hideConfig();
 	});
 	lQuery("#zoomInBtn").livequery("click", function (e) {
 		e.stopImmediatePropagation();
 		if (!canvas || !canvasContainer) return;
 		var zoom = canvas.getZoom();
-		if (zoom < 0.5) return;
+		if (zoom <= 0.1) return;
 		zoom -= 0.1;
 		canvas.setZoom(zoom);
-
-		var change = -80;
-
-		var newleft = parseInt(canvasContainer.css("margin-left")) + change;
-		canvasContainer.css("margin-left", newleft);
-
-		var newtop = parseInt(canvasContainer.css("margin-top")) + change;
-		canvasContainer.css("margin-top", newtop);
-		// updateModPosition();
+		hideConfig();
 	});
 
 	lQuery("#zoomOutBtn").livequery("click", function (e) {
@@ -1668,22 +1563,14 @@ $(document).ready(function () {
 		if (zoom > 2) return;
 		zoom += 0.1;
 		canvas.setZoom(zoom);
-
-		var change = 80;
-
-		var newleft = parseInt(canvasContainer.css("margin-left")) + change;
-		canvasContainer.css("margin-left", newleft);
-
-		var newtop = parseInt(canvasContainer.css("margin-top")) + change;
-		canvasContainer.css("margin-top", newtop);
-		// updateModPosition();
+		hideConfig();
 	});
 
 	lQuery("#zoomResetBtn").livequery("click", function (e) {
 		e.stopImmediatePropagation();
 		if (!canvas) return;
 		recenterCanvas();
-		// updateModPosition();
+		hideConfig();
 	});
 
 	lQuery("#closeautomation").livequery("click", function (e) {
@@ -1806,5 +1693,5 @@ $(document).ready(function () {
 		chatConnection.addEventListener("message", function (event) {});
 	}
 
-	// $("a[data-dialogid='smartautomation']").trigger("click");
+	$("a[data-dialogid='smartautomation']").trigger("click");
 });
