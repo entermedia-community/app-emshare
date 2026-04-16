@@ -22,6 +22,14 @@
 #end
 
 ##SORT
+
+#if($context.getRequestParameter("args"))
+	#set($args = $context.getRequestParameter("args"))
+#else
+#set($args = $context.getRequestParamsAsList())
+#end
+
+<div class="sortdialog" data-url="${searchhome}/filters/dialogsort.html?$args" data-args="$!args">
 	<form  	name="filtersortform" 
 			id="filtersortformdialog" 
 			class="filterform ajaxform autosubmitform"
@@ -31,6 +39,7 @@
 			data-oemaxlevel="1" 
 			data-includesearchcontext="true"
 			data-includeeditcontext="true"
+			data-ajaxreloadtargets="sortdialog"
 			action="$!siteroot${searchhome}/columnsort.html" 
 		>
 
@@ -71,11 +80,11 @@
 		
 		<div class="form-group my-2">
 			<div class="filter-box d-flex align-items-center px-1">
-				<div class="fw-bold">[[Sort by]]:</div>
-				<div class="filter-box-options overflow-y flex-grow-1 mx-1" id="filterboxsorting">
+				<div class="fw-bold pe-2">[[Sort by]]:</div>
+				<div class="filter-box-options overflow-y flex-grow-1 my-1" id="filterboxsorting">
 					#set ($alldetails = $searcher.getUserPropertyDetails() )
 					<select data-sortup="$hits.searchQuery.isSortUp()" 
-							class="form-control  select2 autosubmited" 
+							class="form-control mb-0 select2 autosubmited" 
 							name="sortby" 
 							id="$!{moduleid}dialogsortby" 
 							data-allowclear="false">
@@ -93,17 +102,42 @@
 									#if($hits.isSortedBy($detail.id)) 
 										selected="selected" 
 										#set($currentSort = $detail.getText($context))
-									#end>$detail.getText($context)</option>
+									#end>$detail.getText($context) #if($currentSortOrder == "up")([[Ascending]])#else([[Descending]])#end</option>
 						#end
 					</select>
 				</div>
-				<a href="#" 
-					class="filterschangesort px-1 py-2"
-					data-sortbyfield="${moduleid}dialogsortby" 
-					title='[[Sort by]] $currentSort #if($currentSortOrder == "up") [[Down]] #else [[Up]] #end'>
-					<i class=" fas #if($hits.searchQuery.isSortUp()) fa-sort-alpha-down #else fa-sort-alpha-up #end" style="padding-top:5px"></i>
-				</a> 
+				<div class="filtersortbox d-flex ms-2">
+				#if($currentSortOrder == "up")
+					<a 
+						class="filterscurrentsort px-2 py-1 text-muted"
+						title='[[Current sort by]] ${currentSort}#if($currentSortOrder == "up") [[Ascending]] #else [[Descending]]#end'>
+						<i class=" fas default-icon #if($currentSortOrder == "up") fa-sort-alpha-up #else fa-sort-alpha-down #end"></i>
+						
+					</a> 
+					<a href="#" 
+						class="filterschangesort px-2 py-1"
+						data-sortbyfield="${moduleid}dialogsortby" 
+						title='[[Change sort by]] ${currentSort}#if($currentSortOrder == "up") [[Descending]] #else [[Ascending]]#end'>
+						
+						<i class=" fas hover-icon #if($currentSortOrder == "up") fa-sort-alpha-down #else fa-sort-alpha-up #end"></i>
+					</a>
+				#else
+					<a href="#" 
+						class="filterschangesort px-2 py-1"
+						data-sortbyfield="${moduleid}dialogsortby" 
+						title='[[Change sort by]] ${currentSort}#if($currentSortOrder == "up") [[Descending]] #else [[Ascending]]#end'>
+						<i class=" fas default-icon #if($currentSortOrder == "up") fa-sort-alpha-up #else fa-sort-alpha-down #end"></i>
+						
+					</a> 
+					<a 
+						class="filterscurrentsort px-2 py-1 text-muted"
+						title='[[Current sort by]] ${currentSort}#if($currentSortOrder == "up") [[Ascending]] #else [[Descending]]#end'>
+						
+						<i class=" fas hover-icon #if($currentSortOrder == "up") fa-sort-alpha-down #else fa-sort-alpha-up #end"></i>
+					</a>
+				#end
+				</div>
 			</div>
 		</div>
 	</form>	
-	
+	</div>
