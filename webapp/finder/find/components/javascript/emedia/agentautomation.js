@@ -1509,8 +1509,8 @@ $(document).ready(function () {
 		const viewBoxHeight = parseFloat(viewBoxValues[3]);
 		const scale = 4000 / viewBoxHeight;
 		canvasContainer.css({
-			top: "50%",
-			left: "50%",
+			top: containerHeight / 2 + 80 * scale,
+			left: containerWidth / 2 - 100 * scale,
 			marginTop: (4000 * (1 - scale)) / 2,
 			marginLeft: (4000 * (1 - scale)) / 2,
 		});
