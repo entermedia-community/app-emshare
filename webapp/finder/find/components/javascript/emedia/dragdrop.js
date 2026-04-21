@@ -555,7 +555,9 @@ onloadselectors = function () {
 
 						jQuery.get(
 							apphome + "/components/emtree/movecategory.html",
-							params,
+							{
+								...params,
+							},
 							function (data) {
 								tree.closest("#treeholder").replaceWith(data);
 							},
