@@ -1,6 +1,6 @@
 package llm
 
-import org.entermediadb.ai.informatics.InformaticsManager
+import org.entermediadb.ai.informatics.InformaticsProcessorManager
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
 import org.openedit.WebPageRequest
@@ -9,7 +9,7 @@ public void addMetadataWithAI(){
 
 	WebPageRequest inReq = context;
 	MediaArchive archive = context.getPageValue("mediaarchive");
-	InformaticsManager informaticsManager = archive.getBean("informaticsManager");
+	InformaticsProcessorManager informaticsManager = archive.getBean("informaticsProcessorManager");
 	
 	String assetid = inReq.getRequestParameter("assetid");
 	Asset asset = archive.getAsset(assetid);

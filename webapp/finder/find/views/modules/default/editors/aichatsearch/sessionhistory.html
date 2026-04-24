@@ -1,7 +1,8 @@
 <div class="sessionhistory overflow-y">
   <div class="d-flex justify-content-center mt-3 mb-2">
-    <a class="btn btn-accent ajax"  data-targetdiv="aichatsearch" data-oemaxlevel="1" data-createnew="true" href="$edithome/sessionadd.html">
-      <i class="bi bi-plus-lg mr-1"></i> [[New Session]]
+    <a class="btn btn-accent ajax"  data-targetdiv="aichatsearch" data-oemaxlevel="1" data-createnew="true" 
+	href="$edithome/sessionadd.html">
+      <i class="bi bi-plus-lg me-1"></i> [[New Session]]
     </a>
   </div>
   
@@ -11,8 +12,13 @@
     <strong>[[Session History]]</strong>
   </p>
 
-  #set( $hits = $mediaarchive.query("channel").exact("dataid",$user).exact("searchtype", "user").sort("refreshdateDown").search($context))
+  #set($toplevelfunctionid = $agentcontext.getTopLevelFunctionName())
 
+  #if ($page.channeltype == "agentchat")
+  	#set( $hits = $mediaarchive.query("channel").exact("user",$user).exact("searchtype", "user").sort("refreshdateDown").search($context))
+  #else
+  	#set( $hits = $mediaarchive.query("channel").exact("dataid",$entity.id).exact("searchtype", $module.id).sort("refreshdateDown").search($context))
+  #end
   #foreach($hit in $hits.getPageOfHits() )
     <div class="sessionhistory-item #if( $currentchannel.id == $hit.id ) active #end">
 
@@ -22,17 +28,22 @@
         data-oemaxlevel="1"
 	      href="$edithome/sessionrestore.html" 
         title="[[Retrieve this session]]">
-        #ifnotnull($hit.name)
-          <span>#esc($!hit.name)</span>
-        #end
-        #ifnull($hit.name)
-          #if($foreach.count == 1)
-            <span class="text-muted">[[Current Session]]</span>
-          #else
-            <span class="text-muted">[[Session]] #$foreach.count</span>
+        <span class="session-name">
+          #ifnotnull($toplevelfunctionid)
+            #set($toplevelfunction = $mediaarchive.query("aifunction").id($toplevelfunctionid).searchOne())
+            <i class="bi ns bi-${toplevelfunction.icon} me-1"></i> 
           #end
-        #end
-        <small class="text-muted">#datetime($hit.refreshdate)</small>
+          #ifnotnull($hit.name)
+            #esc($!hit.name)
+          #end
+          #ifnull($hit.name)
+            #set($id = $hits.size() - $foreach.count + 1)
+            [[Session]] #$id
+          #end
+        </span>
+        <small class="text-muted">
+          #datetime($hit.refreshdate)
+        </small>
       </a>
 
       <a class="ajax del" data-targetdiv="aichatsearch" data-oemaxlevel="1" data-id="$hit.id" data-confirm="[[Sure you want to delete session?]]" href="$edithome/sessiondelete.html" title="[[Delete this session]]"> 

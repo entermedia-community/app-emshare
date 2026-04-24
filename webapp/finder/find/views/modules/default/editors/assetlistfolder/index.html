@@ -39,25 +39,29 @@
 							data-oemaxlevel="5"
 							data-closealldialogs="true"
 							data-updateurl="true"
-							data-includeeditcontext="false">
+							data-includeeditcontext="false"
+							title="[[Open Folder]]: #esc($parent)">
 							$parent
 						</a>	
 					#end
 					
 					#if($isentity)
-					<a class="emdialog entity-dialog text-success ml-3" 
+					<a class="emdialog entity-dialog text-success ms-3" 
 						id="clickid${entity.id}"
 						data-id="clickid${entity.id}"
-						title="[[View]]: #text($entity) details" 
-						href="$siteroot$apphome/views/modules/${entitymodule.id}/editors/default/tabs/index.html?entityid=$entity.getId()"
+						title="[[View]]: #text($entity)" 
+						href="$siteroot$apphome/views/modules/${entitymodule.id}/editors/default/tabs/index.html?entityid=${entity.getId()}"
+						data-oemaxlevel="1"
 						data-updateurl="true"
-						data-urlbar="$siteroot$apphome/views/modules/${entitymodule.id}/index.html?entityid=$entity.getId()"
+						data-urlbar="$siteroot$apphome/views/modules/${entitymodule.id}/index.html?entityid=${entity.getId()}"
 						data-moduleid="${entitymodule.id}"
 						data-categoryid="${category.id}"
 						data-entitymoduleviewid="${entitymodule.id}general"
 						data-dialogid="entitydialog"
-						data-hideheader="true"data-includeeditcontext="false" 
-						data-hidefooter="true">
+						data-hideheader="true"
+						data-closedialog="true"
+						data-includeeditcontext="false" 
+						>
 						<i class="bi bi-card-list"></i>
 					</a>
 					#end
@@ -87,7 +91,7 @@
 		#if( $caneditassetcategories )
 			
 				<a href="$!siteroot$apphome/views/modules/asset/editors/assetlistfolderpicker/index.html" 
-				   class="detail-edit-icon btn btn-dark emdialog mr-2"
+				   class="detail-edit-icon btn btn-dark emdialog me-2"
 				   data-dialogwidth="1100"
 				   data-cancelsubmit="true" 
 				   data-parameterdata="categoryvalues"
@@ -107,7 +111,7 @@
 					#foreach ( $amodule in $userprofile.getEntities() )
 						#set($amoduleid = $amodule.getId())
 						#if($amodule.getBoolean("enableuploading"))
-							#if($permissions.canModule($amodule, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+							#if($permissions.canModule($amodule, "assign_files") && $amoduleid!="asset")
 								#set($entityrendertype = "entity")
 								#if ($amodule.modulerendertype)
 									#set($entityrendertype = $amodule.modulerendertype)

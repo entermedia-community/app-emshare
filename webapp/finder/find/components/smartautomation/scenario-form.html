@@ -1,0 +1,33 @@
+#set( $scenarioid = $context.getRequestParameter("scenarioid"))
+
+#ifnotnull($scenarioid)
+  $context.putPageValue("scenarioid", $scenarioid)
+  $context.putPageValue("searcher", "automationscenario")
+  #set( $scenario = $mediaarchive.getData("automationscenario", $scenarioid) )
+  $context.putPageValue("data", $scenario)
+  #set( $action = "edit" )
+#end
+#ifnull($scenarioid)
+  #set( $action = "create" )
+#end
+
+<form class="pb-2 ajaxform autocloseform" data-targetdivinner="smartautomation" data-oemaxlevel="1" action="$applink/components/smartautomation/scenario-${action}.html">
+  <input name="save" type="hidden" value="true" />
+  <input name="searchtype" type="hidden" value="automationscenario" />
+  
+  #ifnotnull($scenarioid)
+    <input type="hidden" name="id" value="$scenarioid"/>
+  #end
+
+  $context.putPageValue("viewid", "automationscenarioaddnew") 
+  $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+
+  <button type="submit" class="btn btn-primary">
+    #ifnull($scenarioid)
+      [[Create]]
+    #end
+    #ifnotnull($scenarioid)
+      [[Save Changes]]
+    #end
+  </button>
+</form>

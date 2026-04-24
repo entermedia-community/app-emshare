@@ -1,0 +1,31 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "Write a single coherent paragraph based on the given prompt. The output must be exactly one paragraph with no headings."
+		},
+		{
+			"role": "user",
+			"content": "${prompt}"
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "prompt_paragraph",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"paragraph": {
+						"type": "string",
+						"description": "A single-paragraph response generated from the prompt."
+					}
+				},
+				"required": ["paragraph"],
+				"additionalProperties": false
+			}
+		}
+	}
+}

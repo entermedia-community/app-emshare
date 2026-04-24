@@ -1,0 +1,48 @@
+{
+	"model": "$!{model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are an assistant in an intelligent agent workflow. Your task is to analyze the result of the previous agent's execution and determine any necessary parameters for the next agent."
+		},
+		{
+			"role": "user",
+			"content": #jesc("
+Previous Agent: $!{agentid}
+Previous Agent's Output: $!{agentoutput}
+")
+		}
+	],
+	"tools": [
+		{
+			"type": "function",
+			"function": {
+				"name": "$!{agentenabled.id}",
+				"description": "$!{agentenabled.llmprompt}"
+				#set($params = $agentenabled.getAgentParameterStructure())
+				#if($params.size() > 0)
+					,
+					"parameters": {
+						"type": "object",
+						"properties": {
+							#foreach($param in $params)
+								#if($foreach.count>1)
+								,
+								#end
+								"${param.id}": {
+									"type": "${param.data_type}",
+									"description": "${param.description}"
+									#ifnotnull($param.enum)
+									,
+									"enum": ${param.enum}
+									#end
+								}
+							#end
+						}
+					}
+				#end
+			}
+		}
+	],
+	"tool_choice": "required"
+}

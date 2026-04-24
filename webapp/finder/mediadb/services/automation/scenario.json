@@ -1,0 +1,25 @@
+{
+  "status": "ok",
+  "data": {
+    "scenario": {
+      "id": #jesc("${scenario.id}"),
+      "name": #jesc("${scenario.name}")
+    },
+    "agents": [
+      #foreach($agent in ${agents})
+        #if($foreach.count > 1),#end
+		{
+        #jsonpartial($agent $agentenabledsearcher.getPropertyDetails())
+		,
+			#set( $position = $automationManager.getPosition( $agent.getId() ) )
+			"position": 	#json($position $automationpositionsearcher.getPropertyDetails())
+		}
+      #end
+    ]
+    #set( $position = $automationManager.getPosition("automation_canvas--${scenario.id}") )
+    #ifnotnull($position)
+    ,
+    "canvas": #json($position $automationpositionsearcher.getPropertyDetails())
+    #end
+  }
+}

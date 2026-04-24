@@ -42,7 +42,7 @@ function hexToRgb(hex) {
 				r: parseInt(result[1], 16),
 				g: parseInt(result[2], 16),
 				b: parseInt(result[3], 16),
-		  }
+			}
 		: null;
 }
 function rgbToHex(r, g, b) {
@@ -55,7 +55,7 @@ function setContrast(hex) {
 	var rgb = hexToRgb(hex);
 	const brightness = Math.round(
 		(parseInt(rgb.r) * 299 + parseInt(rgb.g) * 587 + parseInt(rgb.b) * 114) /
-			1000
+			1000,
 	);
 	return brightness > 125 ? "#000000" : "#ffffff";
 }
@@ -63,7 +63,8 @@ function setContrast(hex) {
 function fallbackCopyText(text) {
 	var $temp = $("<input>");
 	$("body").append($temp);
-	$temp.val(text).select();
+	$temp.val(text);
+	$temp.trigger("select");
 	document.execCommand("copy");
 	$temp.remove();
 }
@@ -167,11 +168,10 @@ $(document).ready(function () {
 			{
 				type: "draw2d.shape.basic.Label",
 				id: groupId + "-label",
-				x: x + 72,
+				x: x,
 				y: y + 88,
 				width: 150,
 				text: "New Folder",
-				textAnchor: "middle",
 				stroke: 0,
 				fontSize: 20,
 				fontWeight: "bold",
@@ -271,10 +271,9 @@ $(document).ready(function () {
 			data.push({
 				type: "draw2d.shape.basic.Label",
 				id: groupId + "-title",
-				x: attr.x + w / 2 - 5,
+				x: attr.x,
 				y: attr.y + 10,
 				text: attr.title,
-				textAnchor: "middle",
 				stroke: 0,
 				fontSize: attr.titleFS,
 				fontColor: setContrast(attr.bgColor),
@@ -289,10 +288,9 @@ $(document).ready(function () {
 			data.push({
 				type: "draw2d.shape.basic.Label",
 				id: groupId + "-caption",
-				x: attr.x + w / 2 - 5,
+				x: attr.x,
 				y: attr.y + attr.titleHeight + (attr.image ? 110 : 10),
 				text: attr.caption,
-				textAnchor: "middle",
 				stroke: 0,
 				fontSize: attr.captionFS,
 				fontColor: setContrast(attr.bgColor),
@@ -450,6 +448,28 @@ $(document).ready(function () {
 		function readerUnmarshal(canvas, json) {
 			removeDuplicates(json);
 			reader.unmarshal(canvas, json);
+
+			setTimeout(function () {
+				var figures = canvas.getFigures();
+				figures.each(function (_, figure) {
+					if (
+						["label", "title", "caption"].some((t) =>
+							figure.id.endsWith("-" + t),
+						)
+					) {
+						var figureWidth = figure.getWidth();
+						var group = figure.composite;
+						var groupWidth = group.getWidth();
+
+						var w = Math.max(figureWidth, groupWidth);
+
+						group.setWidth(w);
+
+						var midX = group.getX() + w / 2;
+						figure.setX(midX - figureWidth / 2);
+					}
+				});
+			});
 		}
 
 		function writerMarshal(canvas, callback) {
@@ -490,7 +510,7 @@ $(document).ready(function () {
 					});
 					return conn;
 				},
-			})
+			}),
 		);
 
 		canvas.installEditPolicy(new draw2d.policy.canvas.ShowGridEditPolicy());
@@ -498,7 +518,7 @@ $(document).ready(function () {
 		canvas.installEditPolicy(new draw2d.policy.canvas.CoronaDecorationPolicy());
 		canvas.uninstallEditPolicy(new draw2d.policy.canvas.WheelZoomPolicy());
 		canvas.uninstallEditPolicy(
-			new draw2d.policy.canvas.DefaultKeyboardPolicy()
+			new draw2d.policy.canvas.DefaultKeyboardPolicy(),
 		);
 		canvas.installEditPolicy(new draw2d.policy.canvas.ZoomPolicy());
 
@@ -534,10 +554,10 @@ $(document).ready(function () {
 							var assignedFigures = figure.getAssignedFigures();
 							if (figure.cssClass === "folderGroup") {
 								var label = assignedFigures.find(
-									(f) => f.cssClass === "folderLabel"
+									(f) => f.cssClass === "folderLabel",
 								);
 								var icon = assignedFigures.find(
-									(f) => f.cssClass === "folderIcon"
+									(f) => f.cssClass === "folderIcon",
 								);
 								var dupFolder = folderJson({
 									x: figure.getX() + 20,
@@ -553,13 +573,13 @@ $(document).ready(function () {
 								readerUnmarshal(canvas, dupFolder);
 							} else if (figure.cssClass === "labelGroup") {
 								var title = assignedFigures.find(
-									(f) => f.cssClass === "titleLabel"
+									(f) => f.cssClass === "titleLabel",
 								);
 								var caption = assignedFigures.find(
-									(f) => f.cssClass === "captionLabel"
+									(f) => f.cssClass === "captionLabel",
 								);
 								var image = assignedFigures.find(
-									(f) => f.cssClass === "labelImage"
+									(f) => f.cssClass === "labelImage",
 								);
 								var titleText = title ? title.getText() : "";
 								var titleFS = title ? title.getFontSize() : 16;
@@ -578,7 +598,7 @@ $(document).ready(function () {
 								var { width: tW, height: tH } = measureText(titleText, titleFS);
 								var { width: cW, height: cH } = measureText(
 									captionText,
-									captionFS
+									captionFS,
 								);
 								var width = Math.max(tW, cW, 110);
 
@@ -600,7 +620,7 @@ $(document).ready(function () {
 						});
 					}
 				},
-			})
+			}),
 		);
 
 		function recenterCanvas() {
@@ -736,6 +756,14 @@ $(document).ready(function () {
 				},
 				complete: function () {
 					readerUnmarshal(canvas, insertjson);
+					canvas.getFigures().each(function (id, figure) {
+						if (figure.cssClass === "folderLabel") {
+							var x = figure.composite.getX();
+							x += 75;
+							var figureWidth = figure.getWidth();
+							figure.setX(x - figureWidth / 2);
+						}
+					});
 					loadEvents();
 
 					recenterCanvas();
@@ -790,7 +818,7 @@ $(document).ready(function () {
 								cssClass: "brandLogo",
 							}),
 							mainNode.getX() + (mainNode.getWidth() - imgWidth) / 2,
-							mainNode.getY() + (mainNode.getHeight() - imgHeight) / 2
+							mainNode.getY() + (mainNode.getHeight() - imgHeight) / 2,
 						);
 
 						mainNode.setColor(strokeColor);
@@ -840,7 +868,7 @@ $(document).ready(function () {
 				Math.max(
 					titleNode ? titleNode.getWidth() : 0,
 					captionNode ? captionNode.getWidth() : 0,
-					imageNode ? imageNode.getWidth() : 0
+					imageNode ? imageNode.getWidth() : 0,
 				) + 10;
 
 			if (onlyTitle || onlyCaption || onlyImage) {
@@ -947,7 +975,7 @@ $(document).ready(function () {
 					var selectedIcon = canvas.getFigure(selectedGroupId + "-icon");
 					if (selectedIcon) {
 						$("#folderThumbPickerBtn").html(
-							`<img src="${selectedIcon.getPath()}" />`
+							`<img src="${selectedIcon.getPath()}" />`,
 						);
 					} else {
 						$("#folderThumbPickerBtn").html("");
@@ -967,7 +995,12 @@ $(document).ready(function () {
 						selectedLabel.getUserData().moduleid = moduleid;
 					}
 					$("#folderId").val(moduleid);
-					$("#folderLabel").val(selectedLabel.getText() || "");
+					var labelText =
+						selectedLabel.getUserData()?.fullLabel ||
+						selectedLabel.getText() ||
+						"";
+					labelText = labelText.replace(/\n/g, " ");
+					$("#folderLabel").val(labelText);
 					$("#folderDesc").val(selectedLabel.getUserData()?.description || "");
 					var ordering = selectedLabel.getUserData()?.ordering || "-1";
 					$("#ordering").val(ordering).trigger("change");
@@ -992,7 +1025,7 @@ $(document).ready(function () {
 					A.className = "label-mod-toggler emdialog";
 					A.setAttribute(
 						"href",
-						applink + "/components/smartorganizer/label.html"
+						applink + "/components/smartorganizer/label.html",
 					);
 					A.setAttribute("role", "button");
 					A.dataset.dialogid = "addLabel";
@@ -1007,7 +1040,7 @@ $(document).ready(function () {
 					A.dataset.bgColor = rgbToHex(
 						bgColor.red,
 						bgColor.green,
-						bgColor.blue
+						bgColor.blue,
 					);
 					var color = selectedGroup.getColor();
 					A.dataset.color = rgbToHex(color.red, color.green, color.blue);
@@ -1123,6 +1156,7 @@ $(document).ready(function () {
 			});
 			readerUnmarshal(canvas, newFolder);
 			var folderGroup = canvas.getFigure(newFolder[0].id);
+
 			var prevSelections = canvas.getSelection();
 			if (prevSelections) {
 				var selections = prevSelections.getAll();
@@ -1146,7 +1180,7 @@ $(document).ready(function () {
 			var dirY = Math.random() > 0.5 ? 150 : -300;
 			addFolderAt(
 				centerX + dirX + Math.random() * 50,
-				centerY + dirY + Math.random() * 50
+				centerY + dirY + Math.random() * 50,
 			);
 		});
 
@@ -1205,7 +1239,7 @@ $(document).ready(function () {
 				if ($(ui.draggable).attr("id") === "addFolderBtn") {
 					addFolderAt(
 						(offsetLeft + ui.position.left) * zoom - 120 * zoom,
-						(offsetTop + ui.position.top) * zoom - 30 * zoom
+						(offsetTop + ui.position.top) * zoom - 30 * zoom,
 					);
 					return;
 				}
@@ -1227,8 +1261,21 @@ $(document).ready(function () {
 		function getLines(text) {
 			text = text.trim();
 			if (text.length <= 16) return [text];
-			var lines = text.match(/.{1,16}/g);
+			var lines = [];
+			while (text.length > 16) {
+				var idx = text.lastIndexOf(" ", 16);
+				if (idx === -1) {
+					idx = 16;
+				}
+				lines.push(text.substring(0, idx));
+				text = text.substring(idx).trim();
+			}
+			lines.push(text);
 			if (!lines) return [];
+			if (lines.length > 2) {
+				lines = lines.slice(0, 2);
+				lines[1] = lines[1] + "...";
+			}
 			return lines.map((l) => l.trim());
 		}
 
@@ -1259,7 +1306,7 @@ $(document).ready(function () {
 			$("body").append(span);
 			var w = $(span).width();
 			var h = $(span).height();
-			while (w > 134 || h > 36) {
+			while ((w > 134 || h > 36) && fs > 16) {
 				fs--;
 				$(span).css("font-size", fs);
 				w = $(span).width();
@@ -1269,12 +1316,13 @@ $(document).ready(function () {
 			return fs;
 		}
 
-		function handleLabelChange(newLabel) {
-			if (newLabel.length === 0) {
-				selectedLabel.setText("");
-				return;
-			}
+		function handleLabelChange(newLabel, fullLabel) {
 			if (selectedLabel) {
+				selectedLabel.userData.fullLabel = fullLabel;
+				if (newLabel.length === 0) {
+					selectedLabel.setText("");
+					return;
+				}
 				var lines = getLines(newLabel);
 				selectedLabel.setText(lines.join("\n"));
 				var fs = getFontSize(lines.join("<br>"));
@@ -1285,12 +1333,11 @@ $(document).ready(function () {
 		$("#folderLabel").on("input", function (e) {
 			e.stopImmediatePropagation();
 			var labelText = $(this).val();
+			var fullLabel = labelText;
 			if (labelText.length > 32) {
-				labelText = labelText.substring(0, 32);
-				$(this).val(labelText);
-				return;
+				labelText = labelText.substring(0, 29).trim() + "...";
 			}
-			handleLabelChange(labelText);
+			handleLabelChange(labelText, fullLabel);
 		});
 
 		$("#folderLabel").on("blur", function () {
@@ -1399,7 +1446,7 @@ $(document).ready(function () {
 				function clearChildParentRelation(childId) {
 					var childNode = json.find(
 						(node) =>
-							node.composite === childId && node.cssClass === "folderLabel"
+							node.composite === childId && node.cssClass === "folderLabel",
 					);
 					if (childNode) {
 						childNode.userData.parents = [];
@@ -1408,12 +1455,12 @@ $(document).ready(function () {
 				function createChildParentRelation(parentId, childId) {
 					var parentNode = json.find(
 						(node) =>
-							node.composite === parentId && node.cssClass === "folderLabel"
+							node.composite === parentId && node.cssClass === "folderLabel",
 					);
 					if (parentNode && parentNode.userData.moduleid) {
 						var childNode = json.find(
 							(node) =>
-								node.composite === childId && node.cssClass === "folderLabel"
+								node.composite === childId && node.cssClass === "folderLabel",
 						);
 
 						//var childNode = json.find((node) => node.composite + "-label" === childId); //Hard to read
@@ -1565,7 +1612,7 @@ $(document).ready(function () {
 						canvasContainer.css("margin-left", pos);
 					}
 				},
-			})
+			}),
 		);
 
 		$("#vToTop").click(function (e) {
@@ -1759,7 +1806,7 @@ $(document).ready(function () {
 					}
 					labelGroup.fireEvent("resize");
 					closeemdialog($("#addLabel"));
-				}
+				},
 			);
 		}
 
@@ -2073,7 +2120,7 @@ $(document).ready(function () {
 						"?oemaxlevel=1&id=" +
 						versionrow.data("versionid") +
 						"&newname=" +
-						encodeURI(newName)
+						encodeURI(newName),
 				);
 		});
 		cancelBtn.click(hideInput);

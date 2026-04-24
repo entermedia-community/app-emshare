@@ -1,0 +1,37 @@
+
+  <div class="chatter-guides mb-1">
+	#if($statuses)
+    <span class="text-muted">[[You can ask questions about]]:</span>
+    #foreach($status in $statuses)
+		#set($groupedby = $status.getViewData())
+		
+		#ifnull($groupedby)
+			#set($groupedby = $mediaarchive.getCachedData("module", $status.getSearchType()) )
+		#end
+      <span class="chatter-guide #if($status.isReady()) success #end me-2">
+        #if($status.isReady())
+          <i class="bi bi-check-lg me-1"></i> #text($groupedby) <span>($status.getCountTotal())</span>
+        #else
+          <i class="fas fa-spinner fa-spin me-1"></i> #text($groupedby) <span>($status.getCountPending() / $status.getCountTotal())</span>
+        #end
+      </span>
+    #end
+	#else
+		[[No embeded documents found]]
+	#end
+  </div>
+  
+  #ifnotnull($suggestions)
+	  #if(!$suggestions.isEmpty())
+	  <div class="d-flex flex-column">
+	    <strong class="ai-suggestions-title mb-1">[[Example questions]]:</strong>
+	    <ul class="ai-suggestions">
+	      #foreach( $suggestion in $suggestions )
+	      <li class="ai-suggestion autoprefixchatmsg" data-prefix="$suggestion.prompt">
+	        $suggestion.prompt
+	      </li>
+	      #end
+	    </ul>
+	  </div>
+	  #end
+  #end

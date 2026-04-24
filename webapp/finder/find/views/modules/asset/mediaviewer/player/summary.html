@@ -24,10 +24,8 @@ $context.putPageValue("assetheight",$assetheight)
 		#set($totalpages = $numberutils.toInt($asset.pages))
 		#set ( $hitssessionid = $context.findValue("hitssessionid"))
 		
-		
 			#set($facemanager = $mediaarchive.getBean("faceProfileManager") )
 			#set($faceboxescollection =  $facemanager.collectFaceBoxesAllPeople($asset,$assetwidth) )
-					
 
 			<div class="media-thumbnail #if($faceboxescollection) emshowbox #end">
 				
@@ -38,15 +36,17 @@ $context.putPageValue("assetheight",$assetheight)
 				#if( $asset.previewstatus == "mime" || $alwaysmime)
 					#set( $rendertype = "mime" )
 				#end
-						
-				#if( ($asset.previewstatus != "2" && $asset.previewstatus != "exif" && $asset.previewstatus != "mime" && $asset.previewstatus != "1" && $asset.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
-			    
+				#if( ($asset.previewstatus != "2" 
+					&& $asset.previewstatus != "exif" 
+					&& $asset.previewstatus != "mime" 
+					&& $asset.previewstatus != "1" 
+					&& $asset.previewstatus != "generated") 
+					&& !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
+
 					$pages.include("$searchhome/convertqueue/previewstatus.html?assetid=$!{asset.id}",$context)
 					
 				#else   
-
 					#if($rendertype == "image")
-			
 						#if($asset.fileformat == "gif")
 							#set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
 							#if(!$cdnprefix )
@@ -55,7 +55,6 @@ $context.putPageValue("assetheight",$assetheight)
 							$context.putPageValue("cdnprefix", $cdnprefix)
 							$context.putPageValue("useoriginal", "true")
 						#end
-					
 					#end 						
 
 	 				$pages.include("$searchhome/thumbnails/${rendertype}.html", $context) 
@@ -64,25 +63,93 @@ $context.putPageValue("assetheight",$assetheight)
 			</div>
 			
 		    <div class="media-player-mini-links d-flex flex-wrap justify-content-center" >
-				   
-			#if($caneditasset && $canviewapprovereject )
+				
+				
+			#if( !$ismulti )
+				<div class="assetlock #if($asset.isLocked()) assetlocked #end me-2">
+				#if($caneditasset || $canviewsettings)	
+					<form name="lockform" 
+					class="autosubmit ajaxform noautofocus" 
+					style="display: inline-block;" 
+					action="$siteroot${apphome}/views/modules/asset/editors/dataasset/generalinformation/toggleassetlock.html" 
+					data-targetdiv="tabsummarypanel">
+						<input type="hidden" name="assetid" value="${asset.id}"/>
+						
+							<a href="#" 
+								class="btn #if(!$asset.isLocked())btn-primary #else btn-cta #end confirm submitform"
+								#if(!$asset.isLocked()) 
+									title="[[Lock Asset]]"
+									data-confirm="[[Are you sure to lock the Asset?]]"
+								#else
+									title="[[Unlock Asset]]" 
+									data-confirm="[[Are you sure to unlock the Asset?]]"
+								#end
+								
+								>
+								#if(!$asset.isLocked())
+									<i class="bi bi-lock me-2"></i>[[Lock]]
+								#else
+									#set($userlock = $asset.getLockOwner())
+									#if($userlock.id != $user.id)
+										<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+										[[Currently locked by]]  <strong>$asset.getLockOwner()</strong>
+									#else
+										<i class="bi bi-lock-fill me-1"></i> [[Locked by You]]
+									#end
+								#end
+								
+							</a>
+							
+					</form>
+				#else
+					
+					#if($asset.isLocked())
+						
+						<a href="#" class="btn btn-cta" title="[[Asset is locked]]">
+							#if(!$asset.isLocked())
+								<i class="bi bi-lock me-1"></i>[[Lock]]
+							#else
+								#set($userlock = $asset.getLockOwner())
+								#if($userlock.id != $user.id)
+									<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+									[[Currently locked by]]  <strong>$asset.getLockOwner()</strong>
+								#else
+									<i class="bi bi-lock-fill me-1"></i> [[Locked by You]]
+								#end
+							#end
+							
+						</a>
+						
+					#end
+				#end
+				</div>
+			#end
+  
+			#if($canviewapprovereject && ($caneditasset || $canviewsettings) )
 			<div class="btn-group dropup">
 				<a href="#" 
-					class="btn btn-primary dropdown-toggle  mr-2"
+					class="btn btn-cta dropdown-toggle  me-2"
 					role="button" id="dropdownStatusAsset" data-toggle="dropdown" data-bs-toggle="dropdown"
+					#if($asset.editstatus =="rejected")
+						title="[[Rejected asset]]"
+					#elseif($asset.editstatus =="6")
+						title="[[Approved asset]]"
+					#else
+						title="[[Change status]]"
+					#end
 				>
 					#if($asset.editstatus =="rejected")
-					<i class="bi bi-slash-circle ns mr-1"></i>
+					<i class="bi bi-slash-circle ns me-1"></i>
 					#elseif($asset.editstatus =="6")
-					<i class="bi bi-check2-circle ns mr-1"></i>
+					<i class="bi bi-check2-circle ns me-1"></i>
 					#else
-					<i class="bi bi-circle  ns mr-1"></i>
+					<i class="bi bi-circle  ns me-1"></i>
 					#end
 					#ifnotnull($asset.editstatus)
 					$mediaarchive.getCachedData("asseteditstatus", $asset.editstatus)
 					#end
 				</a>
-				<div class="dropdown-menu show">
+				<div class="dropdown-menu">
 				   	#if($asset.editstatus != "rejected")
 						
 						<a class="dropdown-item emdialog"
@@ -100,28 +167,30 @@ $context.putPageValue("assetheight",$assetheight)
 			</div>
 			#end
 				
-				   
-			#if($caneditasset)
+			#if($caneditasset || $canviewsettings)
 			<a href="$siteroot$apphome/views/modules/asset/editor/conversions/replaceoriginal/index.html" 
-				class="btn btn-cta emdialog mr-2"
+				class="btn btn-primary emdialog me-2"
 				data-assetid="$asset.getId()"
-				data-dialogid="replaceoriginalasset">
-				<i class="bi bi-files ns mr-1"></i>
+				data-dialogid="replaceoriginalasset"
+				title="[[Replace original file]]">
+				<i class="bi bi-files ns me-1"></i>
 				[[Replace Original File]]
 			</a>
 			#end
-			#if( $candeleteasset )
+			#if($canviewsettings || ($caneditasset && $candeleteasset ))
 				#if ( $ismulti )
 					#if($canmultidelete)  
-					<a class="btn btn-danger  emdialog" href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/delete/index.html?collectionid=$!collectionid&hitssessionid=$!hitssessionid">
-						<i class="bi bi-trash mr-1"></i> [[Delete Selected Assets]]
+					<a class="btn btn-danger  emdialog" href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/delete/index.html?collectionid=$!collectionid&hitssessionid=$!hitssessionid"
+					title="[[Delete assets]]">
+						<i class="bi bi-trash me-1"></i> [[Delete Selected Assets]]
 					</a>
 					#end 
 				#else
 					<a class="btn btn-danger emdialog" 
 						data-maxwidth="600"
-						href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&collectionid=$!collectionid&hitssessionid=$!hitssessionidOriginal&hideOverlay=true">
-						<i class="bi bi-trash mr-1"></i> [[Delete Asset]]
+						href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&collectionid=$!collectionid&hitssessionid=$!hitssessionidOriginal&hideOverlay=true"
+						title="[[Delete asset]]">
+						<i class="bi bi-trash me-1"></i> [[Delete Asset]]
 					</a>
 				#end
 			#end
@@ -177,7 +246,8 @@ $context.putPageValue("assetheight",$assetheight)
 			    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
 			      <a class="dropdown-item ajax" data-targetdiv="nowhere"  href="$siteroot$apphome/components/desktop/openasset.html?assetid=$asset.id&lock=true">[[Edit on Desktop]]</a>
 			      <a class="dropdown-item desktop-send" href="#" data-assetid="${asset.id}" data-command="singleupload" data-catalogid="${catalogid}" data-mediadb="${mediadbappid}" data-replace="true" data-filename='#esc($asset.getText("name",$context))'>[[Replace from Desktop]]</a>
-			      <a class="dropdown-item desktop-send" href="#" data-assetid="${asset.id}" data-replace="false" data-command="singleupload" data-catalogid="${catalogid}" data-mediadb="${mediadbappid}" data-filename='#esc($asset.getText("name",$context))'>[[Create new copy from Desktop]]</a>
+			      <a class="dropdown-item desktop-send" href="#" data-assetid="${asset.id}" data-replace="false" data-command="singleupload" data-catalogid="${catalogid}" data-mediadb="${mediadbappid}" data-filename='#esc($asset.getText("name",$context))'>
+					[[Create new copy from Desktop]]</a>
 			      
 			    </div>
 			    

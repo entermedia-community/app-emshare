@@ -1,0 +1,43 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are given a list of outline sections and a user's request to make changes or confirm the outline. Parse the user's request and return an updated list of outline sections if there are any changes request. If the user confirms the outline without any changes, return the original outline sections."
+		},
+		{
+			"role": "user",
+			"content": #jesc("Outline sections: 
+#foreach($section in $proposedoutline)- ${section}#end")
+		},
+		{
+			"role": "user",
+			"content": #jesc($confirmationprompt)
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "smartcreator_confirmoutline",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"updated_outline": {
+						"type": "array",
+						"items": {
+							"type": "string",
+							"description": "The updated outline section text."
+						}
+					},
+					"changed": {
+						"type": "boolean",
+						"description": "Whether or not any changes were made to the outline sections."
+					}
+				},
+				"required": ["changed", "updated_outline"],
+				"additionalProperties": false
+			}
+		}
+	}
+}

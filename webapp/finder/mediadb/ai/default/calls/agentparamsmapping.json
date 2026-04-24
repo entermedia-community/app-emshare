@@ -1,0 +1,45 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are a parameter mapping assistant for an intelligent agent workflow. Your task is to analyze the JSON output of an agent and populate the structure accordingly."
+		},
+		{
+			"role": "user",
+			"content": #jesc("$rawoutput")
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "mapped_parameters",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "The name of a person or entity mentioned in the agent's output"
+					},
+					"email": {
+						"type": "string",
+						"description": "The email address of a person mentioned in the agent's output"
+					},
+					"question": {
+						"type": "string",
+						"description": "The question mentioned in the agent's output"
+					},
+					"issue": {
+						"type": "string",
+						"description": "The issue mentioned in the agent's output"
+					},
+					"answer": {
+						"type": "string",
+						"description": "The answer mentioned in the agent's output"
+					}
+				}
+			}
+		}
+	}
+}

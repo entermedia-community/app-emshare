@@ -1,0 +1,49 @@
+#set($edithome = "$applink/views/modules/${agentcontext.entitymoduleid}/editors")
+<div class="d-flex flex-column">
+  <h5 class="my-2">#text($recordmodule):</h5>
+  <ul>
+    #foreach($record in $recordlist)
+      <li>
+        <a class="ajax"
+          href="$edithome/entitychat/toplevelfunctionsave.html"
+          data-targetdiv="aichatsearch"
+          data-channel="$!{channel.getId()}"
+          #if($recordmodule.aicreationmethod == "smartcreator")
+            data-toplevelaifunctionid="smartcreator_welcome_${recordmodule.id}"
+            data-functionname="smartcreator_play"
+            data-context_playbackentityid="${record.id}"
+            data-context_playbackentitymoduleid="${recordmodule.id}"
+            data-context_playbacksection="0"
+          #else
+            data-toplevelaifunctionid="search_welcome"
+            data-functionname="view_related_record_details"
+          #end
+          data-context_relatedmoduleid="$recordmodule.id"
+          data-context_recordid="$record.id"
+          data-oemaxlevel="1">
+          <span>$record.getName()</span>
+        </a>
+      </li>
+    #end
+  </ul>
+  <div class="d-flex justify-content-between mt-2 msg-body-actions">
+    <a class="emdialog entity-tab-label btn btn-light me-2"
+      href="$edithome/default/tabs/index.html"
+      data-dialogid="entitydialog" 
+      data-entityid="${agentcontext.entityid}"
+      data-entitymoduleid="${agentcontext.entitymoduleid}"
+      data-entitymoduleviewid="${agentcontext.entitymoduleid}${recordmodule.id}">
+      <span><i class="bi bi-eye me-1"></i> [[View All]]</span>
+    </a>
+    <a class="ajax btn btn-light align-self-end"
+      href="$edithome/entitychat/toplevelfunctionsave.html"
+      data-targetdiv="aichatsearch"
+      data-channel="$!{channel.getId()}"
+      data-toplevelaifunctionid="search_welcome"
+      data-functionname="view_related_records"
+      data-context_relatedmoduleid="$recordmodule.id"
+      data-oemaxlevel="1">
+      <span><i class="bi bi-arrow-90deg-up me-1"></i> [[Related Records]]</span>
+    </a>
+  </div>
+</div>

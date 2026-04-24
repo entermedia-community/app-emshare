@@ -1,0 +1,31 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "Improve and expand the given text for clarity and quality. You may add content, but the final result must be a single paragraph. Do not include headings or multiple paragraphs. Format using HTML where appropriate."
+		},
+		{
+			"role": "user",
+			"content": "${paragraph}"
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "improved_text",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"paragraph": {
+						"type": "string",
+						"description": "An improved and extended version of the input text, returned as exactly one paragraph."
+					}
+				},
+				"required": ["paragraph"],
+				"additionalProperties": false
+			}
+		}
+	}
+}

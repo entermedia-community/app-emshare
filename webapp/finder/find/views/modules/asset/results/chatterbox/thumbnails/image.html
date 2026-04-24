@@ -18,7 +18,7 @@ $context.putPageValue("hit", $hit)
 #end
 
 #set ($thumbsize = $context.getPageValue("thumbsize"))
-#if( $type == "video" )
+#if( $rendertype == "video" )
 	#set($imagesize = "image640x480")
 #else
 	#set($imagesize = "image200x200")
@@ -48,7 +48,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 			#set($imagepath = "${imagepath}?_=$tstamp")
 		#end
 
-		#if($type=="video")
+		#if($rendertype=="video")
 			#set( $imagelink = "$!{siteroot}/${mediadbappid}/services/module/asset/players/play/${hit.id}.html")
 		#else
 			#set($imagelink = $mediaarchive.asLinkToPreview($hit, "image3000x3000", true)) 
@@ -75,6 +75,9 @@ $context.putPageValue("thumbsize", $thumbsize)
 		
 		<a href="${imagelink}"
 			class="lightbox"
+			#if($rendertype=="video")
+			target="_blank"
+			#end
 
 			#if($download_enabled == "true")
 				#set($downloadlink = $mediaarchive.asLinkToShare($siteroot, $hit, $convertpreset))
@@ -108,7 +111,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 				data-imagesrc="$imagepath$!urlparams"	
 				src="$imagepath$!urlparams"
 				/>
-			#if($type =="video")
+			#if($rendertype =="video")
 				<button class="videoplay-button">
 					<span class="videoplay-icon"></span>
 				</button>

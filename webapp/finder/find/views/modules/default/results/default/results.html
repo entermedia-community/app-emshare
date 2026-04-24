@@ -2,7 +2,6 @@
 
 #ifnull($viewid)
 	#set($viewid = $context.getRequestParameter("viewid"))
-
 #end
 #ifnull($viewid)
 	#set($viewid = "${moduleid}resultstable")
@@ -12,16 +11,13 @@ $context.putPageValue("viewid", $viewid)
 #ifnull($resultview)
 	#set($resultview = $context.getRequestParameter("resultview${moduleid}"))
 #end
-
 #ifnull($resultview)
 	#set($resultview = $content.get("${moduleid}resultview"))
 #end
-
 ##User preference will never override content setting
 #ifnull($resultview )
 	#set($resultview = $userprofile.get("${moduleid}resultview"))
 #end	
-
 #ifnull($resultview)
 	#set($resultview = $context.getRequestParameter("resultview"))
 #end
@@ -34,7 +30,9 @@ $context.putPageValue("viewid", $viewid)
 #ifnull($resultview)
 	#set($resultview = "table")
 #end
-
+#if($resultview == "gallery" && $module.id != "asset")
+	#set($resultview = "grid")   ##gallery only available for assets, use grid for everything else
+#end
 #ifnull($lightboxassetsresults)
 	#set($lightboxassetsresults = $context.getRequestParameter("lightboxassetsresults"))
 	$context.putPageValue("lightboxassetsresults", $lightboxassetsresults)
@@ -124,9 +122,7 @@ $context.putPageValue("filteredresults", $filteredresults)
 	#end
 	data-hitsname="$!hits.getSearchQuery().getHitsName()"
 	>
-	
-	
-				
+					
 	$pages.include("${edithome}/searchheader.html", $context)	
 	
 	#set($searcher = $searcherManager.getSearcher($catalogid, $moduleid))
@@ -147,9 +143,6 @@ $context.putPageValue("filteredresults", $filteredresults)
 	#end
 	
 	$context.putPageValue("moduletotalhits",$moduletotalhits)
-
-	
-	
 	
 	$pages.include("${searchhome}/resultviews.html", $context)
 		

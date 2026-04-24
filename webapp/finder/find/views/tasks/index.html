@@ -1,0 +1,20 @@
+#set($scenerios = $mediaarchive.query("taskscenerio").all().search() )
+
+<div class="container-fluid">
+	
+	<div class="row">
+	#foreach($scenerio in $scenerios)
+	<div class="col-md-6 ">
+	<div class="card panel-default">
+	  <div class="card-header">$scenerio 
+	  <a class="float-right ajax" data-targetdivinner="applicationmaincontent" data-oemaxlevel="2" href="$siteroot$apphome/views/dashboard/executefinish.html?reportid=${scenerio.id}"><i class="fas fa-search"></i></a>
+	  </div>
+	  <div class="card-body">
+	      ##  $pages.include("$apphome/components/reports/showreport.html?reportid=$scenerio.id&cache=false")
+	  </div>
+	</div>
+	</div>
+	#end
+	</div>
+	
+</div>

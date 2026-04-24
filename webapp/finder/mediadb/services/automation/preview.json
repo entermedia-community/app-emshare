@@ -1,0 +1,32 @@
+{
+  "status": "ok",
+  "data": {
+    "scenarios": [
+      #foreach($scenario in ${scenarios})
+        #if($foreach.count > 1),#end
+		{
+        #jsonpartial($scenario $scenariosearcher.getPropertyDetails())
+		,
+			#set( $position = $automationManager.getPosition( $scenario.getId() ) )
+			"position": 	#json($position $automationpositionsearcher.getPropertyDetails())
+		}
+      #end
+    ],
+    "labels": [
+      #foreach($label in ${labels})
+        #if($foreach.count > 1),#end
+		{
+        #jsonpartial($label $labelsearcher.getPropertyDetails())
+		,
+			#set( $position = $automationManager.getPosition( $label.getId() ) )
+			"position": 	#json($position $automationpositionsearcher.getPropertyDetails())
+		}
+      #end
+    ]
+    #set( $position = $automationManager.getPosition("automation_canvas_preview") )
+    #ifnotnull($position)
+    ,
+    "canvas": #json($position $automationpositionsearcher.getPropertyDetails())
+    #end
+  }
+}

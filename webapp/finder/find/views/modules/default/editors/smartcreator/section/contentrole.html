@@ -1,0 +1,26 @@
+#set($id = $context.getRequestParameter("id"))
+#set($sectionid = $context.getRequestParameter("sectionid"))
+
+#set($searchtype = $context.getRequestParameter("searchtype"))
+
+#if($searchtype == "componentcontent")
+  #set($iscontainer = false)
+#else
+  #set($iscontainer = true)
+#end
+
+#set($contentroles = $mediaarchive.query("contentrole").exact("iscontainer", $iscontainer).sort("ordering").search())
+
+<div class="d-flex flex-column pb-2">
+  #foreach($role in $contentroles)
+    <a class="contentrole ajax"
+      data-id="$id"
+      data-targetdiv="section-${sectionid}"
+      data-sectionid="$sectionid"
+      data-contentrole="$role.id"
+      data-closedialog="true"
+      href="$edithome/section/save-contentrole.html"
+      data-oemaxlevel="1"
+      data-searchtype="$searchtype">${role.name}</a>
+  #end
+</div>

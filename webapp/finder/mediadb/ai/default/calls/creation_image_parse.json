@@ -1,0 +1,39 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are an assistant that extracts structured details for an image creation request."
+		}
+		#if($channelchathistory.size() <= 1)
+		, 
+		#else 
+		$pages.include("./commons/messagehistory.json", $context) 
+		#end
+		{
+			"role": "user",
+			"content": #jesc(${message.message})
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "create_image_request",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"image_name": {
+						"type": "string",
+						"description": "A short filename without extension of the image to be created."
+					},
+					"prompt": {
+						"type": "string",
+						"description": "Prompt for the image creation. Use the exact user prompt, don't add any additional instructions about image size, format, etc."
+					}
+				},
+				"required": ["image_name", "prompt"]
+			}
+		}
+	}
+}

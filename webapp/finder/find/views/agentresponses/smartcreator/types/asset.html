@@ -1,0 +1,20 @@
+<div class="asset-content">
+  #ifnull($componentcontent.assetid)
+    <p class="text-muted">
+      [[ No Asset Selected ]]
+    </p>
+  #end
+
+  #ifnotnull($componentcontent.assetid)
+    $context.putPageValue("assetid", $componentcontent.assetid)
+	<div class="asset-content-asset">
+		
+    $pages.include("$edithome/types/assetpreview.html?assetid=${componentcontent.assetid}", $context)
+	</div> 
+  #end
+  #ifnotnull($componentcontent.content)
+  	<p class="caption">
+  	  ${componentcontent.content}
+	  </p>
+  #end
+</div>

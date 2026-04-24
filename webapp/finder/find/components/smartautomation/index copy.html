@@ -1,0 +1,64 @@
+<div class="automation-scenarios" id="automation-scenarios">
+	
+	$pages.include("./header.html", $context)
+  
+  <div class="p-4">
+    <div class="automation-list row row-cols-2 row-cols-md-3 g-3">
+      #foreach($scenario in $scenarios)
+      	<div class="col">
+        	<div class="card">
+						#set($icon = $scenario.scenarioicon)
+						#ifnull($icon)
+							#set($icon = "robot")
+						#end
+						<div class="card-title d-flex justify-content-between">
+	            <h5><i class="bi bi-${icon} me-2"></i> $scenario.name</h5>
+							<a class="me-1 ajax" 
+								title="[[View Scenario]]"
+								data-scenarioid="$scenario.id" 
+								href="$applink/components/smartautomation/view.html" 
+								data-targetdivinner="smartautomation" 
+								data-oemaxlevel="1">
+								<i class="bi bi-arrows-angle-expand"></i>
+							</a>
+						</div>
+
+          	<div class="card-body">
+							#set($scenarioimage = "/${mediadbappid}/views/automations/${scenario.id}.png")
+							#set($imageexists = $mediaarchive.getPageManager().getPage( $scenarioimage).exists())
+							#if(!$imageexists)
+								#set($scenarioimage = "/${mediadbappid}/views/automations/default.png")
+							#end
+
+							<a class="ajax" 
+								title="[[View Scenario]]"
+								data-scenarioid="$scenario.id" 
+								href="$applink/components/smartautomation/view.html" 
+								data-targetdivinner="smartautomation" 
+								data-oemaxlevel="1">
+								<img src="$scenarioimage" class="card-img-top p-1" alt="[[View]] $scenario.name" />
+							</a>
+							<p class="card-text">$!scenario.longdescription</p>
+							<div class="d-flex position-relative mt-auto">
+	            	<div class="active-automation w-100">
+									#set( $ran = $scenario.getValue("lastrunstart"))
+									<span class="text-muted">Last run: $!context.getAge($ran) ago</span>
+	              	<div class="d-flex align-items-center justify-content-between">
+										<span>Status: #if($scenario.getBoolean("isrunning") ) [[Running]] #else [[Not running]] #end</span>
+										<a href="$apphome/components/smartautomation/runnow.html?scenarioid=$scenario.id" 
+										data-targetdiv="automation-scenarios"
+										data-oemaxlevel="1"
+										data-toastmessage="[[Running]] #text($scenario)"
+										class="ajax ms-1" title="[[Run Scenario]]">
+											[[Run Now]]
+										</a>
+									</div>
+								</div>
+							</div>
+          	</div>
+        	</div>
+      	</div>
+      #end
+    </div>
+  </div>
+</div>

@@ -1,0 +1,76 @@
+#set($type = $componentcontent.componenttype)
+
+#ifnull($type)
+#set($type = $context.getRequestParameter("type"))
+#end
+
+#ifnull($type)
+#set($type = "paragraph")
+#end
+
+#set($ordering = $componentcontent.ordering)
+
+#ifnull($ordering)
+  #set($ordering = $context.getRequestParameter("ordering"))
+#end
+
+#ifnull($ordering)
+  #set($ordering = 0)
+#end
+
+#set($data = $componentcontent.content)
+
+#ifnotnull($data)
+  $context.putPageValue("data", $data)
+#end
+
+<div class="creator-section-content $type #if($newcontent) new-content #end"
+  #ifnotnull($componentcontent)
+    id="component-$componentcontent.id"
+    data-dataid="$componentcontent.id"
+    data-ordering="$componentcontent.ordering"
+  #end>
+  #ifnotnull($componentcontent.componenttype)
+    #set($label = $mediaarchive.getCachedData("componenttype", $type))
+    <div class="component-label">
+      <span>$label</span>
+      #set($role = $mediaarchive.getCachedData("contentrole", $componentcontent.contentrole))
+      
+      <a class="emdialog contentrole-btn"
+        href="$edithome/section/contentrole.html"
+        data-id="$componentcontent.id"
+        data-sectionid="$componentcontent.componentsectionid"
+        data-searchtype="componentcontent"
+        data-dialogid="contentrole"
+        data-hidefooter="true"
+        data-modalsize="sm"
+        title="[[Content Role]]">
+        #ifnotnull($role)
+          $role
+        #end
+        #ifnull($role)
+          <i class="me-1 bi bi-plus-lg"></i> [[Set role]]
+        #end
+      </a>
+      
+    </div>
+  #end
+  <div class="editable-content"
+    data-sectionid="${section.id}"
+    #ifnotnull($componentcontent)
+      id="editable-$componentcontent.id"
+      data-componentcontentid="$componentcontent.id"
+    #end
+    data-componenttype="$type"
+    data-ordering="$ordering"
+    data-savepath="$edithome/section/save-componentcontent.html"
+    title="[[Click to edit]]">
+    $pages.include("$edithome/section/types/${type}.html", $context)
+  </div>
+  $pages.include("$edithome/section/ai-action.html", $context)
+  <div class="action-btn-container">
+    <div class="action-btn-group light-dropdown">
+      $pages.include("$edithome/section/component-action.html", $context)
+    </div>
+  </div>
+</div>

@@ -4,16 +4,17 @@
     <li class="mb-2">
       <div class="d-flex flex-column">
         <div class="d-flex align-items-center">
-          <a href="$pagelink" target="_blank" class="small d-flex align-items-center text-accent flex-grow-1">
+          <a href="$pagelink" target="_blank" class="small text-accent" style="word-break: break-all;">
             $pagelink
           </a>
-          <a type="button" class="bg-contrast text-contrast ml-1 px-1 collapsed" data-toggle="collapse" href="#drupalMedia-${foreach.count}">
+          <a type="button" class="bg-contrast text-contrast ms-1 px-1 collapsed" data-bs-toggle="collapse" href="#drupalMedia-${detail.id}-${foreach.count}">
             <i class="bi bi-chevron-expand ns"></i>
             <i class="bi bi-chevron-contract ns"></i>
           </a>
         </div>
        
-        <div class="collapse bg-contrast py-1 px-2 mt-1 rounded" id="drupalMedia-${foreach.count}" data-parent="#drupalMediaAccordion">
+        <div class="collapse  mt-1" id="drupalMedia-${detail.id}-$!{foreach.count}" data-parent="#drupalMediaAccordion">
+          <div class="py-1 px-2 bg-contrast ">
           #foreach($key in $row.keySet())
             #if($key != "page")
               #set($val = $row.get($key))
@@ -24,10 +25,11 @@
                 #end
               #end
               <p class="mb-1 small">
-                <span class="text-muted fw-bold mr-2">$key:</span><span style="word-break: break-all;">$val</span>
+                <span class="fw-bold me-2">$key:</span><span style="word-break: break-all;">$val</span>
               </p>
             #end
           #end
+          </div>
         </div>
       </div>
     </li>

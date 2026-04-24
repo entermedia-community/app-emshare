@@ -1,0 +1,51 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are a parameter extraction assistant for an intelligent agent workflow. Your task is to analyze the description of an agent, and respond with a list of parameters structure that the agent will populate as its output."
+		},
+		{
+			"role": "user",
+			"content": #jesc("$skilloverview")
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "arguments_structure",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"arguments": {
+						"type": "array",
+						"description": "Arguments and their description",
+						"items": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": "string",
+									"description": "The id of the parameter to be extracted"
+								},
+								"description": {
+									"type": "string",
+									"description": "A brief description of the parameter"
+								},
+								"data_type": {
+									"type": "string",
+									"description": "The data type of the parameter",
+									"enum": ["string", "number", "boolean", "object", "array"]
+								}
+							},
+							"required": ["id", "description", "data_type"],
+							"additionalProperties": false
+						}
+					}
+				},
+				"required": ["arguments"],
+				"additionalProperties": false
+			}
+		}
+	}
+}

@@ -1,0 +1,74 @@
+<records>
+
+  <data id="customer_support_start" automationagent="handleWebEventAgent" runoperation="mcp.readmail" automationscenario="email" enabled="true">
+    <name>
+      <![CDATA[Start Customer Support]]>
+    </name>
+  </data>
+
+  <data id="process_email_enabled" automationagent="process_email" automationscenario="email" enabled="true" runafter="customer_support_start">
+    <name>
+      <![CDATA[Process Email]]>
+    </name>
+    <skilloverview>
+      <language id="en"><![CDATA[Outputs name, email, and the email text]]></language>
+    </skilloverview>
+    <parameterstructure>[{"data_type":"string","description":"The sender of the message or item","id":"from"},{"data_type":"string","description":"The subject line of the message or item","id":"subject"},{"data_type":"string","description":"The body content or full text of the message or item","id":"content"},{"data_type":"string","description":"The date and time the message or item was sent","id":"sentdate"}]</parameterstructure>
+    <contextvalues>{"mailserver": "mail.emediadb.net","mailport": 993,"mailusername": "dev@emediadb.net","mailpassword": ""}</contextvalues>
+  </data>
+
+  <data id="find_embeddings_enabled" automationagent="find_embeddings" automationscenario="email" runafter="process_email_enabled" enabled="true">
+    <name>
+      <![CDATA[Find Embeddings]]>
+    </name>
+  </data>
+
+  <data id="answer_query_enabled" automationagent="answer_query" automationscenario="email" runafter="find_embeddings_enabled" enabled="true">
+    <name>
+      <![CDATA[Find Answer for Query]]>
+    </name>
+    <llmprompt>
+      <language id="en"><![CDATA[Answers support email when it's asking a general question or query that doesn't require human intervention.]]></language>
+    </llmprompt>
+    <skilloverview>
+      <language id="en"><![CDATA[Requires name, email, and the question as arguments (if available).]]></language>
+    </skilloverview>
+    <parameterstructure>[{"data_type":"string","description":"The name of the user or requester.","id":"name"},{"data_type":"string","description":"The email address of the user or requester.","id":"email"},{"data_type":"string","description":"The specific question, query or greetings extracted from the email body.","id":"content"},{"data_tyoe":"string","description":"Type of email","id":"email_type","enum":["question","query","greetings","followup"]}]</parameterstructure>
+  </data>
+
+  <data id="reply_email_enabled" automationagent="reply_email" automationscenario="email" runafter="answer_query_enabled" enabled="true">
+    <name>
+      <![CDATA[Reply to Email]]>
+    </name>
+    <contextvalues>{"mailserver":"mail.emediadb.net","mailport":465,"mailusername":"dev@emediadb.net","mailpassword":"","ssl":true}</contextvalues>
+  </data>
+
+  <data id="mark_as_done_enabled" automationagent="mark_as_done" automationscenario="email" runafter="reply_email_enabled" enabled="true">
+    <name>
+      <![CDATA[Mark as Done]]>
+    </name>
+  </data>
+
+  <data id="mark_as_critical_enabled" automationagent="mark_as_critical" automationscenario="email" runafter="find_embeddings_enabled" enabled="true">
+    <name>
+      <![CDATA[Mark as Critical]]>
+    </name>
+    <llmprompt>
+      <language id="en"><![CDATA[Handles emails that are critical and require immediate attention from a human agent.]]></language>
+    </llmprompt>
+    <skilloverview>
+      <language id="en"><![CDATA[Requires name, email, the primary problem and possible department to escalate this problem to.]]></language>
+    </skilloverview>
+  </data>
+
+  <data id="escalate_issue_enabled" automationagent="escalate_issue" automationscenario="email" runafter="mark_as_critical_enabled" enabled="true">
+    <name>
+      <![CDATA[Escalate Issue]]>
+    </name>
+    <llmprompt>
+      <language id="en"><![CDATA[Escalates issues that cannot be resolved by the automated system to a human agent for further handling.]]></language>
+    </llmprompt>
+  </data>
+
+
+</records>

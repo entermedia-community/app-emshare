@@ -7,7 +7,7 @@
 </div>
 
 <div id="embed-wrapper" class="mt-4 px-3">
-	<div class="row no-gutters mb-3">
+	<div class="row g-0 mb-3">
 		<div class="col-12 col-md-4">
 
 			<form name="savepermiossions" 
@@ -20,7 +20,9 @@
 				
 				<h4>[[Custom Permissions]]</h4>
 				<div class="form-check mb-3 h-auto py-2 public-permission rounded" style="padding-left: 1.75rem;">
-					<input class="form-check-input" name="securityalwaysvisible" #if($entity.securityalwaysvisible == true) checked #end type="checkbox" value="true" id="makeEntityPublic">
+					<input class="form-check-input" name="securityalwaysvisible" 
+						#if($entity.securityalwaysvisible == true) checked #end type="checkbox" value="true" id="makeEntityPublic" 
+					/>
 					<label class="form-check-label" for="makeEntityPublic">
 						[[Anyone Can View]]
 					</label>
@@ -30,12 +32,12 @@
 				<input name="entityid" type="hidden" value="$entity.id" />
 							
 			#foreach($permission in $entitypermissions)
-			<div class="d-flex align-items-center bg-light rounded pl-2 pr-1 py-1 mb-2 border" id="permission-${permission.getData().getId()}">
-				<span class="mr-2 fw-bold">
+			<div class="d-flex align-items-center bg-light rounded px-2 py-1 mb-2 border" id="permission-${permission.getData().getId()}">
+				<span class="me-2 fw-bold">
 					#text( $permission.getData() )
 				</span>
 				<span class="bg-secondary text-white px-1 rounded fs-small" style="padding-bottom: 2px;">$permission.getPermissionType()</span>
-				<div class="d-flex align-items-center ml-auto">
+				<div class="d-flex align-items-center ms-auto">
 					<input type="hidden" name="dataid" value="$permission.getData().getId()" />
 					<input type="hidden" name="permissiontype" value="$permission.getPermissionType()" />
 					#if($permission.getData().getId() != $entity.get("owner"))
@@ -52,7 +54,7 @@
 					 	data-confirm="[[Are you sure you want to remove this permission?]]" 
 						data-removeonsuccess="true" 
 						data-removetarget="permission-$permission.getData().getId()">
-						<i class="bi bi-x-circle ns ml-2 mr-1"></i>
+						<i class="bi bi-x-circle ns ms-2 me-1"></i>
 					</a>
 					#else
 					<input type="hidden" name="iseditor" value="true" /> 
@@ -69,7 +71,7 @@
 					data-includeeditcontext="true"
 					data-edithomeid="${edithomeid}"
 					data-hidefooter="true">
-					<i class="bi bi-plus-lg mr-1"></i>[[Add]]</a>
+					<i class="bi bi-plus-lg me-1"></i>[[Add]]</a>
 			
 				#** <a class="emdialog btn btn-danger confirm" 
 					href="#?id=$!{entityid}" 
@@ -77,7 +79,7 @@
 					data-includeeditcontext="true"
 					data-edithomeid="${edithomeid}"
 					data-hidefooter="true">
-					<i class="bi bi-reset mr-1"></i>[[Reset to Default]]</a>
+					<i class="bi bi-reset me-1"></i>[[Reset to Default]]</a>
 					**#
 					<br>
 			</div>
@@ -94,14 +96,14 @@
 	#end
 	#foreach( $addedPermission in $parentpermissions)
 		<div class="d-flex my-2">
-			<span class="bg-secondary text-white px-1 rounded fs-small mr-2 px-1 text-center" style="width:38px;">$addedPermission.getPermissionType()</span>
-			<span class="mr-2 fw-bold">#text( $addedPermission.getData() )</span>
+			<span class="bg-secondary text-white px-1 rounded fs-small me-2 px-1 text-center" style="width:38px;">$addedPermission.getPermissionType()</span>
+			<span class="me-2 fw-bold">#text( $addedPermission.getData() )</span>
 		</div>
 	#end
 	#if($canviewsettings)
 	<a class="btn btn-primary" 
-		href="$apphome/views/settings/${module.id}/permissions/viewers.html">
-		<i class="bi bi-sliders mr-2"></i>[[Viewer Settings]]</a>
+		href="$apphome/views/settings/modules/${module.id}/permissions/viewers.html">
+		<i class="bi bi-sliders me-2"></i>[[Viewer Settings]]</a>
 	#end
 	</div>
 	

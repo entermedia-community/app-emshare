@@ -1,0 +1,37 @@
+#set( $id = $context.getRequestParameter("id"))
+#set( $title = $context.getRequestParameter("title"))
+#set( $bgColor = $context.getRequestParameter("bgColor"))
+#set( $color = $context.getRequestParameter("color"))
+
+
+
+<div class="d-flex flex-column bg-white my-4 mx-auto rounded" style="width: 400px; max-width: 100%;" data-setpagetitle="Insert Label">
+  <div class="d-flex justify-content-between border-bottom px-3 pt-3 pb-2">
+    <h4 class="text-center m-0 text-dark">
+      #ifnull($id) Insert #end
+      #ifnotnull($id) Update #end
+      Label</h4>
+    <button class="btn text-muted closemodal">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+  <form class="d-flex flex-column gap-2 m-0 p-3" id="previewLabelForm" #ifnotnull($id) data-id="$id" #end>
+    <input type="text" name="title" placeholder="Title" class="rounded form-control me-2" #ifnotnull($title) value="$title" #end />
+    <div class="d-flex align-items-center">
+      <span class="text-muted me-2">
+        [[Background Color]]
+      </span>
+      <input type="text" name="fill" placeholder="Background Color" class="color-picker rounded form-control me-2" autocomplete="off" #ifnotnull($bgColor) value="$bgColor" #end />
+    </div>
+    <div class="d-none align-items-center">
+      <span class="text-muted me-2">
+        [[Border Color]]
+      </span>
+      ##<input type="text" name="stroke" placeholder="Border Color" class="color-picker rounded form-control" autocomplete="off" #ifnotnull($color) value="$color" #end />
+    </div>
+    <button type="submit" class="btn btn-brand btn-lg rounded align-self-center mt-4">
+      #ifnull($id) Insert #end
+      #ifnotnull($id) Update #end
+    </button>
+  </form>
+</div>

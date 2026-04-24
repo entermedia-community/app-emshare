@@ -2,15 +2,15 @@
 	#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
 	
 #end
+
 #set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
 
 #set( $pickertargetfield = $context.getRequestParameter("pickertargetfield"))
 
+#set( $imagecreationavaiable = $mediaarchive.aiImageCreationAvailable($context))
 
-#set( $gptkey = $mediaarchive.getCatalogSettingValue("openai-key"))
-
-#ifnull($gptkey)
-	<div class="alert alert-warning m-4 text-center"><strong>[[Missing Key]]:</strong> [[Gpt Key not defined in Catalog Settings]]</div>
+#if(!$imagecreationavaiable)
+	<div class="alert alert-warning m-4 text-center"><strong>[[AI Image Creation Error]]:</strong> [[Missing Key]]</div>
 #end
 <div class="bg-white">
   <div class="w-100 my-2 px-2">
@@ -60,8 +60,8 @@
 			
 			<div class="d-flex justify-content-center mt-3">
 				
-				<button type="submit" class="btn btn-cta" #ifnull($gptkey) disabled="disabled"#end >
-					<i class="bi bi-brush mr-1"></i>
+				<button type="submit" class="btn btn-cta" #if(!$imagecreationavaiable) disabled="disabled"#end >
+					<i class="bi bi-brush me-1"></i>
 					[[Create with AI]]
 				</button>
 				

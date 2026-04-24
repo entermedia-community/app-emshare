@@ -1,7 +1,6 @@
 #set($chatterboxhome = $page.chatterboxhome)
 $context.putPageValue("chatterboxhome", $chatterboxhome)
 
-#set($channel = $context.getRequestParameter("channel"))
 #set($collectionid = $context.getRequestParameter("collectionid"))
 
 #set($resultsPage = "${chatterboxhome}/showpage.html?chatterboxhitssessionid=${messagesthitracker.sessionId}&channel=$!currentchannel.id&pageposition")
@@ -13,10 +12,7 @@ $context.putPageValue("oemaxlevel","2")
 
 
 <div id="chatterboxmessages" class="chatterbox-messages" style="#if(!$user) height: 100%; #end">
-		
-	##$pages.include("${apphome}/views/modules/defualt/chatpositions.html", $context)
 
-	
 	$pages.include("${chatterboxhome}/chatpositions.html", $context)
 	
 	<div class="chatterbox-container">
@@ -31,12 +27,8 @@ $context.putPageValue("oemaxlevel","2")
 							$pages.include("${chatterboxhome}/message.html", $context)
 						#end
 					#end
-					
-					#if($messages.size() == 0)
-						$pages.include("${chatterboxhome}/search-hints.html", $context)
-					#end
-			</div>
-			<div id="newmessagearea"></div>
+				</div>
+				<div id="newmessagearea"></div>
 			<div class="chatterspinner" style="display: none;"><strong>[[Processing]]...</strong></div>
 		</div>
 	</div>

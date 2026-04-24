@@ -1,0 +1,44 @@
+<div class="creator-section"
+  #ifnotnull($section)
+    id="section-${section.id}"
+    data-dataid="${section.id}"
+    data-ordering="${section.ordering}"
+  #end>
+  <div class="creator-section-contents" id="creatorcontent-${section.id}">
+    #set($role = $mediaarchive.getCachedData("contentrole", $section.contentrole))
+    <a class="emdialog contentrole-btn"
+      href="$edithome/section/contentrole.html"
+      data-id="$section.id"
+      data-sectionid="$section.id"
+      data-searchtype="componentsection"
+      data-dialogid="contentrole"
+      data-hidefooter="true"
+      data-modalsize="sm"
+      title="[[Content Role]]">
+      #ifnotnull($role)
+        $role
+      #end
+      #ifnull($role)
+        <i class="me-1 bi bi-plus-lg"></i> [[Set role]]
+      #end
+    </a>
+    
+    #ifnull($componentcontents)
+      #set($componentcontents = $mediaarchive.query("componentcontent").exact("componentsectionid", $section.id).sort("ordering").search())
+    #end
+
+    #foreach($componentcontent in $componentcontents)
+      $context.putPageValue("componentcontent", $componentcontent)
+      $pages.include("$edithome/section/section-content.html", $context)
+    #end
+    #if($componentcontents.size() == 0)
+      $context.putPageValue("type", "paragraph")
+      $pages.include("$edithome/section/section-content.html", $context)
+    #end
+  </div>
+  <div class="action-btn-container title-actions" id="section-${section.id}">
+    <div class="action-btn-group light-dropdown">
+      $pages.include("$edithome/section/title-action.html", $context)
+    </div>
+  </div>
+</div>

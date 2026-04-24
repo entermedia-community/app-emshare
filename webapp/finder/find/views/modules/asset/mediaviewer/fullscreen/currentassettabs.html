@@ -34,7 +34,7 @@
 					data-propertyfield="assetopentab"
 					data-propertyvalue="viewproperties"
 					title="[[Metadata]]">
-					<i class="bi bi-info-circle mr-1 ns"></i> <span>[[Data]]</span>
+					<i class="bi bi-info-circle me-1 ns"></i> <span>[[Data]]</span>
 				</a>
 			</li>
 		#end
@@ -53,7 +53,7 @@
 						data-propertyfield="assetopentab"
 						data-propertyvalue="viewpreview"
 						title="[[View]] #esc($!title)">
-						<i class="bi bi-fullscreen ns mr-1"></i> [[Viewer]] 
+						<i class="bi bi-fullscreen ns me-1"></i> [[Viewer]] 
 					</a>
 				</li>
 				#end
@@ -68,18 +68,19 @@
 		#end
 
 		#if( !$ismulti)
-			#if ($canviewcroppingtool || $canviewmediaedit || (($rendertype =="video" || $rendertype  == "audio") && ($canviewclosedcaptions || $canviewtimeline)))
+			#if ($canshareasset || $canviewcroppingtool || $canviewmediaedit || (($rendertype =="video" || $rendertype  == "audio") && ($canviewclosedcaptions || $canviewtimeline)))
 				#if ($rendertype =="video" || $rendertype  == "image" || $rendertype  == "audio" ) 
 				<li class="assettabnav #if($opentab == 'assetedit')tabselected #end">
 					<a class="expandmenu assettab ajax rememberassettab" 
-						href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/currentasset.html?action=assetedit" title="[[Edit]]"
+						href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/currentasset.html?action=assetedit" 
+						title="[[Media Edit & Share]]"
 						data-opentab="assetedit"
 						data-targetdiv="main-media-container"
 						data-oemaxlevel="1" 
 						data-propertyfield="assetopentab"
 						data-propertyvalue="assetedit"
 						data-assettabname="[[Edit]]">
-						<i class="bi bi-pen ns mr-1"></i> <span>[[Edit]]</span>
+						<i class="bi bi-image ns me-1"></i> <span>[[Media Edit & Share]]</span>
 					</a>
 				</li>
 				#end
@@ -97,41 +98,9 @@
 						data-propertyfield="assetopentab"
 						data-propertyvalue="assethistory"
 						data-assettabname="[[History]]">
-						<i class="bi bi-clock-history ns mr-1"></i> <span>[[History]]</span>
+						<i class="bi bi-clock-history ns me-1"></i> <span>[[History]]</span>
 					</a>
 				</li>
-			#end
-		#end
-
-		#if ( $canshareasset && !$ismulti )
-			#if ($canpublish || $canemaillink || $canembedasset || $canaddtoproject)
-			<li class="assettabnav hidemulti dropdown">
-				<a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" title="[[Share]]">
-					<i class="bi bi-share ns mr-1"></i> <span class="mbl-hidden">[[Share]]</span>
-				</a>
-				<ul class="dropdown-menu">
-					#if( $canembedasset)
-					<li>
-						<a class="dropdown-item emdialog" data-hidefooter="true" data-noesc="true" data-dialogwidth="1000" data-dialogid="shareasset" title="[[Share Links]]"" href="$siteroot$componenthome/share/embed.html?assetid=$asset.id&collectionid=$!collectionid">[[Links]]</a>
-					</li>
-					#end
-					#if( $canemaillink )
-					<li>
-						<a class="dropdown-item emdialog" data-hidefooter="true" data-noesc="true" data-dialogid="shareasset" href="$siteroot$apphome/views/modules/asset/activity/emailassets.html?assetid=$asset.id">[[Email]]</a>
-					</li>
-					#end
-					#if ($canpublish)
-					<li>
-						<a class="dropdown-item emdialog" data-hidefooter="true" data-noesc="true" data-dialogid="shareasset" href="$siteroot$apphome/views/modules/asset/activity/publishassets.html?assetid=$asset.id">[[Export]]</a>
-					</li>
-					#end
-					#if ( $canaddtoproject )
-					<li id="add-to-collection">
-						<a class="dropdown-item ajax" data-targetdivinner="shareOptionsContainer" data-dialogid="shareasset" href="#">[[Add to Project]]</a>
-					</li>
-					#end
-				</ul>
-			</li>
 			#end
 		#end
 
@@ -144,7 +113,7 @@
 				data-dialogid="donwloadasset" 
 				data-assetid="${asset.id}"
 				data-assethitssessionid="$!hitssessionid">
-				<i class="bi bi-download ns mr-1"></i> <span class="mbl-hidden">[[Download]]</span>
+				<i class="bi bi-download ns me-1"></i> <span class="mbl-hidden">[[Download]]</span>
 			</a>
 		</li>
 		#end
@@ -154,14 +123,14 @@
 			#if ( $cancheckout )
 			<li class="assettabnav" id="mediaviewerbasket">
 				#if($orderManager.isAssetInOrder($catalogid, $order, $asset.id) )
-				<a class="dropdown-item updatebasketmediaviewer expandmenu" data-action="remove" data-alerttxt="[[Removed From Cart]]" data-targetdiv="mediaviewerbasket" 
+				<a class="updatebasketmediaviewer expandmenu" data-action="remove" data-alerttxt="[[Removed From Cart]]" data-targetdiv="mediaviewerbasket" 
 					href="$siteroot$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">
-					<span class="bi bi-cart-fill ns mr-1"> </span> [[Remove From Cart]]
+					<span class="bi bi-cart-fill ns me-1"> </span> [[Remove From Cart]]
 				</a>
 				#else
-				<a class="dropdown-item updatebasketmediaviewer expandmenu"  data-targetdiv="mediaviewerbasket" data-alerttxt="[[Added To Cart]]" 
+				<a class="updatebasketmediaviewer expandmenu"  data-targetdiv="mediaviewerbasket" data-alerttxt="[[Added To Cart]]" 
 					href="$siteroot$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">
-					<span class="bi bi-cart ns mr-1"> </span> [[Add To Cart]]
+					<span class="bi bi-cart ns me-1"> </span> [[Add To Cart]]
 				</a>
 				#end
 			</li>

@@ -10,11 +10,11 @@
 				data-assetid="multiedit:$!hits.getSessionId()"
 				class="dropdown-item" 
 				href="#" 
-				title="[[Edit selected Assets]]">$text</a></li>
+				title="[[Edit selected assets]]">$text</a></li>
 					
 					
 		#if( $canviewapprovereject && ($caneditcollection || $caneditallassets ))
-			<li class="dropdown-submenu">
+			<li class="dropend">
 				<a class="dropdown-item  dropdown-toggle" href="#" data-bs-toggle="dropdown">[[Approve or Reject]]</a>
 			      <ul class="submenu dropdown-menu">
 			        <li> 
@@ -50,8 +50,9 @@
 					data-entityid="${entity.id}"
 					data-removinghitssessionid="$hits.getSessionId()"
 					data-ajaxreloadtargets="dataeditedreload"
-					title="[[Remove selected assets from]]: #text($entity)"
-					href="$removefrom" >[[Remove selected assets from]]: #text($entity)</a>
+					data-confirm="[[Are you sure to remove]] $hits.getSelectionSize() [[selected assets from]]: #text($entity)?"
+					title="[[Remove]] $hits.getSelectionSize() [[selected assets from]]: #text($entity)"
+					href="$removefrom" >[[Remove]] $hits.getSelectionSize() [[selected assets from]]: #text($entity)</a>
 			</li>
 		#end
 		
@@ -63,7 +64,7 @@
 	 		<li><a class="dropdown-item emdialog"
 	 			data-dialogid="deleteasset"
 	 			data-maxwidth="600" 
-	 			href="$deleteurl">[[Delete Selected Assets]]</a></li>
+	 			href="$deleteurl">[[Delete]] $hits.getSelectionSize() [[selected assets]]</a></li>
 	   	#end 
 	   	
 	   	#if($canprintpreview)
@@ -86,7 +87,7 @@
 					data-action="addtocart"
 					title="[[Add To Cart]]"
 					href="$siteroot$componenthome/basket/addselection.html?${hits.getSearchType()}hitssessionid=$hits.getSessionId()">
-					<i class="bi bi-cart-plus-fill mr-2"></i> [[Cart]]
+					<i class="bi bi-cart-plus-fill me-2"></i> [[Cart]]
 				</a>
 				</li>
 			#end
@@ -100,7 +101,7 @@
 					title="[[Add To Bookmarks]]"  
 					href="$siteroot$apphome/views/modules/asset/editor/favorite/favorite-add-multi.html?${hits.getSearchType()}hitssessionid=$hits.getSessionId()"
 					>
-					<i class="bi bi-bookmark-fill mr-2"></i> [[Bookmarks]]
+					<i class="bi bi-bookmark-fill me-2"></i> [[Bookmarks]]
 					</a>
 				</li>
 			#end
@@ -116,7 +117,7 @@
 						title="[[Add To Workflow]]"  
 						href="$siteroot$apphome/views/modules/asset/editor/workflow/add.html?${hits.getSearchType()}hitssessionid=$hits.getSessionId()"
 						>
-						<i class="bi bi-funnel-fill mr-2"></i> [[Workflow]]
+						<i class="bi bi-funnel-fill me-2"></i> [[Workflow]]
 						</a>
 					</li>
 				#end
@@ -149,7 +150,7 @@
 					    		data-copyinghitssessionid="$hits.getSessionId()"
 					    		title="[[Copies files and metadata to]] #text($amodule)"
 					    		href="$addtourl">
-									<i class="bi bi-$moduleicon mr-2"></i>#text($amodule)</a> 
+									<i class="bi bi-$moduleicon me-2"></i>#text($amodule)</a> 
 								</li>
 						    #end
 					    #end
@@ -163,7 +164,7 @@
 
 	
 	#if($canpublish || $canemaillink || $canquickgallery)
-	<li class=" dropdown">
+	<li class=" dropend">
 	<a class="resultsnavlink dropdown-toggle" href="#" id="navbarShare$!{moduleid}" role="button" data-toggle="dropdown"  data-bs-toggle="dropdown"
 		aria-haspopup="true" aria-expanded="false">[[Share]]</a>
 		<ul class="dropdown-menu" aria-labelledby="navbarShare$!{moduleid}">

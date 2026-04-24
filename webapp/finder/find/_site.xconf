@@ -29,6 +29,8 @@
 	<path-action name="TranslationModule.loadBrowserLanguage" />
 	<path-action name="FinderModule.loadAppsMenu" />
 
+	<path-action bean="inflector" name="PageValue.loadPageVariable" allowduplicates="true" />
+
 	<property name="searchtypeFromRequest">true</property>
 
 	<!-- Properties -->
@@ -56,31 +58,16 @@
 	<property name="thumbsize">thumb</property>
 
 	<style id="jquery" cancel="true" />
-	<!-- jQuery & jQueryUI JS is  included in includes.html  -->
-	<style id="jqueryui-css" href="/${applicationid}/components/javascript/jquery-ui/1.12/jquery-ui.css" />
-
-	<script id="liveajax" src="/${applicationid}/components/javascript/emedia/liveajax.js" />
-	<script id="utility-plugins" src="/${applicationid}/components/javascript/emedia/utility-plugins.js" />
-	<script id="util" src="/${applicationid}/components/javascript/emedia/util.js" />
-	<script id="toast" src="/${applicationid}/components/javascript/emedia/toast.js" />
-
-	<!-- Ajax Plugins -->
-	<script id="runajax" src="/${applicationid}/components/javascript/emedia/ajax/runajax.js" />
-	<script id="emdialog" src="/${applicationid}/components/javascript/emedia/ajax/emdialog.js" />
-
-	<script id="validation" src="/${applicationid}/components/javascript/validation/jquery.validate.min.js" />
-	<script id="dataentryfields" src="/${applicationid}/components/javascript/emedia/dataentryfields.js" />
-	<script id="dataentrypickers" src="/${applicationid}/components/javascript/emedia/dataentrypickers.js" />
+	<style id="jqueryui-css" href="/${applicationid}/components/javascript/jquery-ui/1.14/jquery-ui.css" />
 
 	<script id="jquery-form" src="/${applicationid}/components/javascript/jquery.form.js" />
+	<script id="validation" src="/${applicationid}/components/javascript/validation/jquery.validate.min.js" />
 	<script id="ajaxformsubmit" src="/${applicationid}/components/javascript/emedia/ajax/ajaxformsubmit.js" />
+	<script id="liveajax" src="/${applicationid}/components/javascript/emedia/liveajax.js" />
 
-
-
-	<script id="imageditor" src="/${applicationid}/components/javascript/emedia/image-editor.js" />
 
 	<!-- Bootstrap CSS (JS included @ includes.html) -->
-	<style id="bootstrap-css" href="/${applicationid}/components/javascript/bootstrap/4.5.3/css/bootstrap.min.css" />
+	<style id="bootstrap-css" href="/${applicationid}/components/javascript/bootstrap/5.3.8/css/bootstrap.min.css" />
 	<style id="fontawesome-css" href="/${applicationid}/components/javascript/bootstrap/fonts/css/fontawesome-all.min.css" />
 	<style id="bootstra-icons" href="/${applicationid}/theme/icons/bootstrap-icons.min.css" />
 
@@ -99,6 +86,20 @@
 
 	<script id="detaileditor" src="/${applicationid}/components/xml/detaileditor.js" />
 
+
+
+	<script id="runajax" src="/${applicationid}/components/javascript/emedia/ajax/runajax.js" />
+	<script id="emdialog" src="/${applicationid}/components/javascript/emedia/ajax/emdialog.js" />
+
+	<script id="dataentryfields" src="/${applicationid}/components/javascript/emedia/dataentryfields.js" />
+	<script id="dataentrypickers" src="/${applicationid}/components/javascript/emedia/dataentrypickers.js" />
+
+	<script id="utility-plugins" src="/${applicationid}/components/javascript/emedia/utility-plugins.js" />
+	<script id="util" src="/${applicationid}/components/javascript/emedia/util.js" />
+	<script id="toast" src="/${applicationid}/components/javascript/emedia/toast.js" />
+
+	<script id="imageditor" src="/${applicationid}/components/javascript/emedia/image-editor.js" />
+
 	<script id="chatterbox" src="/${applicationid}/components/chatterbox/chatterbox.js" />
 	<style id="chatterbox" href="/${applicationid}/components/chatterbox/chatterbox.css" />
 	<script id="twemoji" src="/${applicationid}/components/javascript/twemoji/twemoji.js" defer="true" />
@@ -110,9 +111,11 @@
 	<style id="closedcaptionplayercss" href="/${applicationid}/theme/styles/timeline/timeslider.css" />
 	<style id="videoplayer-css" href="/${applicationid}/theme/styles/timeline/timeline.css" />
 
-	<script id="smart2d" src="/${applicationid}/components/javascript/draw2d-smart.min.js" defer="true" />
+	<script id="smart2d" src="/${applicationid}/components/javascript/draw2d.min.js" defer="true" />
 	<script id="jszip" src="/${applicationid}/components/javascript/jszip/jszip.min.js" defer="true" />
 	<script id="smartorganizer" src="/${applicationid}/components/javascript/emedia/smartorganizer.js" defer="true" />
+	<script id="smartcreator" src="/${applicationid}/components/javascript/emedia/smartcreator.js" defer="true" />
+	<script id="agentautomation" src="/${applicationid}/components/javascript/emedia/agentautomation.js" defer="true" />
 
 	<script id="jcrop" src="/${applicationid}/components/javascript/jcrop/jquery.Jcrop.min.js" defer="true" />
 	<style id="jcrop-css" href="/${applicationid}/components/javascript/jcrop/jquery.Jcrop.min.css" />
@@ -138,6 +141,8 @@
 	<script id="quicksearch" src="/${applicationid}/components/javascript/emedia/quicksearch.js" defer="true" />
 	<script id="results" src="/${applicationid}/components/javascript/emedia/results.js" />
 	<style id="results-css" href="/${applicationid}/theme/styles/pages/results.css" />
+
+	<style id="dropdown-css" href="/${applicationid}/theme/styles/dropdown.css"/>
 
 	<!-- <script id="packery" src="/${applicationid}/components/javascript/packery.pkgd.min.js" />  -->
 
@@ -507,6 +512,10 @@
 		<userprofile property="view" equals="true" />
 	</permission>
 
+	<permission name="viewcategorytree">
+		<userprofile property="viewcategorytree" equals="true" />
+	</permission>
+
 	<permission name="editcategorytree">
 		<userprofile property="editcategorytree" equals="true" />
 	</permission>
@@ -629,9 +638,9 @@
 	<permission name="viewaiagent">
 		<userprofile property="viewaiagent" equals="true" />
 	</permission>
-	
+
 	<permission name="runaiinformatics">
 		<userprofile property="runaiinformatics" equals="true" />
 	</permission>
-	
+
 </page>

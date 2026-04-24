@@ -1,27 +1,30 @@
 <div id="versionpreview">
 
-
-
-#if( $selectedrevision)
-	#set($version = $selectedrevision.getVersion())
-#else
-	#set($version = $context.getRequestParameter("version"))
-	#set( $selectedrevision = $mediaarchive.getAssetEditor().getVersion($asset,$version))	
-#end
+	#if( $selectedrevision)
+		#set($version = $selectedrevision.getVersion())
+	#else
+		#set( $version = $context.getRequestParameter("version"))
+		#set( $selectedrevision = $mediaarchive.getAssetEditor().getVersion($asset,$version))	
+	#end
+	
+	#set( $revisions = $mediaarchive.getAssetEditor().getVersions($asset))	
+	#set( $currentrevision = $revisions.getFirst())
+			
 	<div class="versiontoolbar">
 		#ifnotnull( $selectedrevision.getPreviewFileName() )		  
 		<a href="$apphome/views/modules/asset/editor/versioncontrol/replace.html?version=$!{selectedrevision.version}&assetid=$asset.getId()" 
 			class="btn btn-cta ajax"
 			data-targetdiv="asset-editor-container" 
 			title="[[Restore this Version]]">
-			<i class="bi bi-arrow-clockwise mr-1"></i> [[Restore this Version]]
+			<i class="bi bi-arrow-clockwise me-1"></i> [[Restore this Version]]
 		</a>
-		#end			
+		#end	
+				
 	##	<a href="#" 
-	##			class="btn btn-accent ajax ml-1"
+	##			class="btn btn-accent ajax ms-1"
 		##		data-targetdiv="asset-editor-container" 
 	##			title="[[Make a Copy]]">
-	##			<i class="bi bi-copy mr-1"></i> [[Make a Copy]]
+	##			<i class="bi bi-copy me-1"></i> [[Make a Copy]]
 	##		</a>
 
 		  #set($originalpath = $mediaarchive.asLinkToOriginal($asset))
@@ -32,25 +35,39 @@
 		  #end
 
 		  <a href="${downloadlink}" 
-			class="btn btn-secondary ml-1 #if($desktop) desktopdirectdownload #end"
+			class="btn btn-secondary ms-1 #if($desktop) desktopdirectdownload #end"
 			title="[[Download Version]]">
-			<i class="bi bi-download mr-1"></i> [[Download]]
+			<i class="bi bi-download me-1"></i> [[Download]]
 		</a>
 	</div>
 
+	#set( $mediatype =  $mediaarchive.getMediaRenderType($asset))
+	
 	#if($selectedrevision.getPreviewFileName() )
 	  	#set ($previewlink ="/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/revisionpreviews/$selectedrevision.getPreviewFileName()?assetid=$asset.id&version=$!{selectedrevision.version}")
 	#else
-		#set ($previewlink = $mediaarchive.asLinkToPreview($asset,"image550x550") )
-		#set ($previewlink = "$previewlink?_=$!{selectedrevision.version}") 
+		
+		#if($mediatype =="image") 
+			#set ($previewlink = $mediaarchive.asLinkToPreview($asset,"image550x550") )
+			#set ($previewlink = "$previewlink?_=$!{selectedrevision.version}")
+		#end 
 	#end	
-	
-	<div class="versionpreviewcontent">
+		
+	<div class="versionpreviewcontent overflow-y">
 		#if( $previewlink )
 		<h5 class="mb-2">[[Preview]]:</h5>
 		<img src="$previewlink">
 		#else
-			<p>[[No preview available]]</p>
+			#if($mediatype == "xml")
+				#if($currentrevision.getVersion() == $selectedrevision.getVersion() )
+					#set($page = $mediaarchive.getOriginalDocument($asset) )
+				#else
+					#set($page = $mediaarchive.getPageManager().getPage($selectedrevision.getBackUpPath()))
+				#end
+				$page.getContent()
+			#else
+				<p>[[No preview available]]</p>
+			#end
 		#end
 	</div>
 	

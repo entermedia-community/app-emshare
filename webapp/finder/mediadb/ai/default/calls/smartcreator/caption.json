@@ -1,0 +1,31 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "Generate a concise, descriptive caption for an image. Use the provided title or section name for context if available. The output must be a single sentence."
+		},
+		{
+			"role": "user",
+			"content": "$text"
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "image_caption",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"caption": {
+						"type": "string",
+						"description": "A single-sentence caption describing the image using the provided context."
+					}
+				},
+				"required": ["caption"],
+				"additionalProperties": false
+			}
+		}
+	}
+}

@@ -11,10 +11,8 @@
 <tr class="resultsdivdata resultsentitydata #if($selectedrow) emrowselected #end"  
 	data-rowid="$hit.id"  
 	data-dataid="$hit.id"  
-	#if($mixedentitysourcetypes)  data-entitymoduleid="$moduleid" #end
+	#if($mixedentitysourcetypes)  data-entitymoduleid="$!{moduleid}" #end
 	title="[[Click to open]] #text($hit)">
-	
-	
 
 	<td class="borderedcell checkbox" noclick="true">
 		#if($enableactions != "false")
@@ -35,8 +33,9 @@
 		$!context.putPageValue("values",$values)
 		$!context.putPageValue("data", $hit)
 		
-		<td  class="resultstablecell resultstablecol-$detail.id">
+		<td  class="resultstablecell resultstablecol-$detail.id">  
       		#set($viewtype = $detail.viewType)
+			
 			#if($viewtype  == "tageditor")
 				#set($tagssearchlink = "$siteroot$apphome/views/modules/${searchtype}/index.html")
 				$context.putPageValue("tagssearchlink",$tagssearchlink)
@@ -45,7 +44,7 @@
 				#set($viewtype = "primarymediafolder")
 			#end
 			$context.putPageValue('viewtype',  $viewtype)
-			<div id="edit_${hit.id}_$detail.id" class="popupdetails overflow-y minimal" data-id="${hit.id}">
+			<div id="edit_${hit.id}_$detail.id" class="popupdetails overflow-y minimal row_viewtype_$viewtype" data-id="${hit.id}">
 				$pages.include("$apphome/components/xml/detailreadonly.html", $context)
 			</div>	        
 		</td>	

@@ -1,8 +1,22 @@
-<div style="margin: 0px;">
+
+
+#ifnotnull($asset)
+	#set($count = 1)
+#end
+#ifnull($asset)
+	#ifnotnull($hits)
+	#set($count = $hits.getSelectionSize())
+	#end
+#end
+
+#ifnull($count)
+[[Invalid Session]]
+#end
+#ifnotnull($count)
     <p>[[Are you sure you want to delete]] <strong>
      
-    	#if($data.size() && $data.size() > 1 ) 
-    		$data.size() [[assets]]
+    	#if($count > 1 ) 
+    		$count [[assets]]
     	#else 
     		1 [[asset]]
     	#end</strong>?</p>
@@ -22,4 +36,4 @@
 	    <p><input type="checkbox" name="deleteoriginal" value="true" id="deleteoriginal" />
 	    <label for="deleteoriginal">[[Also delete original]]</label></p>
     </form>
-</div>
+#end

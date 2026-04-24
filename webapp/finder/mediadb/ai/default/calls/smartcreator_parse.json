@@ -1,0 +1,61 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": #jesc("You are a precise data extraction assistant. Parse the user's sentence(s) into structured instructions. There are two type of instruction:
+- outline_section: instruction related to creating the outline sections.
+- section_content: instruction related to creating the content for each section.
+Use the similar sentence structure as user's query do not rephrase if nopt necessary. Instruction should be a short single sentence.
+Extract the topic as a noun phrase, excluding action verbs.")
+		},
+		{
+			"role": "user",
+			"content": #jesc($creationprompt)
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "sentence_parser",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"topic": {
+						"type": "string",
+						"description": "The core subject matter (e.g., 'how to make a cake')."
+					},
+					"outline_section": {
+						"type": "object",
+						"properties": {
+							"instruction": {
+								"type": "string",
+								"description": "The instruction for creating the outline sections."
+							}
+						},
+						"required": ["instruction"],
+						"additionalProperties": false
+					},
+					"section_content": {
+						"type": "object",
+						"properties": {
+							"instruction": {
+								"type": "string",
+								"description": "The instruction for creating the outline sections."
+							},
+							"prepositional_phrase": {
+								"type": "string",
+								"description": "Prepositional phrase acting as an adverbial modifier"
+							}
+						},
+						"required": ["instruction", "prepositional_phrase"],
+						"additionalProperties": false
+					}
+				},
+				"required": ["topic", "outline_section", "section_content"],
+				"additionalProperties": false
+			}
+		}
+	}
+}

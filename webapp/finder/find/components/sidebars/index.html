@@ -7,16 +7,19 @@
 	#ifnull( $section ) data-setpagetitle="$title" #end 
 	data-url="$applink/components/sidebars/index.html">
 
-	<div class="col-main col-sidebar-togglers sidebar-togglers-bar">
+	<div class="col-main col-sidebar-togglers sidebar-togglers-bar" style="padding-bottom: 32px;">
 
-		<div class="col-main-inner" >
+		<div class="col-main-inner" style="margin-bottom:40px">
 
-			##force specific sidebar from URL only if sidebars open
+			##Open specific sidebar from URL only if sidebars open
 			#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent"))
 			#if($forcedsidebarcomponent == "none")
 				#set( $sidebarcomponent = $forcedsidebarcomponent )
 			#else
 
+				#ifnull($forcedsidebarcomponent)
+					#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent.value"))
+				#end
 				#ifnull($forcedsidebarcomponent)
 					#set($forcedsidebarcomponent = $content.sidebarcomponent)
 				#end
@@ -24,7 +27,7 @@
 				#ifnotnull($forcedsidebarcomponent)
 					#set( $sidebarcomponent = $forcedsidebarcomponent )
 				#end
-	
+
 				#ifnull($sidebarcomponent)
 					#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
 				#end
@@ -41,6 +44,8 @@
 				#set( $sidebarcomponent = "")
 				#end
 			#end
+			
+			
 			
 			$context.putPageValue("sidebarcomponent", $sidebarcomponent)
 
@@ -82,17 +87,6 @@
 						<i class='bi bi-${assetmodule.get("moduleicon")}'></i>
 					</a>
 				</div>
-			#end
-
-			#if(false && $canviewopencollections )
-			<div class="sidebar-togglers #if($sidebarcomponent == "libraries") sidebar-selected #end">
-				<a href="#" class="sidebar-toggler sidebar-toggler-show" data-action="show"
-					data-targetdiv="col-sidebars" data-sidebar="libraries"
-					data-modulesearchhitssessionid="$!modulehits.sessionId" data-sitetitle="[[Albums]]"
-					title="[[Recent Albums]]">
-					<i class="bi bi-diagram-3-fill"></i>
-				</a>
-			</div>
 			#end
 
 			#if($desktop)
@@ -164,10 +158,42 @@
 			#end
 			
 		</div>
+
+		#if( !$browser.isNarrow() ) 
+			#if($canviewsettings)
+				#if( $userprofile.getModules().size() > 1 )
+					#set( $urlbase = "$siteroot$applink/views/modules" )
+						<div class="sidebar-togglers #if($sidebarcomponent == "smartautomation") sidebar-selected #end" Xstyle="width: 32px; height: 32px;  position: absolute;   top: 40px;">
+						<a href="$applink/components/smartautomation/index.html" 
+							class="emdialog sidebar-toggler-show" 
+							data-oemaxlevel="1"
+							data-modulesearchhitssessionid="$!modulehits.sessionId" 
+							data-action="show" 
+							data-sidebar="smartautomation"
+							data-dialogid="smartautomation"
+							title="[[Smart Automation]]">
+							<i class="bi bi-magic" style="color: #ff33ee;"></i>
+						</a>
+					</div>
+					<div class="sidebar-togglers #if($sidebarcomponent == "smartorganizer") sidebar-selected #end" Xstyle="width: 32px; height: 32px;  position: absolute;   top: 40px;">
+						<a href="$applink/components/smartorganizer/index.html" 
+							class="emdialog sidebar-toggler-show" 
+							data-oemaxlevel="1"
+							data-modulesearchhitssessionid="$!modulehits.sessionId" 
+							data-action="show" 
+							data-sidebar="smartorganizer"
+							title="[[Smart Organizer]]">
+							<i class="bi bi-diagram-2" style="color: #3363ff;"></i>
+						</a>
+					</div>
+				#end
+			#end
+		#end
 		
-		
+		<div class="mt-auto"></div>
+
 		#if($user && $canviewsidebarhelp)	
-		<div class="sidebar-togglers #if($sidebarcomponent == "guide") sidebar-selected #end"  style="margin-top:40px">
+		<div class="sidebar-togglers #if($sidebarcomponent == "guide") sidebar-selected #end">
 			<a href="#" class="sidebar-toggler sidebar-toggler-show" data-action="show"
 				data-targetdiv="col-sidebars" data-sidebar="guide"
 				data-modulesearchhitssessionid="$modulehits.sessionId" data-sitetitle="[[User Guide]]"
@@ -176,26 +202,6 @@
 			</a>
 		</div>
 		#end	
-
-		#if( !$browser.isNarrow() ) 
-			#if($canviewsettings)
-				#if( $userprofile.getModules().size() > 1 )
-					#set( $urlbase = "$siteroot$applink/views/modules" )
-					<div class="sidebar-togglers #if($sidebarcomponent == "smartorganaizer") sidebar-selected #end" Xstyle="width: 32px; height: 32px;  position: absolute;   top: 40px;">
-						<a href="$applink/components/smartorganizer/index.html" 
-							class="emdialog sidebar-toggler-show" 
-							data-oemaxlevel="1"
-							data-modulesearchhitssessionid="$!modulehits.sessionId" 
-							data-action="show" 
-							data-sidebar="addentity" title="[[Smart Organizer]]">
-							<i class="bi bi-magic" style="color: #ff91f6;"></i>
-						</a>
-					</div>
-				#end
-			#end
-		#end
-
-		<div class="mt-auto"></div>
 
 	</div>
 

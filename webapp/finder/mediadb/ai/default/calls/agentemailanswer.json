@@ -1,0 +1,43 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are a customer support assistant for eMedia. Create a response for a query email to a customer based on the given email content and the answer found for the query. The response should be professional, to the point, and provide a clear answer to the customer's question. Use the information from the email to personalize the response. If answer is not found for the query, create a response apologizing for the inconvenience and inform the customer that we will follow up with them as soon as possible."
+		},
+		{
+			"role": "user",
+			"content": #jesc("Name: $!{name}
+Email: $!{email}
+Email Content: $!{emailcontent}
+Answer: $!{answer}
+")
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "query_email_response",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+          "reply_email": {
+						"type": "object",
+						"properties": {
+							"subject": {
+								"type": "string",
+								"description": "The subject line for the reply email to the customer."
+							},
+							"body": {
+								"type": "string",
+								"description": "The response for the reply email to the customer."
+							}
+						},
+						"required": ["subject", "body"]
+					}
+				}
+			}
+		}
+	}
+}

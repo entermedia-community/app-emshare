@@ -174,7 +174,7 @@
 							<li class="position-relative desktopSyncPreview">
 								<label for="desktopSyncToggle" class="resultsnavlink px-2 desktopSyncPreviewBtn m-0"
 									title="[[Download]] $!hits.getSelectionSize() [[assets]]"> 
-									<i class="syncIcon fas fa-desktop mr-1"></i>
+									<i class="syncIcon fas fa-desktop me-1"></i>
 									[[Desktop]]
 								</label>
 								<input id="desktopSyncToggle" type="checkbox" class="d-none popover-toggle">
@@ -253,15 +253,14 @@
 						</li>
 						
 						#if($canexportdata && $hits && $hits.getSelectionSize() > 0)
-						<li class="dropdown-submenu">
+						<li class="dropend">
 							<a class="dropdown-item  dropdown-toggle" href="#" data-bs-toggle="dropdown">[[Export]]</a>
 							<ul class="submenu dropdown-menu">
-								
-								<li><a class="dropdown-item" 
-									href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable" 
+									<li><a class="dropdown-item" 
+									href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&view=asset/resultstable&exportselection=true" 
 									title="[[Export results]]">[[Export Results]]</a></li>
 								<li><a class="dropdown-item" 
-									href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset" 
+									href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId" 
 									title="[[Export database records]]">[[Export Database Records]]</a></li>
 							</ul>
 						</li>
@@ -372,7 +371,7 @@
 				##ifnull($lightboxassetsresults)
 				<li class="resultsnavitem" style="min-width: 75px;">
 					#set( $types = $mediaarchive.getList("resulttype"))
-					<select class="select2  form-control" 
+					<select class="select2  form-select" 
 						name="resultview" 
 						id="selectresultview"
 						data-oemaxlevel="1"
@@ -397,7 +396,7 @@
 						
 						<li class="resultsnavitem s2h" style="min-width:180px;">
 							#set ($alldetails = $searcher.getUserPropertyDetails() )
-							<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
+							<select class="form-control form-select select2 tableresultsaddcolumn" 
 									name="addcolumn"
 									data-componenthome="$!siteroot${searchhome}/addremovecolumns.html?searchtype=asset&${hits.getSearchType()}hitssessionid=$hits.getSessionId()&editheader=true"
 									data-targetdiv="$!module.getId()resultsarea" 
@@ -409,7 +408,7 @@
 							</select>
 							
 							<a href="#" class="reset-columns">
-								<i class="bi bi-arrow-counterclockwise mr-1"></i>
+								<i class="bi bi-arrow-counterclockwise me-1"></i>
 								[[Reset Columns]]
 							</a>
 						</li>
@@ -421,7 +420,7 @@
 				<li class="resultsnavitem rpp" title="[[Results per page]]">
 					#set( $currenthitsperpage = $hits.getHitsPerPage())
 					#set($hitcountoptions = $mediaarchive.getList("hitcount"))
-					<select class="form-control hitsperpagechange" id="hitsperpagechange$!{moduleid}" data-oemaxlevel="1">
+					<select class="form-select hitsperpagechange" id="hitsperpagechange$!{moduleid}" data-oemaxlevel="1">
 						#foreach($ho in $hitcountoptions)
 							<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
 						#end	

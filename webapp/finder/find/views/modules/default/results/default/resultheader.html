@@ -92,6 +92,45 @@ $context.putPageValue("enableactions", $enableactions)
 			
 			#ifnull($pickertarget)
 				#if($permissions.canModule($module, "create") && $showaddnew != "false")
+					<li>
+						<div class="dropdown">
+							<a class="dropdown-toggle btn-cta resultsnavlink no-icon" href="#" data-toggle="dropdown">
+								<i class="bi bi-plus-lg"></i> 
+							</a>
+							<div class="dropdown-menu" style="margin-left: 1px;">
+								<a class="dropdown-item emdialog"
+									href="$applink/views/modules/$!{module.id}/editors/bulkentitycreator/dialog.html?edit=true&addnew=true" 
+									data-entitymoduleviewid="$!{module.id}addnew"
+									data-entitymoduleid="$!module.id"
+									data-entityedithome="$!edithome"
+									data-parentmoduleid="$entitymodule.id"
+									data-parententityid="$entity.id"
+									title="[[Bulk Upload from Files]] &middot; #text($module)">
+									<i class="bi bi-stack me-1"></i> [[Bulk Upload from Files]]
+								</a>
+								<a href="$applink/views/modules/$!{module.id}/editors/entityexport/csvupload/picker.html" 
+									class="dropdown-item emdialog"
+									data-dialogid="entitypicker"
+									
+									data-includeeditcontext="true"
+									data-hidefooter="true"
+									title="[[Upload Spreadsheet]] &middot; #text($module)">
+									<i class="bi bi-file-spreadsheet me-2"></i> [[Upload Spreadsheet]]
+								</a>
+								<a class="dropdown-item emdialog"
+									href="$applink/views/modules/$!{module.id}/editors/youtubeimporter/dialog.html?edit=true&addnew=true" 
+									data-entitymoduleviewid="$!{module.id}addnew"
+									data-entitymoduleid="$!module.id"
+									data-entityedithome="$!edithome"
+									data-parentmoduleid="$entitymodule.id"
+									data-parententityid="$entity.id"
+									data-hidefooter="true"
+									title="[[Bulk Import YouTube Video or Playlist]] &middot; #text($module)">
+									<i class="bi bi-youtube me-2"></i> [[Import from YouTube]]
+								</a>
+							</div>
+						</div>
+					</li>
 					<li class="mbl-except"> 
 						#ifnotnull($entity)
 							#set($addnew = "${edithome}/addnew.html")
@@ -103,7 +142,7 @@ $context.putPageValue("enableactions", $enableactions)
 							data-includeeditcontext="true"
 							data-autosetformtargetdiv="editdiv"
 							title="[[Create New]] #text($module)">
-							<i class="bi bi-plus-lg mr-1"></i> <span class="mbl-hidden">[[Create New]]</span></a>
+							<span class="mbl-hidden">[[Create New]]</span></a>
 						#end
 						
 						#ifnull($entity)
@@ -113,16 +152,16 @@ $context.putPageValue("enableactions", $enableactions)
 								data-addnew="true"
 								data-moduleid="$moduleid"
 								title="[[Add New Record]]">
-								<i class="bi bi-plus-lg mr-1"></i> <span class="mbl-hidden">[[Create New]]</span>
+								<span class="mbl-hidden">[[Create New]]</span>
 							</a>
 						#end
-	
 					</li>
 				#end
 			#end
-			#if($enableactions != "false")
+			#if($hits && $enableactions != "false")
 			<li class="dropdown">
-				<a class="resultsnavlink dropdown-toggle #if($!hits.getSelectionSize() > 0)btn-accent#end" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<a class="resultsnavlink dropdown-toggle #if($!hits.getSelectionSize() > 0)btn-accent#end" 
+					data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					
 					#if($!hits.getSelectionSize() > 0)
 						[[Folders]] ($!hits.getSelectionSize())
@@ -169,6 +208,21 @@ $context.putPageValue("enableactions", $enableactions)
 					</li>
 					#end
 					
+					
+					#if($entity.id)			
+						#set($removefrom = "${edithome}/actions/removeselections.html")
+						<li><a class="dropdown-item ajax"
+							data-targetdiv="tab_media" 
+								data-entityid="${entity.id}"
+								data-entitymoduleid="${entitymodule.id}"
+								data-moduleid="${module.id}"
+								data-removinghitssessionid="$hits.getSessionId()"
+								data-ajaxreloadtargets="dataeditedreload"
+								title="[[Remove selected records from]]: #text($entity)"
+								href="$removefrom" >[[Remove selected records from]]: #text($entity)</a>
+						</li>
+					#end
+					
 					#ifnull($tabid)
 					#set($tabid = $context.getRequestParameter("tabid"))
 					#end
@@ -190,10 +244,10 @@ $context.putPageValue("enableactions", $enableactions)
 						 title="[[Delete selected items]]">[[Delete]] $!hits.getSelectionSize() [[Records]]</a></li>
 					#end
 					
-					<li class="dropdown-submenu">
+					<li class="dropend">
 						<a class="dropdown-item  dropdown-toggle" href="#" data-bs-toggle="dropdown">[[Export]]</a>
 							<ul class="submenu dropdown-menu">
-								<li><a class="dropdown-item" href="$!{siteroot}${apphome}/views/modules/${moduleid}/export/download/export_${moduleid}.csv?hitssessionid=$hits.sessionId"
+								<li><a class="dropdown-item" href="$!{siteroot}${apphome}/views/modules/${moduleid}/export/download/export_${moduleid}.csv?hitssessionid=$hits.sessionId&exportselection=true"
 									title="[[Export reults to CSV]]">[[Export]]  $!hits.getSelectionSize() [[Records Using IDs]]</a></li>
 								<li><a class="dropdown-item" href="$!{siteroot}${apphome}/views/modules/${moduleid}/export/download/export_${moduleid}.csv?hitssessionid=$hits.sessionId&friendly=true&view=${moduleid}/${moduleid}resultstable"
 									title="[[Export results to CSV (Friendly)]]">[[Export]] $!hits.getSelectionSize() [[Records Using Text]]</a></li>
@@ -201,7 +255,7 @@ $context.putPageValue("enableactions", $enableactions)
 					</li>
 					
 					
-
+		
 				#if($permissions.canModule("searchcategory", "create"))
 					#set($edithome = "$apphome/views/modules/${module.id}/editors/picksearchcategory")
 					#set($addurl = "$!{edithome}/index.html") 
@@ -214,8 +268,23 @@ $context.putPageValue("enableactions", $enableactions)
 							data-originaledithomeid="${edithomeid}"
 							data-hidefooter="true"
 							title="[[Add To Category]]"
-							data-dialogwidth="1200"><i class="bi bi-category mr-2"></i>[[Assign]] #text( $mediaarchive.getCachedData("module","searchcategory") )</a></li>
+							data-dialogwidth="1200"><i class="bi bi-category me-2"></i>[[Assign]] #text( $mediaarchive.getCachedData("module","searchcategory") )</a></li>
 			 	#end	
+				
+				#if($canrunaiinformatics)
+					#set($reseturl = "$apphome/views/modules/${module.id}/editors/aitools/resetinformatics.html")
+					<li><a 
+						class="dropdown-item ajax" 
+							href="$reseturl" 
+							data-targetdiv="nada"
+							data-hitssessionid="$hits.getSessionId()"	
+							data-toastmessage="[[Reseting Informatics]]"
+							data-toastsuccess="[[Reset Informatics Scheduled]]"
+							title="[[Reset Informatics]]"
+							><i class="bi bi-robot me-2"></i>[[Reset Informatics]]</a></li>
+					
+				#end
+				
 			#end ##Selection					
 			
 			</ul>
@@ -257,7 +326,7 @@ $context.putPageValue("enableactions", $enableactions)
 						#if($edit)
 							<li class="resultsnavitem s2h" style="min-width:180px">
 								#set ($alldetails = $searcher.getUserPropertyDetails() )
-								<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
+								<select class="form-select form-control-sm select2 tableresultsaddcolumn" 
 										name="addcolumn"
 										data-componenthome="${searchhome}/addremovecolumns.html?searchtype=$!moduleid&${hits.getSearchType()}hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid&viewid=$!{moduleid}resultstable"
 										data-targetdiv="$!{moduleid}resultsarea"
@@ -275,7 +344,7 @@ $context.putPageValue("enableactions", $enableactions)
 									data-oemaxlevel="1"
 									data-confirm="[[Are you sure you want to reset all columns?]]"
 									class="ajax reset-columns">
-									<i class="bi bi-arrow-counterclockwise mr-1"></i>
+									<i class="bi bi-arrow-counterclockwise me-1"></i>
 									[[Reset Columns]]
 								</a>
 							</li>
@@ -315,7 +384,7 @@ $context.putPageValue("enableactions", $enableactions)
 					<li class="resultsnavitem rpp" title="[[Results per page]]">
 						#set( $currenthitsperpage = $hits.getHitsPerPage())
 						#set($hitcountoptions = $mediaarchive.getList("hitcount"))
-						<select class="form-control hitsperpagechange" 
+						<select class="form-select hitsperpagechange" 
 								id="hitsperpagechange$!{moduleid}"
 								data-allowclear="false">
 							#foreach($ho in $hitcountoptions)

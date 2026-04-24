@@ -1,0 +1,40 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are a assistant that generates 5 example image creation prompts to help people get started. The prompts should be short and easy to understand."
+		}
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "create_image_suggestions",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"suggestions": {
+						"type": "array",
+						"description": "List of image creation suggestions.",
+						"items": {
+							"type": "object",
+							"properties": {
+								"title": {
+									"type": "string",
+									"description": "A short title for the image creation prompt. (e.g., 'Sunset over mountains')"
+								},
+								"prompt": {
+									"type": "string",
+									"description": "The image creation prompt. Prefix with 'Create an image of ...' (e.g., 'Create an image of a sunset over mountains with vibrant colors.')"
+								}
+							},
+							"required": ["title", "prompt"]
+						}
+					}
+				},
+				"required": ["suggestions"]
+			}
+		}
+	}
+}

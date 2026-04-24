@@ -1,17 +1,17 @@
 #set( $dataroot = $context.findValue("dataroot"))
 
 <div id="scriptlist">
-<h3 style="margin: 20px 0 5px 0;">Choose Import Script</h3>
+<h3 style="margin: 20px 0 5px 0;">[[Choose Import Script]]</h3>
 <div>
-	<select style="margin: 8px 5px 20px 0;" name="scriptname" onchange='loadscript(this.value)'>
+	<select class="form-control form-control-sm form-select mb-3" name="scriptname" onchange='loadscript(this.value)'>
 	##loop over scripts
-		<option value="none">- Choose Import Script -</option>
+		<option value="none">- [[Choose Import Script]] -</option>
 		#foreach( $script in $scripts)
-			<option value="$script.getName()">$script.getName()</option>
+			<option value="$script.getName()" #if($script.getName()=="ImportCsvFile.groovy") selected #end>$script.getName()</option>
 			
 		#end
 	</select> 
-	<a id="editlink" class="btn btn-sm btn-secondary ajax" data-targetdiv="scriptarea" style="display:none" href="">[[Edit]]</a>
+	<a id="editlink" class="btn btn-sm btn-secondary ajax" data-targetdiv="scriptarea" href="">[[Edit]]</a>
 </div>
 <div id="scriptarea">
 
@@ -48,6 +48,10 @@ loadscript = function(inValue)
 		$("#submit").show()
 	}	
 }
+
+$("#importfile").change(function () {
+	$("#submit").show()
+});
 
 </script>
 

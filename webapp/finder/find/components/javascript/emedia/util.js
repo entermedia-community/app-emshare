@@ -17,7 +17,9 @@ function lightenHex(hex, lighten = 0) {
 	var g = parseInt(result[2], 16);
 	var b = parseInt(result[3], 16);
 
-	(r /= 255), (g /= 255), (b /= 255);
+	r /= 255;
+	g /= 255;
+	b /= 255;
 	var max = Math.max(r, g, b),
 		min = Math.min(r, g, b);
 	var h,
@@ -246,7 +248,7 @@ $(document).ready(function () {
 				event.preventDefault();
 				href = href.replace(
 					"components/toolbar/plugintoolbar",
-					"views/filemanager/clearpagemanager"
+					"views/filemanager/clearpagemanager",
 				);
 				window.location.href = href;
 			} else if (event.key == "d") {
@@ -259,7 +261,7 @@ $(document).ready(function () {
 				var mode = debugMode ? "debug" : "preview";
 				href = href.replace(
 					"components/toolbar/plugintoolbar",
-					`views/workflow/mode/view${mode}`
+					`views/workflow/mode/view${mode}`,
 				);
 				jQuery.get(href);
 				customToast("Switched to&nbsp;<b>" + mode + "</b>&nbsp;mode!", {
@@ -270,41 +272,32 @@ $(document).ready(function () {
 					window.location.reload();
 				}
 			}
-		}
-		else 
-		{
+		} else {
 			const targetTagName = event.target.tagName;
-	        if (targetTagName === 'INPUT' || targetTagName === 'TEXTAREA') {
-				if ($(event.target).val() !== '')
-				{
-	            	return;
+			if (targetTagName === "INPUT" || targetTagName === "TEXTAREA") {
+				if ($(event.target).val() !== "") {
+					return;
 				}
-	        }
-			
+			}
+
 			if (event.which == "37" || event.which == "39") //left | arrow arrow key
 			{
 				var container;
 				var link;
 				if ($(".entitydialog").length > 0) {
-					container = $(".entitydialog"); 
+					container = $(".entitydialog");
+				} else if ($("#main-media-container").length > 0) {
+					container = $("#main-media-container");
 				}
-				else if ($("#main-media-container").length > 0) {
-					container = $("#main-media-container"); 				
-				}
-				if (event.which == "37")
-				{
+				if (event.which == "37") {
 					link = $(".goleftclick", container);
-				}
-				else{
+				} else {
 					link = $(".gorightclick", container);
 				}
-				if(link)
-				{
+				if (link) {
 					link.trigger("click");
 				}
 			}
-		
-			
 		}
 	};
 
@@ -398,7 +391,7 @@ $(document).ready(function () {
 			return;
 		}
 		if (input.length > 0) {
-			input.focus();
+			input.trigger("focus");
 			var inputVal = input.val();
 			if (inputVal) {
 				input.val("");
@@ -541,7 +534,7 @@ $(document).ready(function () {
 			textarea.value = textarea.value + selection;
 			textarea.scroll(0, textarea.scrollHeight);
 		}
-		$(textarea).focus();
+		$(textarea).trigger("focus");
 	});
 }); //document ready
 
@@ -555,7 +548,7 @@ window.addEventListener(
 			externalmessage = e.data;
 		}
 	},
-	false
+	false,
 );
 
 var asciiFormatRanges = {

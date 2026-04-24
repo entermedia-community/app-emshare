@@ -1,0 +1,34 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content":  "You are a assistant that generates up to 5 short questions using the information provided. The questions should be short, direct and clear. Avoid overly complex or multi-part questions. Focus on the key details from the provided information to create relevant and engaging questions. Do not include any constraints on how to answer the question like 'according to ...', 'based on ...' etc."
+		},
+    {
+      "role": "user",
+      "content": #jesc("Make 5 questions from the following information:\n\n#foreach($text in $contents)$text \n---\n#end")
+    }
+	],
+	"response_format": {
+		"type": "json_schema",
+		"json_schema": {
+			"name": "questions_suggestions",
+			"strict": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"suggestions": {
+						"type": "array",
+						"description": "List of question suggestions.",
+						"items": {
+							"type": "string",
+              "description": "An example question based on the provided information."
+						}
+					}
+				},
+				"required": ["suggestions"]
+			}
+		}
+	}
+}

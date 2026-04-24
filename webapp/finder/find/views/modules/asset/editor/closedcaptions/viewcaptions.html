@@ -3,8 +3,18 @@
 	#if( $track.transcribestatus == "needstranscribe" || $track.transcribestatus == "inprogress")  
 	 class="ajaxstatus" data-ajaxpath="$clientroot/viewcaptions.html?oemaxlevel=1&assetid=$asset.id" 
 	#end
-> 
+>
 
+#ifnull($track)
+	#set($lang = $mediaarchive.getData("locale", $selectedlang))
+	<div class="mb-2 alert alert-danger py-1 px-2 d-inline-block">
+		[[No captions available for ]] <strong>${lang}</strong>.
+		<a href="$clientroot/details/translatedialog.html?assetid=$asset.id&selectedlang=$selectedlang" data-targetlocale="$selectedlang" data-dialogid="ccautotranslate" title="Translate Captions" class="ms-2 emdialog text-accent">
+			<i class="bi bi-translate ns me-1"></i>
+			[[Translate]]?
+		</a>
+	</div>
+#end
 #set( $cc_action = $context.getRequestParameter("cc_action") )
 #if( $track.transcribestatus == "needstranscribe") 
 	<div class="mb-2">	[[transcoder uploading audio]] </div>
@@ -47,6 +57,9 @@
 					<div class="cliptime mb-1">
 						<i class="far fa-clock"></i> $clip.getStartSecondsAndHours()
 					</div>
+					#ifnotnull($clip.getSpeaker())
+					<div class="clipspeaker">#esc($clip.getSpeaker())</div>
+					#end
 					<div class="cliptext">#esc($!clip.getLabel())</div>
 				</div>
 			</div>
