@@ -97,7 +97,6 @@ $(document).ready(function () {
 	var semanticLoaderTO = null;
 
 	lQuery("#mainsearchinput").livequery(function () {
-		debugger;
 		var mainSearchInput = $(this);
 
 		mainSearchInput.on("keydown", function (e) {
