@@ -2,6 +2,7 @@ $(document).ready(function () {
 	var apphome = $("#application").data("apphome");
 	var lastTypeAhead;
 	var searchQuery = "";
+	var ignoreAutoPopup = false;
 
 	function checkUrlForSearch() {
 		var queryparam = window.location.search;
@@ -10,13 +11,18 @@ $(document).ready(function () {
 		if (query) {
 			searchQuery = decodeURIComponent(query);
 		}
+
+		var assetId = params.get("assetid");
+		if (assetId) {
+			ignoreAutoPopup = true;
+		}
 	}
 
 	checkUrlForSearch();
 
 	var urlHash = window.location.hash;
 
-	if (urlHash && urlHash === "#mainsearch") {
+	if (!ignoreAutoPopup && urlHash && urlHash === "#mainsearch") {
 		if ($("#mainsearch").length > 0) {
 			$("#mainsearch").modal("show");
 		} else {
@@ -177,7 +183,7 @@ $(document).ready(function () {
 					history.pushState(
 						$("#application").html(),
 						"",
-						`${apphome}?${terms}#mainsearch`
+						`${apphome}?${terms}#mainsearch`,
 					);
 				},
 			});
