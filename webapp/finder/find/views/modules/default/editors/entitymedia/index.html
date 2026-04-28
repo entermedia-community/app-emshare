@@ -23,6 +23,14 @@ $context.putPageValue("sortableassets",$sortableassets)
 	<div class="alert alert-warning m-4">[[Upload Source Path needs to be set in the Entity or Module.]]</div>
 #end
 #ifnotnull($category)
-$pages.include("${edithome}/resultarea.html?rootcategory=${category.id}", $context)
+	#set($uploadto = $context.getRequestParameter("uploadto"))
+	#if($uploadto)
+		#if($entitymodule.getBoolean("enableuploading") && $canviewupload && $entitymodule.id != "searchcategory" && $entitymodule.id != "favorites" && $permissions.canModule($entitymodule, "upload_files"))
+				
+			$pages.include("${apphome}/views/modules/asset/editors/assetupload/index.html?categoryid=${category.id}", $context)
+		#end
+	#else
+		$pages.include("${edithome}/resultarea.html?rootcategory=${category.id}", $context)
+	#end
 #end
 </div>
