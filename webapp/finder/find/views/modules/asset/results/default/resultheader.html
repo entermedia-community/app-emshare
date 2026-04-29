@@ -156,15 +156,20 @@
 			
 				#ifnotnull($entitymodule)
 				
-					#if(!$hideupload && $entitymodule.getBoolean("enableuploading") && $canviewupload && $entitymodule.id != "searchcategory" && $entitymodule.id != "favorites" && $permissions.canModule($entitymodule, "upload_files"))				
+					#if(!$hideupload && $entitymodule.getBoolean("enableuploading") && $canviewupload && $entitymodule.id != "searchcategory" && $entitymodule.id != "favorites" && $permissions.canModule($entitymodule, "upload_files"))			
+
+						#set($uploadeditor = "${edithome}/upload/uploadtoentity.html")
+
+						#if($lightboxtype && $lightboxtype == "emedialightbox" && $lightboxid != "files")
+							#set($uploadeditor = "${edithome}/upload/uploadtocategory.html")
+						#end
+							
 						<li class="mbl-except">
-							<a href="$siteroot$apphome/views/modules/asset/editors/assetupload/index.html"
+							<a href="${uploadeditor}"
 							class="ajax px-3 btn-navbar btn-cta webUploadButton"
 							data-targetdiv="resultsarea" 
 							data-oemaxlevel="1"
-							data-edithome=""
-							data-categoryid="$!categoryid"
-							data-categorypath="$categorypath"
+							data-includeeditcontext="true"
 							data-tabsection="upload"
 							title="[[Upload]]"><i class="bi bi-upload"></i></a>
 						</li>

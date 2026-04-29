@@ -1,29 +1,11 @@
-#set( $root = "$siteroot$componenthome/upload/types/html5")
 #set( $nodeID = $context.getRequestParameter("nodeID") )
-#if(!$nodeID)
+#ifnull($nodeID)
 	#set( $nodeID = $context.getRequestParameter("categoryid") )
 #end
-#if(!$nodeID)
-	##Is a Collection Upload?
-	#set($collectionid = $context.getRequestParameter("collectionid"))
-	#if(!$collectionid)
-		#set($librarycol = $mediaarchive.getProjectManager().loadUserCollection($mediaarchive, $userprofile))
-	#end
-	#if($collectionid)
-		#set($librarycol = $mediaarchive.getCachedData("librarycollection",$collectionid) )
-	#end
-	#if( $librarycol)
-		#set($collectionid = $librarycol.getId())
-		#set( $nodeID = $librarycol.getValue("rootcategory") )
-		$context.putPageValue("librarycol", $librarycol)
-	#end
-	
-#end
-#if( $nodeID )
+#ifnotnull( $nodeID )
 	#set($category = $mediaarchive.getData("category",$nodeID))
 	#set($categoryid = $category.getId())
 #end
-
 
 
 <div class="uploadformarea" data-ajaxreloadtargets="assetresults">
@@ -31,7 +13,8 @@
 	<input class="upload_folder" type="file" style="position:absolute; top:-2000px;" webkitdirectory multiple="multiple" />
 
 
-	<form id="uploaddata" name="wizard" onsubmit="return false;" data-finishaction="" action="${root}/finish.html" class="force-validate-inputs">
+	<form id="uploaddata" name="wizard" onsubmit="return false;" data-finishaction="" 
+	action="${edithome}/upload/uploadtocategoryfinish.html" class="force-validate-inputs">
 	#ifnotnull($nodeID)
 		<div class="entityuploadheader">
 			<div class="uploadto-breadcrumb">
@@ -112,19 +95,6 @@
 				</div>
 
 				<div class="col-sm-12 col-md-6 col-upload-right overflow-y pl-md-1">
-					#if( $collectionid )
-						$!context.setRequestParameter("libraries.value",$!librarycol.library)
-						<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid" />
-						<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid" />
-					#else
-						#ifnull($categoryid)		 
-							#if($collectionid || $mediaarchive.isCatalogSettingTrue("show_add_media_collection"))
-								<div class="upload-detail-box">
-								$pages.include("$apphome/components/upload/types/html5/collectionpicker.html", $context)
-								</div>
-							#end
-						#end	
-					#end
 					<div id="uploadmetadata" class="h-100">
 						#set($viewid = "assetmultipleupload") ##Default finder
 						$context.putPageValue("viewid",$viewid)
