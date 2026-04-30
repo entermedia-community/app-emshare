@@ -27,19 +27,27 @@
 		#set($entitymoduleviewid = $enttiyviews.first().getId())
 	#end
 #end
+
 #ifnull($entitymoduleviewid)
 	#set( $entitymoduleviewid = $userprofile.get("${module.id}_entitytabopen"))
 #end
+
 #ifnull($entitymoduleviewid)
 	#set($entitymoduleviewid = $enttiyviews.first().getId())
 #end
 
 #set($saveaction = $context.getRequestParameter("saveaction"))
-#set($addnew = $context.getRequestParameter("addnew"))
 
+#set($addnew = $context.getRequestParameter("addnew"))
 #if ($addnew =="true")
 	#set($enttiyviews = "")
 	$context.putPageValue("addnew", "true")
+
+	##Select first view that is "data" rendertype
+	#set($firstdatatypeview = $mediaarchive.query("view").exact("moduleid", $module.id).exact("systemdefined","false").exact("rendertype", "data").sort("orderingUp").named("view").searchOne($context) )
+	#ifnotnull($firstdatatypeview)
+		#set($entitymoduleviewid = $firstdatatypeview.getId())	
+	#end
 #else
 	##check if saveaction
 	#if($saveaction == "upload")
