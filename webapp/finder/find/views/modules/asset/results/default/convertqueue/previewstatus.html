@@ -16,6 +16,10 @@ $context.putPageValue("thumbsize", $thumbsize)
 	$!context.putPageValue("searchhome", $searchhome)
 #end
 
+#ifnull($pickerenabled)
+	#set($pickerenabled = $context.getRequestParameter("pickerenabled"))
+#end
+
 #set($prefixid = $context.getRequestParameter("prefixid") )
 
 #if( $hit.previewstatus && $hit.previewstatus == "2")  
@@ -34,11 +38,13 @@ $context.putPageValue("thumbsize", $thumbsize)
 #elseif($hit.importstatus == "error")
 	<span class="text-muted">[[Import Error]]</span>       
 #else
-	
     <div id="status$!{prefixid}$!{hit.id}" 
 		class="ajaxstatus  " 
 	    data-oemaxlevel="1"
 	    data-firstrun="500" 
+		#ifnotnull($pickerenabled)
+			data-pickerenabled="$pickerenabled"
+		#end
 		ajaxpath="$!{siteroot}$!{searchhome}/convertqueue/previewstatus.html?assetid=$!{hit.id}&thumbsize=$!{thumbsize}&prefixid=$!{prefixid}" >
 			#if($hit.importstatus && $hit.importstatus == "created")
 				#set($label = "[[Created]]")
