@@ -1,47 +1,54 @@
-#set($submoduleid = $entitymoduleviewdata.rendertable)
-#set($module = $mediaarchive.getCachedData("module", $submoduleid))
 
-#set ($fieldexternalid = $entitymodule.id)
-#set ($fieldexternalvalue = $entity.id)
+#set($fieldexternalid = $context.getRequestParameter("parentmoduleid"))
+#set($fieldexternalvalue = $context.getRequestParameter("parententityid"))
+
+##Submodule 
+#set($entitymoduleid = $context.getRequestParameter("entitymoduleid"))
+#set( $searcher = $mediaarchive.getSearcher($entitymoduleid) )
+$context.putPageValue("searcher",$searcher)
+
 #ifnull($data)
 	#ifnotnull($fieldexternalid)
-		#set($data = $mediaarchive.getSearcher($module.id).createNewData())
+		#set($data = $mediaarchive.getSearcher($entitymoduleid).createNewData())
 		$data.setValue($fieldexternalid, $fieldexternalvalue)
 		$context.putPageValue("data",$data)
 	#end
 #end
 
-#set( $searcher = $mediaarchive.getSearcher($module.id) )
-$context.putPageValue("searcher",$searcher)
-
-#set($viewid = "${module.id}addnew")
-
-#set($action = "$apphome/views/modules/${module.id}/editors/entitysubmodules/addnewsave.html")
-
+#set($viewid = "${entitymoduleid}addnew")
 #set($edithomeid = $context.getRequestParameter("edithomeid"))
 #set($ajaxreloadtargetsvalue = $context.getRequestParameter("ajaxreloadtargetsvalue"))
 	
-
+$context.putPageValue("addnew", "true")
 $pages.include("$apphome/views/modules/${module.id}/editors/entitysubmodules/addnewheader.html")
 
 <div class="modal-body">
 	
-<div class="createnewtoggle">
+<div id="addnewentitysubmodules" class="createnewtoggle">
 <form id="searchentitydataeditor"
 	name="searchentitydataeditor"
+	#set($action = "$apphome/views/modules/${entitymoduleid}/editors/entitysubmodules/addnewsave.html")
 	action="$action" 
 	class="ajaxform checkCloseDialog autocloseform" 
-	data-edithomeid="$!{edithomeid}"
+	##data-edithomeid="$!{edithomeid}"
 	data-closedialogid="entitysubmoduleaddexisting"
-	data-targetdiv="$!{edithomeid}"
+	data-targetdiv="addnewentitysubmodules"
 	data-includeeditcontext="true"
-	data-ajaxreloadtargets="$!{ajaxreloadtargetsvalue}"
+	data-ajaxreloadtargets="enttiysubmoduleentityasset"
 	method="post"  
 	enctype="multipart/form-data"
 	>
+	
 
 		<input name="save" type="hidden" value="true" />
-		<input name="id" type="hidden" value="$!id" />
+		<input name="id" type="hidden" value="$!data.id" />
+
+		<input name="entitymoduleid" type="hidden" value="$!entitymoduleid" />
+
+		#ifnotnull($fieldexternalid)
+			<input name="fieldexternalid" type="hidden" value="$!fieldexternalid" />
+			<input name="fieldexternalvalue" type="hidden" value="$!fieldexternalvalue" />
+		#end
 			
 		$context.putPageValue("viewid", $viewid)
 		#set($detailviewercolumns = 2)
@@ -64,6 +71,9 @@ $pages.include("$apphome/views/modules/${module.id}/editors/entitysubmodules/add
 #end
 #set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
 #set($aiaction = "$apphome/views/modules/${module.id}/editors/contentcreatorchild/finish.html")
+
+
+
   <div class="bg-white createnewtoggle" style="display: none;" >
     <form	class="ajaxform autocloseform checkCloseDialog"
 			data-includeeditcontext="true"

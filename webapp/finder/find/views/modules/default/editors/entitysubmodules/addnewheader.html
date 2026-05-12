@@ -31,6 +31,11 @@
 							#if($addnew=='true')
 								#set($label = "[[Add New]]")
 								#text($label)	
+								#ifnotnull($entitymoduleid)
+									#set($entitysubmodule =  $mediaarchive.getCachedData("module", $entitymoduleid))
+									#set($label = "#text($entitysubmodule)")
+									&nbsp;#text($label)
+								#end
 								$context.putPageValue("addnew", $addnew)
 							#elseif($module.getValue("customname"))
 								#set($detail= $mediaarchive.getSearcher($module.id).getDetail("name"))
@@ -50,25 +55,6 @@
 	
 	
 			<div class="d-flex entity-actions-bar align-items-center text-white position-relative mbl-hidden">
-
-				<a class="btn btn-cta emdialog me-2"
-					href="$applink/views/modules/$!{module.id}/editors/bulkentitycreator/dialog.html?edit=true&addnew=true" 
-					data-entitymoduleviewid="$!{module.id}addnew"
-					data-entitymoduleid="$!module.id"
-					data-entityedithome="$!edithome"
-					data-targetdiv="editentitymetadata"
-					data-parentmoduleid="$module.id"
-					data-parententityid="$entity.id"
-					title="[[Bulk Folders from Files]]">
-					<i class="bi bi-stack me-1"></i> [[Bulk Folders from Files]]
-				</a>
-				
-				#set( $isowner = $entity.owner == $user.id)
-				
-				#if($mediaarchive.isCatalogSettingTrue("ai_create_enabled") && $permissions.canModule($module, "createassetswithai"))
-					<a href="#" class="btn btn-accent ms-1 addnewwithai" 
-						title="[[Create New]] #text($submodule) [[With AI]]"><i class="bi bi-brush me-1"></i> [[Create With AI]]</a>
-				#end
 							
 				<div class="entityclose">
 					<span title="[[Esc to Close]]" class="bi bi-x-lg ns"></span>
