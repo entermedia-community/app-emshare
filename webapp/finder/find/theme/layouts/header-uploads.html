@@ -1,0 +1,44 @@
+## Set globaluploadtomoduleid and globaluploadtoentityid in main _site.xconf to show upload to module option.
+
+#set($uploadtomoduleid = $content.get("globaluploadtomoduleid"))
+#set($uploadtoentityid = $content.get("globaluploadtoentityid"))
+#ifnotnull($uploadtomoduleid)
+<li>
+	<a href="$siteroot$applink/views/modules/${uploadtomoduleid}/editors/entitycustomupload/tabs/index.html" 
+		class='btn-topnav btn-accent emdialog' 
+		data-dialogid="entityuploadto"
+		data-entityid="${uploadtoentityid}"
+		data-entitymoduleviewid="${uploadtomoduleid}entityimports"
+		data-hidefooter="true" 
+		data-dialogwidth="1200"
+		title="[[Upload]]">
+		<i class="bi bi-upload ns me-2"></i> [[Upload]]
+	</a>
+</li> 
+#end
+#ifnull($uploadtomoduleid)
+	#if( $uploadmodules > 0 && $canviewupload )
+		<li class="dropdown">
+			<a class="btn-topnav dropdown-toggle" href="#" role="button" id="dropdownMenuUploadTo" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<span class="pe-1">[[Upload To]]</span>
+			</a>
+			<div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuUploadTo">
+				#foreach ( $amodule in $userprofile.getEntities() )
+					#set($amoduleid = $amodule.getId())
+					#if($amodule.getBoolean("enableuploading"))
+						#if($permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+						
+							#set($addurl = "$siteroot$applink/views/modules/${amoduleid}/editors/pickerforuploading/index.html")
+							<a class="dropdown-item emdialog" 
+								data-hidefooter="true"
+								data-dialogid="entityuploadto"
+								href="$addurl" 
+								title="[[Upload To]] #text($amodule)"
+								data-dialogwidth="1200"	>#text($amodule)</a>
+						#end
+					#end
+				#end
+			</div>
+		</li>
+	#end
+#end
