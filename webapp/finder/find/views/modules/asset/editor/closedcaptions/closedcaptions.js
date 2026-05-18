@@ -122,6 +122,8 @@ if (!jQuery.fn.videoClosedCaptions) {
 					}
 				} else if (keyCode == 13) {
 					//enter
+					e.preventDefault();
+					e.stopPropagation();
 					saveCaptionToServer();
 				}
 			});
@@ -227,5 +229,7 @@ var ccreloadvideo = function () {
 };
 
 jQuery(document).ready(function () {
-	$("#closedcaptioneditor").videoClosedCaptions();
+	lQuery("#closedcaptioneditor").livequery(function(){
+			$(this).videoClosedCaptions();		
+	});
 });
