@@ -15,6 +15,8 @@ public void addMetadataWithAI(){
 	Asset asset = archive.getAsset(assetid);
 	if (asset != null)
 	{
+		asset.setValue("llmerror", false);
+		archive.saveAsset(asset);
 		log.info("Processing individual asset:" + asset.getName());
 		informaticsManager.processAsset(log, asset);
 		inReq.putPageValue("asset", asset);
