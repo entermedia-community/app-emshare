@@ -12,10 +12,10 @@
 	$context.putPageValue("hits", $hits)
 #end
 
-#if(!$searchtype)
+#ifnull($searchtype)
 	#set ( $searchtype = $context.getRequestParameter("searchtype") )
 #end
-#if(!$searchtype)
+#ifnull($searchtype)
 	#set ( $searchtype = "asset" )
 #end
 
@@ -99,6 +99,19 @@
 	#set ($maintargetdiv = $context.getRequestParameter("maintargetdiv") )
 	$context.putPageValue("maintargetdiv",$maintargetdiv)
 #end
+
+#ifnull($resultview)
+	#set($resultview = $userprofile.get("${searchtype}resultview"))
+
+	#ifnull($resultview)
+		#set($resultview = $content.get("resultview"))
+	#end
+	#ifnull($resultview)
+		#set($resultview = "stackedgallery")
+	#end
+#end
+	
+$context.putPageValue("resultview", $resultview)
 
 	
 <div id="resultsheader" class="resultsheader #if($hits && $hits.getSelectionSize() > 0)hasselections#end #if(!$dialogresults) autostickywidth #end" >
@@ -329,17 +342,6 @@
 		</ul>
 
 		<ul class="resultsnavright mbl-hideexcept">
-			#if(!$resultview)
-				#set($resultview = $userprofile.get("$!{searchtype}resultview"))
-				#if (!$resultview)
-					#set($resultview = $content.get("resultview"))
-				#end
-				#if (!$resultview)
-					#set($resultview = "stackedgallery")
-				#end
-			#end
-				
-			$context.putPageValue("resultview", $resultview)
 				
 			#if(!$currenthitsperpage)
 				#set( $currenthitsperpage = $hits.getHitsPerPage())
@@ -374,6 +376,7 @@
 	
 				##-RESULTS TYPE
 				##ifnull($lightboxassetsresults)
+				
 				<li class="resultsnavitem" style="min-width: 75px;">
 					#set( $types = $mediaarchive.getList("resulttype"))
 					<select class="select2  form-select" 
@@ -395,7 +398,7 @@
 				
 			#end
 				
-			#if(!$resultview || $resultview == 'table')
+			#if($resultview == 'table')
 				#if( $canedittablecolumns )
 					#if( $edit )
 						
