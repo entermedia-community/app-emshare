@@ -1,9 +1,9 @@
-<div id="checkoutterms" class="acceptterms">
-	#set( $requestapproveremail = $mediaarchive.getCatalogSettingValue("requestapproveremail"))
-	#if(!$requestapproveremail)
-		[[Missing Request Approver Email, contact your Administrator.]]
+<div id="checkoutterms" class="acceptterms p-3">
+	#set( $approverUser = $context.get("approverUser"))
+	#if(!$approverUser)
+		<p>[[Request Approver Email address not set or not linked to any active account. Please contact your Administrator.]]</p>
 		#if($canviewsettings)
-		<pre>Catalog Setting value: requestapproveremail</pre>
+		<pre>Missing Catalog Setting: requestapproveremail</pre>
 		#end
 	#else
 	<form id="processorder" 
@@ -22,7 +22,7 @@
 		<input type="hidden" name="field" value="publishdestination" />
 		<input type="hidden" name="publishdestination.value" value="0" />
 		
-		<div class="text-right">
+		<div class="text-end">
 			<button id="closebutton" type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-dismiss="modal">[[Close]]</button>
 			<button id="submitbutton" type="submit" form="processorder" name="submitbutton" class="btn btn-primary dialogsubmitbtn">[[Ok]]</button>
 		</div>
