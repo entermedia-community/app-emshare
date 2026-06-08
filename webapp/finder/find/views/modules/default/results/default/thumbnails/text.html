@@ -5,16 +5,23 @@
 #ifnull($hit)
 	#set ($hit = $data)
 #end
-
-<div class="text-file-thumb $hit.fileformat">
-	<div class="file-name-wrapper">
-		<div class="file-name">
-			<p class="m-0">
-				<span>{&nbsp;</span>$hit.getName()<span>&nbsp;}</span>
-			</p>
+ #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+<div class="emthumbholder draggholder emthumbholder-${rendertype}" data-assetid="${hit.id}">
+	<div class="mimethumbcontainer">
+		<i class="bi bi-$!mime mimeicon" title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
+	</div>
+	#*
+	<div class="text-file-thumb ${hit.fileformat}">
+		<div class="file-name-wrapper">
+			<div class="file-name">
+				<p class="m-0">
+					<span>{&nbsp;</span>$hit.getName()<span>&nbsp;}</span>
+				</p>
+			</div>
+		</div>
+		<div class="format-name">
+			$hit.fileformat
 		</div>
 	</div>
-	<div class="format-name">
-		$hit.fileformat
-	</div>
+	*#
 </div>
