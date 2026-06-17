@@ -11,16 +11,47 @@
 		<input type="hidden" name="nodeID" value="$!{nodeid}" />
 		<input type="hidden" name="assethitssessionid" value="$!{hitssessionid}" />
 		<input type="hidden" name="assetid" value="$!{assetid}" />
-		<div class="alert alert-info">
-			[[Approve]]
+		<div class="mb-2">
+			[[Approving]]
+			
 			#ifnotnull($hits.getSelectionSize())
-			$hits.getSelectionSize() #if($hits.getSelectionSize()==1)[[Asset]] #else [[Assets]] #end
+				<strong>$hits.getSelectionSize() #if($hits.getSelectionSize()==1)[[Asset]] #else [[Assets]] #end</strong>
+				#set($ismulti = true)
 			#end
 			#ifnull($hits.getSelectionSize())
-			1 [[Asset]]
+				#set($ismulti = false)
+				#set($asset = $mediaarchive.getAsset($assetid))	
+				[[asset]]: <strong>$asset.getText("name",$context)</strong>
+				
+				
 			#end
 		</div>
-		<textarea class="form-control" style="width: 100%; height: 100px"
-			placeholder="[[Enter an optional note]]"></textarea>
+
+		#if(!$ismulti)
+			#set($missingrequiredfields = $mediaarchive.getAssetEditor().getMissingRequiredFieldsinViews($mediaarchive, $asset, $context.getUserProfile(), $context.getLocale()))
+		#end
+		#if($missingrequiredfields && $missingrequiredfields.size() > 0)
+			<div>
+				<strong>[[The following required fields are missing:]]</strong>
+				<ul>
+					#foreach($field in $missingrequiredfields)
+						<li>$field.getText($context)</li>
+					#end
+				</ul>
+			</div>
+			<div>
+				[[Please complete all required fields before approving.]]
+			</div>
+			
+		#else
+			<textarea class="form-control" style="width: 100%; height: 100px"
+				placeholder="[[Enter an optional note]]"></textarea>
+
+			<div class="mt-3 d-flex justify-content-end">
+				<button class="btn btn-secondary me-2" type="button" data-bs-dismiss="modal">[[Cancel]]</button>
+				<button class="btn btn-primary" type="submit">[[Approve]]</button>
+				
+			</div>
+		#end
 	</form>
 </div>
